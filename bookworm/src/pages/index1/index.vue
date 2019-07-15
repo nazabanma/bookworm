@@ -1,58 +1,40 @@
 <template>
-  <div>
-    <!-- 载入字体 -->
-    <!-- <div :class="[isTest?'career':'']">
-    ssssss
-    <button @click="fontfamily">加载字体</button>
-    </div>-->
-    <button @click="fontfamily">加载字体</button>
+  <div class="index1">
+    <!-- 顶部导航栏 -->
+    <navigation-bar :title="'首页'" :backVisible="false" :fontSize="18" :imgsrc="naviImgsrc"></navigation-bar>
+    <search-bar :logoSrc="logoSrc" :searchSrc="searchSrc" :searchValue="searchValue"></search-bar>
+    <view
+      :style="{backgoundImage:'url('+searchSrc+')',border:'1px solid red',height:'100px',width:'100px'}"
+    ></view>
   </div>
 </template>
 
-<script>
-import card from "@/components/card";
+ 
 
+<script>
+import navigationBar from "@/components/acomponents/navigation";
+import searchBar from "@/components/acomponents/searchBar";
 export default {
   data() {
     return {
-      motto: "Hello miniprograme",
-      fontFamily: "Bitstream Vera Serif Bold",
-      loaded: false,
-      isTest: true
+      logoSrc: "/static/images/user.png",
+      searchSrc: require("../../../static/images/user.png"),
+      searchValue: "",
+      naviImgsrc: "/static/images/user.png"
     };
   },
-
   components: {
-    card
+    navigationBar,
+    searchBar
   },
-
   methods: {
-    fontfamily() {
-      wx.loadFontFace({
-        family: "Bitstream Vera Serif Bold",
-        source: 'url("https://sungd.github.io/Pacifico.ttf")',
-        success(res) {
-          console.log(res.status);
-          this.loaded = true;
-        },
-        fail: function(res) {
-          console.log(res.status);
-        },
-        complete: function(res) {
-          console.log(res.status);
-        }
-      });
-    }
-  },
-
-  created() {
-    // let app = getApp()
+  show(){}
   }
 };
 </script>
-
 <style scoped>
-.career {
-  font-family: "Bitstream Vera Serif Bold";
+.index1 {
+  height: 600px;
+  background-color: #f5f5f5;
 }
 </style>

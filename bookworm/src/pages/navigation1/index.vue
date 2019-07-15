@@ -1,40 +1,36 @@
 <template>
-  <div>
-    <!-- <template>
-      <div class="container">
-        <frames></frames>
-      </div>
-    </template> -->
-    <card></card>
+  <div class="index1">
+    <!-- 顶部导航栏 -->
+    <navigation-my :title="'首页'" :backVisible="false" :fontSize="18" :imgsrc="naviImgsrc"></navigation-my>
+    <img class="logo" :src="logoSrc" />
+    <search-bar :logoSrc="logoSrc" :searchSrc="searchSrc" :searchValue="searchValue"></search-bar>
   </div>
 </template>
-    </div>
-</template>
+
+ 
 
 <script>
-// import frames from "@/components/acomponents/navigation";
-import frames from "@/components/card";
+import navigationMy from "@/components/acomponents/navigation";
+import searchBar from "@/components/acomponents/searchBar";
 export default {
-  components: {
-    // frames,
-    card
-  },
   data() {
     return {
-      videoTitle: "自定义标题"
+      logoSrc: "@/static/images/user.png",
+      searchSrc: require('../../../static/images/user.png'),
+      searchValue: "",
+      naviImgsrc: ""
     };
-  }
+  },
+  components: {
+    navigationMy,
+    searchBar
+  },
+  methods: {}
 };
 </script>
-<style lang="scss" scoped>
-.content {
-  width: 100vw;
-  height: 150vh;
-  border: 1px solid red;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding-top: 150rpx;
+<style scoped>
+.index1 {
+  height: 600px;
+  background-color: #f5f5f5;
 }
 </style>
