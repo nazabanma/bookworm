@@ -1,7 +1,9 @@
 {
     "pages": [
-        "pages/index1/main",
         "pages/navigation1/main",
+        "pages/index1/main",
+        "pages/test/main",
+        "pages/test1/main",
         "pages/index/main",
         "pages/cart1/main",
         "pages/mine1/main",

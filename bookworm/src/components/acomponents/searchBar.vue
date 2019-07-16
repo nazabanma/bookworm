@@ -2,16 +2,12 @@
   <div>
     <view class="container">
       <view :style="{display:'table-cell',verticalAlign:'top',paddingRight:'0.25rem'}">
-        <img class="logo" :src="searchSrc" />
+        <img class="logo" :src="logoSrc" />
       </view>&nbsp;
       <view :style="{display:'table-cell',verticalAlign:'top'}">
-        <input
-          type="text"
-          class="search_input"
-          :style="{backgoundImage:'url('+searchSrc+')'}"
-          :value="searchValue"
-          @change="onChange"
-        />
+        <input type="text" class="search_input" :value="searchValue" @change="onChange" />
+        <!-- 搜索框图标 -->
+        <img class="searchImg" :src="searchSrc" />
       </view>
     </view>
   </div>
@@ -26,7 +22,7 @@ export default {
       // logoSrc: "",
       // searchSrc: "",
       // searchValue: ""
-      searchSrc: ""
+      //searchSrc: ""
     };
   },
 
@@ -58,17 +54,22 @@ export default {
   height: 0.5rem;
   border-radius: 0.25rem;
   padding: 0;
+  margin-top: 0.04rem;
   background-color: #ffffff;
 }
 .search_input {
-  width: 5.8rem;
+  width: 5.4rem;
   height: 0.58rem;
   border-radius: 0.25rem;
-  padding: 0.02rem 0.2rem;
+  padding: 0.02rem 0.2rem 0.02rem 0.6rem;
   margin: 0;
   font-size: 14px;
-  background-size: "100% 100%";
-  background-repeat: "no-repeat";
-  /* background-color: #ffffff; */
+  background-color: #ffffff;
+}
+.searchImg {
+  width: 0.35rem;
+  height: 0.35rem;
+  position: absolute;
+  margin: -0.475rem 0.15rem;
 }
 </style>

@@ -1,29 +1,17 @@
 <template>
   <div class="index1">
-    <!-- 顶部导航栏 -->
-    <navigation-bar :title="'首页'" :backVisible="false" :fontSize="18" :imgsrc="naviImgsrc"></navigation-bar>
     <!-- 显示返回按钮的导航栏 -->
-    <!-- fontSize：标题字体大小；backVisible:是否显示返回上一页按钮；linkBack:返回上一页的地址；linkKind：上一页的类型，1为普通页面，0为tab页 -->
-    <!-- <navigation-bar
+    <navigation-bar
       :title="'测试页'"
       :backVisible="true"
       :fontSize="18"
       :imgsrc="naviImgsrc"
-      :linkBack="'/pages/index1/main'"
-      :linkKind="false"
-    ></navigation-bar> -->
+      :linkBack="'/pages/test/main'"
+      :linkKind=true
+    ></navigation-bar>
 
     <!-- logo和搜索框 -->
     <search-bar :logoSrc="logoSrc" :searchSrc="searchSrc" :searchValue="searchValue"></search-bar>
-   
-   
-
-
-
-   
-    <a href="/pages/test/main" class="counter">测试页面</a>
-
-    <button @click="show">按钮</button>
   </div>
 </template>
 

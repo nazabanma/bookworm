@@ -13,8 +13,8 @@
       <cover-view class="nav-titlebar" :style="{height: titleBarHeight + 'px' }">
         <!-- home及后退键 -->
         <cover-view class="bar-options">
-          <cover-view v-if="backVisible" class="opt opt-back" @click="backClick()">
-            <cover-image class="back-image" :src="imgsrc"></cover-image>
+          <cover-view v-if="backVisible" class="opt opt-back" v-model="linkBack">
+            <cover-image class="back-image" :src="imgsrc" @click="backClick()" v-model="linkKind"></cover-image>
           </cover-view>
           <!-- 返回home图标，不做使用 -->
           <!-- <cover-view class="line" v-if="backVisible && homePath"></cover-view> -->
@@ -31,7 +31,7 @@
 
 <script>
 export default {
-  props: ["backVisible", "imgsrc", "title", "fontSize"],
+  props: ["backVisible", "imgsrc", "title", "fontSize", "linkBack","linkKind"],
   data() {
     return {
       navBarHeight: "",
@@ -63,6 +63,26 @@ export default {
         //console.log("navBarHeight:", self.navBarHeight);
       }
     });
+  },
+  methods: {
+    backClick() {
+      // let pages = getCurrentPages(); // 获取页面栈
+      // let currPage = pages[pages.length - 1]; // 当前页面
+      // let prevPage = pages[pages.length - 2];
+      // if (pages.length > 1) {
+      //   prevPage = pages[pages.length - 2];
+      // }
+      // console.log("数组" + pages + "当前" + currPage + "上一页" + prevPage);
+      if (this.linkKind) {
+        wx.navigateTo({
+          url: this.linkBack
+        });
+      } else {
+        wx.switchTab({
+          url: this.linkBack
+        });
+      }
+    }
   }
 };
 </script>
@@ -101,19 +121,25 @@ export default {
   /* display: inline-block; */
   width: 36rpx;
   height: 100%;
+  vertical-align: middle;
+  text-align: center;
 }
 /* 后退键最外层 */
 .opt-back {
   display: inline-block;
   width: 100%;
   height: 100%;
-  /* background-color: red; */
+  /* display: table-cell;
   vertical-align: middle;
+  text-align: center; */
 }
 /* 返回按钮图片 */
 .back-image {
   display: inline-block;
-  width: 100%;
+  width: 30rpx;
+  height: 30rpx;
+  margin-left: 3rpx;
+  vertical-align: middle;
 }
 
 /*---------------  标题*/
