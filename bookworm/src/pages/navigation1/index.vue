@@ -45,7 +45,16 @@ export default {
         { id: "13", typename: "其他7" },
         { id: "14", typename: "其他8" }
       ],
+<<<<<<< HEAD
       pickItem:''
+=======
+      imgUrls: [
+        "https://images.unsplash.com/photo-1551334787-21e6bd3ab135?w=640",
+        "https://images.unsplash.com/photo-1551214012-84f95e060dee?w=640",
+        "https://images.unsplash.com/photo-1551446591-142875a901a1?w=640"
+      ],
+      pickItem: ""
+>>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
     };
   },
   components: {
@@ -58,7 +67,11 @@ export default {
       console.log("url(" + this.searchSrc + ")");
     },
     getPick(msg) {
+<<<<<<< HEAD
       console.log("点击的类别："+msg.typename);
+=======
+      console.log("点击的类别：" + msg.typename);
+>>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
     }
   }
 };

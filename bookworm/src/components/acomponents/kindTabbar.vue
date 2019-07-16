@@ -1,6 +1,10 @@
 <template>
   <div>
+<<<<<<< HEAD
     <view v-if="!show" class="container">
+=======
+    <view v-if="show" class="container">
+>>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
       <view
         class="kindItems"
         v-for="(item, index) in showList"
@@ -14,17 +18,28 @@
       </view>
     </view>
 
+<<<<<<< HEAD
     <view v-if="show" class="popPanel">
       <view class="btnLable">
         <view class="btn2" @click="moreKind">
           <img class="btnImg2" :src="btnSrc" />
+=======
+    <view v-if="!show" class="popPanel">
+      <view class="btnLable">
+        <view class="btn2" @click="moreKind">
+          <img class="btnImg2" :src="btnSrc2" />
+>>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
         </view>
       </view>
       <view class="pop">
         <view class="kindBtns" v-for="(item, index) in BtnList" :key="index">
           <view class="btnTr">
             <block v-for="(i,k) in item" :key="k">
+<<<<<<< HEAD
               <a class="btnTd" @click="print(i)">{{i.typename}}</a>
+=======
+              <a class="btnTd" @click="linkType(i)">{{i.typename}}</a>
+>>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
             </block>
           </view>
         </view>
@@ -34,13 +49,24 @@
 </template>
 
 <script>
+<<<<<<< HEAD
+=======
+import { globalBus } from "@/components/globalBus";
+>>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
 export default {
   props: ["kindList"],
   data() {
     return {
+<<<<<<< HEAD
       btnSrc: "/static/images/user.png",
       showItem: true,
       showList: [],
+=======
+      btnSrc: "/static/images/下@3x.png",
+      showItem: true,
+      showList: [],
+      btnSrc2: "/static/images/上@3x.png",
+>>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
       BtnList: [],
       show: true
       // kindList: [],
@@ -55,6 +81,7 @@ export default {
       let item = this.kindList[i];
       this.showList.push(item);
     }
+<<<<<<< HEAD
 
     for (let i = 0; i < length; i += 4) {
       this.BtnList.push(this.kindList.slice(i, i + 4));
@@ -78,6 +105,21 @@ export default {
       // console.log(e);
       this.pickItem = e;
       this.$emit("pickItem", this.pickItem);
+=======
+    // 数组分割
+    for (let i = 0; i < length; i += 4) {
+      this.BtnList.push(this.kindList.slice(i, i + 4));
+    }
+    //console.log(this.BtnList);
+  },
+  methods: {
+    linkType(item) {
+      this.$emit("pickItem", item);
+    },
+    moreKind() {
+      this.show = !this.show;
+      globalBus.$emit('swiperFlag', this.show);
+>>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
     }
   }
 };
@@ -89,9 +131,16 @@ export default {
 /* 最外层view */
 .container {
   display: table;
+<<<<<<< HEAD
   /* display: table-row;对padding不敏感，这里只能用table进行限制 */
   width: 100%;
   height: 0.5rem;
+=======
+  position: relative;
+  /* display: table-row;对padding不敏感，这里只能用table进行限制 */
+  width: 100%;
+  height: 0.6rem;
+>>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
   padding: 0 0 0 0.3rem;
   vertical-align: middle;
 }
@@ -118,11 +167,18 @@ export default {
   /* border: 1px solid red; */
 }
 /* 选中之后的样式 */
+<<<<<<< HEAD
 .kindItem.active:after,
 .kindItem:active:after,
 .kindItem:focus:after,
 .kindItem:visited:after,
 .kindItem:link:after {
+=======
+/* .kindItem:after , */
+.kindItem:visited:after,
+.kindItem:hover:after,
+.kindItem:active:after {
+>>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
   position: relative;
   display: block;
   content: "";
@@ -131,7 +187,11 @@ export default {
   height: 4rpx;
   left: 0;
   top: 0.1rem;
+<<<<<<< HEAD
   bottom: 0;
+=======
+  bottom: 0.3rem;
+>>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
   background: red;
   border-radius: 2rpx;
 }
@@ -159,6 +219,10 @@ export default {
   left: 0.07rem;
   z-index: 3;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
 /* --------------------------------------------
     选择类型按钮
 --------------------------------------------- */
@@ -169,10 +233,18 @@ export default {
   clear: both; */
   width: 100%;
   height: auto;
+<<<<<<< HEAD
   padding:0;
   /* zoom: 1; */
   overflow: hidden;
   background-color: white;
+=======
+  padding: 0;
+  /* zoom: 1; */
+  overflow: hidden;
+  background-color: white;
+  position: absolute;
+>>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
   z-index: 2;
 }
 /* 存放按钮，对按钮进行布局 */
@@ -210,7 +282,11 @@ export default {
 }
 .btnLable {
   display: block;
+<<<<<<< HEAD
   width:100%;
+=======
+  width: 100%;
+>>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
   height: 0.3rem;
 }
 /* 右侧更多类型按钮 */

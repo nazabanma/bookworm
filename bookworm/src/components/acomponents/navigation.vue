@@ -1,9 +1,17 @@
 <template>
   <div class="comp-navbar">
     <!-- 占位栏 -->
+<<<<<<< HEAD
     <!-- <cover-view class="placeholder-bar" :style="{height: navBarHeight + 'px'}"></cover-view> -->
     <!--------------- 自定义导航栏=状态栏+导航栏 ------------->
     <cover-view
+=======
+    <!-- 这里是因为导航栏是fixed的，不占具体的页面位置，添加占位符避免页面中最顶上的元素被覆盖 -->
+    <cover-view class="placeholder-bar" :style="{height: navBarHeight + 'px'}"></cover-view>
+    <!--------------- 自定义导航栏=状态栏+导航栏 ------------->
+    <cover-view
+      @blur="blurs"
+>>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
       class="navbar"
       :style="{height: navBarHeight + 'px',backgroundColor:navBackgroundColor}"
     >
@@ -31,7 +39,11 @@
 
 <script>
 export default {
+<<<<<<< HEAD
   props: ["backVisible", "imgsrc", "title", "fontSize", "linkBack","linkKind"],
+=======
+  props: ["backVisible", "imgsrc", "title", "fontSize", "linkBack", "linkKind"],
+>>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
   data() {
     return {
       navBarHeight: "",
@@ -82,6 +94,12 @@ export default {
           url: this.linkBack
         });
       }
+<<<<<<< HEAD
+=======
+    },
+    blurs() {
+      window.scroll(0, 0);
+>>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
     }
   }
 };
@@ -101,10 +119,22 @@ export default {
 }
 /*---------------  顶部状态栏*/
 .nav-statusbar {
+<<<<<<< HEAD
+=======
+  width: 100%;
+>>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
   background-color: white;
 }
 /*---------------  导航栏内容*/
 .navbar {
+<<<<<<< HEAD
+=======
+  width: 100%;
+  transform: none;
+  position: fixed;
+  top: 0;
+  z-index: 999;
+>>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
   background-color: white;
 }
 
