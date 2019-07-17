@@ -65,6 +65,7 @@ export default {
   margin: 0;
   font-size: 14px;
   background-color: #ffffff;
+  color: #787172;
 }
 .searchImg {
   width: 0.35rem;

@@ -1,22 +1,16 @@
 <template>
-  <div>
-  </div>
+  <div></div>
 </template>
 
 <script>
-
 export default {
   data() {
-    return {
-    };
+    return {};
   },
 
-  components: {
-   
-  },
+  components: {},
 
-  methods: {
-  },
+  methods: {},
 
   created() {
     // let app = getApp()

@@ -1,12 +1,8 @@
 {
     "pages": [
-<<<<<<< HEAD
-        "pages/navigation1/main",
         "pages/index1/main",
-=======
-        "pages/index1/main",
+        "pages/bookdetail1/main",
         "pages/navigation1/main",
->>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
         "pages/test/main",
         "pages/test1/main",
         "pages/index/main",
@@ -27,42 +23,23 @@
         "backgroundColor": "#fafafa",
         "selectedColor": "#333",
         "borderStyle": "white",
-<<<<<<< HEAD
         "list": [{
-                "text": "首页",
-                "pagePath": "pages/index1/main",
-                "iconPath": "static/tabs/home.png",
-                "selectedIconPath": "static/tabs/home-active.png"
-=======
-        "list": [
-            {
                 "text": "首页",
                 "pagePath": "pages/index1/main",
                 "iconPath": "static/images/首页——未选中@3x.png",
                 "selectedIconPath": "static/images/首页——选择@3x.png"
->>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
             },
             {
                 "text": "购物车",
                 "pagePath": "pages/cart1/main",
-<<<<<<< HEAD
-                "iconPath": "static/tabs/orders.png",
-                "selectedIconPath": "static/tabs/orders-active.png"
-=======
                 "iconPath": "static/images/购物车——未选择@3x.png",
                 "selectedIconPath": "static/images/购物车——选中@3x.png"
->>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
             },
             {
                 "text": "我的",
                 "pagePath": "pages/mine1/main",
-<<<<<<< HEAD
-                "iconPath": "static/tabs/orders.png",
-                "selectedIconPath": "static/tabs/orders-active.png"
-=======
                 "iconPath": "static/images/我的——未选择@3x.png",
                 "selectedIconPath": "static/images/我的——选中@3x.png"
->>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
             }
         ],
         "position": "bottom"

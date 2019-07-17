@@ -1,7 +1,7 @@
 <template>
   <div class="index1">
     <!-- 顶部导航栏 -->
-    <navigation-bar :title="'首页'" :backVisible="false" :fontSize="18" :imgsrc="naviImgsrc"></navigation-bar>
+    <navigation-bar :title="'首页'" :backVisible="false" :fontSize="18" :imgsrc="naviImgsrc" :titleColor="'#521d23'"></navigation-bar>
     <!-- 显示返回按钮的导航栏 -->
     <!-- fontSize：标题字体大小；backVisible:是否显示返回上一页按钮；linkBack:返回上一页的地址；linkKind：上一页的类型，1为普通页面，0为tab页 -->
     <!-- <navigation-bar
@@ -11,20 +11,6 @@
       :imgsrc="naviImgsrc"
       :linkBack="'/pages/index1/main'"
       :linkKind="false"
-<<<<<<< HEAD
-    ></navigation-bar> -->
-
-    <!-- logo和搜索框 -->
-    <search-bar :logoSrc="logoSrc" :searchSrc="searchSrc" :searchValue="searchValue"></search-bar>
-   
-   
-
-
-
-   
-    <a href="/pages/test/main" class="counter">测试页面</a>
-
-=======
     ></navigation-bar>-->
 
     <!-- logo和搜索框 -->
@@ -35,10 +21,9 @@
 
     <!-- 轮播页 -->
     <swiper-bar :imgUrls="imgUrls" :swiperHeight="swiperHeight" :showNow="showNow"></swiper-bar>
-    <book-list></book-list>
+    <book-list v-if="booksData" :bookList="booksData"></book-list>
 
     <a href="/pages/test/main" class="counter">测试页面</a>
->>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
     <button @click="show">按钮</button>
   </div>
 </template>
@@ -48,21 +33,25 @@
 <script>
 import navigationBar from "@/components/acomponents/navigation";
 import searchBar from "@/components/acomponents/searchBar";
-<<<<<<< HEAD
-export default {
-  data() {
-    return {
-      logoSrc: "/static/images/user.png",
-      searchSrc: "/static/images/user.jpg",
-      searchValue: "",
-      naviImgsrc: "/static/images/user.png"
-=======
 import kindTabbar from "@/components/acomponents/kindTabbar";
 import swiperBar from "@/components/acomponents/swiperBar";
 import bookList from "@/components/acomponents/bookList";
 
 export default {
-  mounted() {},
+  created() {
+    let _this = this;
+    this.$nextTick(function() {
+      wx.request({
+        url: "http://api.ec.com:8087/user/bookList/0",
+        method: "GET",
+        success(res) {
+          _this.booksData = res.data.data;
+          // console.log("获取到的书籍成功，数据");
+          //console.log(_this.booksData);
+        }
+      });
+    });
+  },
   data() {
     return {
       logoSrc: "/static/images/logo@3x.png",
@@ -94,19 +83,12 @@ export default {
       ],
       swiperHeight: 300,
       showNow: false,
-      swipFlag: true
->>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
+      swipFlag: true,
+      booksData: ''
     };
   },
   components: {
     navigationBar,
-<<<<<<< HEAD
-    searchBar
-  },
-  methods: {
-    show() {
-      console.log("url(" + this.searchSrc + ")");
-=======
     searchBar,
     kindTabbar,
     swiperBar,
@@ -115,11 +97,11 @@ export default {
 
   methods: {
     show() {
-      console.log("url(" + this.searchSrc + ")");
+      // console.log("url(" + this.searchSrc + ")");
+      //console.log("获取到的书籍列表:" + this.booksData);
     },
     getPick(msg) {
       console.log("点击的类别：" + msg.typename);
->>>>>>> 完成轮播，解决选择类型下轮播的显示问题，解决导航栏固定问题，完成书籍列表的基础样式
     }
   }
 };

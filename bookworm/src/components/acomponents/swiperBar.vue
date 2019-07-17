@@ -42,10 +42,10 @@ export default {
   },
   mounted() {},
   methods: {
-    showFlag(){
-      globalBus.$on('swiperFlag', (swiperFlag) => {
-        this.swipFlag=swiperFlag;
-        //console.log('显示情况'+ this.swipFlag);
+    showFlag() {
+      globalBus.$on("swiperFlag", swiperFlag => {
+        this.swipFlag = swiperFlag;
+        //console.log("显示情况" + this.swipFlag);
       });
     }
   }
