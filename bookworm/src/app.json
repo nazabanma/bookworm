@@ -1,7 +1,8 @@
 {
     "pages": [
-        "pages/index1/main",
         "pages/bookdetail1/main",
+        "pages/bookcomment1/main",
+        "pages/index1/main",
         "pages/navigation1/main",
         "pages/test/main",
         "pages/test1/main",
@@ -23,7 +24,8 @@
         "backgroundColor": "#fafafa",
         "selectedColor": "#333",
         "borderStyle": "white",
-        "list": [{
+        "list": [
+            {
                 "text": "首页",
                 "pagePath": "pages/index1/main",
                 "iconPath": "static/images/首页——未选中@3x.png",

@@ -116,7 +116,8 @@ export default {
 /* .kindItem:after , */
 .kindItem:visited:after,
 .kindItem:hover:after,
-.kindItem:active:after {
+.kindItem:active:after,
+.kindItem.active:after {
   position: relative;
   display: block;
   content: "";

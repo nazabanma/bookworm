@@ -108,7 +108,7 @@ export default {
 </script>
 <style scoped>
 .index1 {
-  height: 600px;
+  /* height: 600px; */
   background-color: #f5f5f5;
 }
 </style>
