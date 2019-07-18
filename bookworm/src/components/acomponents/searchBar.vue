@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="searchPanel">
     <view class="container">
       <view :style="{display:'table-cell',verticalAlign:'top',paddingRight:'0.25rem'}">
         <img class="logo" :src="logoSrc" />
@@ -38,9 +38,10 @@ export default {
 };
 </script>
 <style scoped>
-.index1 {
-  height: 1000px;
-  background-color: #f5f5f5;
+.searchPanel {
+  display: block;
+  position: relative;
+  z-index: 99999;
 }
 .container {
   display: table;

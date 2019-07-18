@@ -3,6 +3,7 @@
     <!-- 占位栏 -->
     <!-- 这里是因为导航栏是fixed的，不占具体的页面位置，添加占位符避免页面中最顶上的元素被覆盖 -->
     <cover-view class="placeholder-bar" :style="{height: navBarHeight + 'px'}"></cover-view>
+
     <!--------------- 自定义导航栏=状态栏+导航栏 ------------->
     <cover-view
       @blur="blurs"
@@ -25,13 +26,17 @@
           </cover-view>-->
         </cover-view>
         <!-- 标题 -->
-        <cover-view class="bar-title" :style="{color:titleColor,fontSize:fontSize+'px'}">{{title}}</cover-view>
+        <cover-view
+          class="bar-title"
+          :style="{color:titleColor,fontSize:fontSize+'px',lineHeight:titleBarHeight+'px'}"
+        >{{title}}</cover-view>
       </cover-view>
     </cover-view>
   </div>
 </template>
 
 <script>
+import { globalBus } from "@/components/globalBus";
 export default {
   props: [
     "backVisible",
@@ -70,6 +75,7 @@ export default {
         // console.log("platform:", self.platform);
         self.navBarHeight = self.statusBarHeight + self.titleBarHeight;
         //console.log("navBarHeight:", self.navBarHeight);
+        globalBus.$emit("swiperTop", self.navBarHeight);
       }
     });
   },
@@ -123,12 +129,13 @@ export default {
   position: fixed;
   top: 0;
   z-index: 999;
-  background-color: white;
+  /* background-color: white; */
 }
 
 /* 标题栏 */
 .nav-titlebar {
   display: table;
+  vertical-align: middle;
   width: 100%;
   /* background-color: blue; */
 }

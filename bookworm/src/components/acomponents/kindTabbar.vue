@@ -39,10 +39,10 @@ export default {
   props: ["kindList"],
   data() {
     return {
-      btnSrc: "/static/images/下@3x.png",
+      btnSrc: "/static/images/down.png",
       showItem: true,
       showList: [],
-      btnSrc2: "/static/images/上@3x.png",
+      btnSrc2: "/static/images/up.png",
       BtnList: [],
       show: true
       // kindList: [],

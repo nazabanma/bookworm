@@ -42,7 +42,7 @@ export default {
     let _this = this;
     this.$nextTick(function() {
       wx.request({
-        url: "http://api.ec.com:8087/user/bookList/0",
+        url: "http://192.168.2.11:8087/user/bookList/0",
         method: "GET",
         success(res) {
           _this.booksData = res.data.data;
@@ -54,10 +54,10 @@ export default {
   },
   data() {
     return {
-      logoSrc: "/static/images/logo@3x.png",
-      searchSrc: "/static/images/搜索@3x.png",
+      logoSrc: "/static/images/logo.png",
+      searchSrc: "/static/images/search.png",
       searchValue: "",
-      naviImgsrc: "/static/images/左@3x.png",
+      naviImgsrc: "/static/images/left.png",
       // 类型
       kindList: [
         { id: "1", typename: "推荐" },
@@ -77,11 +77,11 @@ export default {
       ],
       pickItem: "",
       imgUrls: [
-        "https://images.unsplash.com/photo-1551334787-21e6bd3ab135?w=640",
-        "https://images.unsplash.com/photo-1551214012-84f95e060dee?w=640",
-        "https://images.unsplash.com/photo-1551446591-142875a901a1?w=640"
+        "/static/images/banner1.png",
+        "/static/images/banner2.png",
+        "/static/images/banner3.png"
       ],
-      swiperHeight: 300,
+      swiperHeight: 150,
       showNow: false,
       swipFlag: true,
       booksData: ''

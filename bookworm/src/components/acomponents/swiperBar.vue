@@ -1,28 +1,33 @@
 <template>
+  <!-- <div :style="{marginTop:swiperTop+'rpx'}"> -->
   <div>
-    <swiper
-      v-if="swipFlag"
-      class="swiperPanel"
-      :indicator-dots="indicatorDots"
-      :autoplay="autoplay"
-      :interval="interval"
-      :duration="duration"
-      :style="{height:swiperHeight+'rpx'}"
-    >
-      <block v-for="(item,index) in imgUrls" :key="index">
-        <swiper-item>
-          <image :src="item" class="slide-image" />
-          <view v-if="showNow" class="showBar">{{index+1}}/{{imgUrls.length}}</view>
-        </swiper-item>
-      </block>
-    </swiper>
+    <view>
+      <swiper
+        v-if="swipFlag"
+        class="swiperPanel"
+        :indicator-dots="indicatorDots"
+        :autoplay="autoplay"
+        :interval="interval"
+        :duration="duration"
+        :style="{height:swiperHeight+'px'}"
+      >
+        <block v-for="(item,index) in imgUrls" :key="index">
+          <swiper-item class="swiperItem">
+            <image :src="item" class="slide-image" />
+            <view v-if="showNow" class="showBar">
+              <span>{{index+1}}/{{imgUrls.length}}</span>
+            </view>
+          </swiper-item>
+        </block>
+      </swiper>
+    </view>
   </div>
 </template>
 
 <script>
 import { globalBus } from "@/components/globalBus";
 export default {
-  props: ["imgUrls", "swiperHeight", "showNow"],
+  props: ["imgUrls", "swiperHeight", "showNow", "swiperTop"],
   created() {
     this.showFlag();
   },
@@ -53,25 +58,36 @@ export default {
 </script>
 <style scoped>
 .swiperPanel {
+  position: relative;
+  display: block;
   width: 100%;
+  overflow: hidden;
 }
-.slide-image {
-  width: 100%;
+.swiperItem {
+  display: block;
   height: 100%;
 }
+.slide-image {
+  display: block;
+  width: 100%;
+  height: 100% !important;
+}
 .showBar {
-  background-color: rgb(204, 204, 204);
+  background-color: rgba(204, 204, 204,0.7);
   color: white;
   font-size: 14px;
+  font-weight: 100;
   height: 0.4rem;
   width: 0.5rem;
   border-radius: 0.2rem;
-  z-index: 99;
-  padding: 0.05rem 0.1rem;
+  padding-left: 0.1rem;
+  padding-right: 0.1rem;
   text-align: center;
   vertical-align: middle;
   position: absolute;
   bottom: 0.3rem;
   right: 0.2rem;
+  letter-spacing: 4rpx;
+  z-index: 99;
 }
 </style>

@@ -157,11 +157,11 @@ export default {
         }
       }
 
-      this.$nextTick(function() {//获取dom元素
-        const bookshow = this.$refs.card;
-        console.log(this.$refs.card[i]);
-        // https://www.cnblogs.com/liuxy0551/p/9389111.html
-      }); 
+      // this.$nextTick(function() {//获取dom元素
+      //   const bookshow = this.$refs.card;
+      //   console.log(this.$refs.card[i]);
+      //   // https://www.cnblogs.com/liuxy0551/p/9389111.html
+      // }); 
     }
   },
   onLoad: function(e) {},
