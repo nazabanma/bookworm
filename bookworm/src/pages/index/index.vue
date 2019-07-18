@@ -12,15 +12,16 @@
 
     <div class="usermotto">
       <div class="user-motto">
-        <card :text="motto"></card>
+        card
+        <card-my :text="motto"></card-my>
       </div>
     </div>
 
-    <form class="form-container">
+    <!-- <form class="form-container">
       <input type="text" class="form-control" :value="motto" placeholder="v-model" />
       <input type="text" class="form-control" v-model="motto" placeholder="v-model" />
       <input type="text" class="form-control" v-model.lazy="motto" placeholder="v-model.lazy" />
-    </form>
+    </form> -->
 
     <a href="/pages/counter/main" class="counter">去往Vuex示例页面</a>
 
@@ -34,7 +35,7 @@
 </template>
 
 <script>
-import card from '@/components/card'
+import cardMy from '@/components/card'
 
 export default {
   data () {
@@ -48,7 +49,7 @@ export default {
   },
 
   components: {
-    card
+    cardMy
   },
 
   methods: {
