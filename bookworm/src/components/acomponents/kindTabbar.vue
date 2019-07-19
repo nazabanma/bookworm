@@ -1,5 +1,7 @@
 <template>
   <div>
+    <!-- ==================================================     组件：首页分类点击切换     ======================================================= -->
+
     <view v-if="show" class="container">
       <view
         class="kindItems"
@@ -135,12 +137,12 @@ export default {
 .btn {
   display: block;
   width: 0.4rem;
-  height: 0.2rem;
+  height: 0.4rem;
   background-color: rgba(245, 245, 245, 0.9);
   box-shadow: 0 0 0.1rem 0.1rem rgba(245, 245, 245, 0.95);
   position: relative;
-  top: 0.15rem;
-  right: 0.3rem;
+  top: 0.1rem;
+  right: 0.2rem;
   z-index: 2;
   text-align: center;
   border-radius: 0.05rem;
@@ -151,7 +153,7 @@ export default {
   height: 0.16rem;
   display: block;
   position: relative;
-  top: 0.02rem;
+  top: 0.08rem;
   left: 0.07rem;
   z-index: 3;
 }
@@ -205,7 +207,7 @@ export default {
   margin: 0;
   border: 1px solid #d2ac6e;
   color: #d2ac6e;
-   border-radius: 0.1rem;
+  border-radius: 0.1rem;
 }
 .btnLable {
   display: block;
@@ -216,7 +218,7 @@ export default {
 .btn2 {
   display: inline-block;
   width: 0.4rem;
-  height: 0.2rem;
+  height: 100%;
   /* box-shadow: 0 0 0.1rem 0.1rem rgba(245, 245, 245, 0.95); */
   position: relative;
   margin-top: 0.1rem;

@@ -1,62 +1,10 @@
-<style scoped>
-/* 最外层放瀑布流的地方 */
-.bookListPanel {
-  display: block;
-  margin: 0;
-  padding: 0.2rem;
-  position: relative;
-}
-/* 书籍卡片 */
-.bookCard {
-  display: inline-block;
-  /* width: 3.5rem; */
-  /* height: auto; */
-  border: 1px solid aqua;
-  background-color: white;
-  text-align: center;
-  margin-top: 0.1rem;
-  /* position: absolute; */
-}
-/*-----------------  插入的图片 */
-.bookImg {
-  display: block;
-  width: 100%;
-  margin: 0 auto;
-}
-/*-----------------  书籍文字信息 */
-.bookDescribe {
-  display: block;
-  position: relative;
-  margin: 0.1rem auto;
-}
-/* 书名 */
-.bookName {
-  font-size: 12px;
-  color: #521d23;
-}
-/* 作者 */
-.bookAuthor {
-  margin-top: 0.12rem;
-  font-size: 10px;
-  color: #36282b;
-}
-/* 价格 */
-.bookPrice {
-  font-size: 12px;
-  color: #bc2b37;
-}
-/* 原价 */
-.delPrice {
-  font-size: 12px;
-  color: #787172;
-  margin-left: 0.2rem;
-  text-decoration: line-through;
-  /* 文字划掉效果 */
-}
+
 </style>
 <template>
   <!-- :style="{width:imagewidth+'rem',height:imageheight+'rem'}" -->
   <div class="bookListPanel">
+    <!-- ==================================================     组件：首页的书籍展示     ======================================================= -->
+
     <view class="bookList" v-for="(items,index) in bookshowList" :key="index">
       <block v-for="(item,k) in items" :key="k">
         <view
@@ -81,7 +29,7 @@
         </view>
       </block>
     </view>
-    <button  ref="button">按钮</button>
+    <button ref="button">按钮</button>
   </div>
 </template>
 
@@ -161,10 +109,64 @@ export default {
       //   const bookshow = this.$refs.card;
       //   console.log(this.$refs.card[i]);
       //   // https://www.cnblogs.com/liuxy0551/p/9389111.html
-      // }); 
+      // });
     }
   },
   onLoad: function(e) {},
   created(e) {}
 };
-</script>
+</script><style scoped>
+/* 最外层放瀑布流的地方 */
+.bookListPanel {
+  display: block;
+  margin: 0;
+  padding: 0.2rem;
+  position: relative;
+}
+/* 书籍卡片 */
+.bookCard {
+  display: inline-block;
+  /* width: 3.5rem; */
+  /* height: auto; */
+  border: 1px solid aqua;
+  background-color: white;
+  text-align: center;
+  margin-top: 0.1rem;
+  /* position: absolute; */
+}
+/*-----------------  插入的图片 */
+.bookImg {
+  display: block;
+  width: 100%;
+  margin: 0 auto;
+}
+/*-----------------  书籍文字信息 */
+.bookDescribe {
+  display: block;
+  position: relative;
+  margin: 0.1rem auto;
+}
+/* 书名 */
+.bookName {
+  font-size: 12px;
+  color: #521d23;
+}
+/* 作者 */
+.bookAuthor {
+  margin-top: 0.12rem;
+  font-size: 10px;
+  color: #36282b;
+}
+/* 价格 */
+.bookPrice {
+  font-size: 12px;
+  color: #bc2b37;
+}
+/* 原价 */
+.delPrice {
+  font-size: 12px;
+  color: #787172;
+  margin-left: 0.2rem;
+  text-decoration: line-through;
+  /* 文字划掉效果 */
+}

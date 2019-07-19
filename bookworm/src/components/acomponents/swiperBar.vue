@@ -1,6 +1,8 @@
 <template>
   <!-- <div :style="{marginTop:swiperTop+'rpx'}"> -->
   <div>
+    <!-- ==================================================     组件：轮播，首页+商品详情页    ======================================================= -->
+
     <view>
       <swiper
         v-if="swipFlag"
@@ -73,7 +75,7 @@ export default {
   height: 100% !important;
 }
 .showBar {
-  background-color: rgba(204, 204, 204,0.7);
+  background-color: rgba(204, 204, 204, 0.7);
   color: white;
   font-size: 14px;
   font-weight: 100;

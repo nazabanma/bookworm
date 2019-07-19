@@ -1,36 +1,56 @@
 <template>
-  <div>
+  <div class="index">
     <!-- fontSize：标题字体大小；backVisible:是否显示返回上一页按钮；linkBack:返回上一页的地址；linkKind：上一页的类型，1为普通页面，0为tab页 -->
     <navigation-bar
       :title="'商品详情'"
       :backVisible="true"
-      :fontSize="18"
-      :imgsrc="naviImgsrc"
+      :fontSize="16"
+      :imgsrc="'/static/images/left.png'"
       :linkBack="'/pages/index1/main'"
       :linkKind="false"
     ></navigation-bar>
 
     <!-- 轮播页 -->
-    <swiper-bar
+    <!-- <swiper-bar
       :imgUrls="imgUrls"
       :swiperHeight="swiperHeight"
-      :showNow="showNow"
+      :showNow="true"
       :swiperTop="swiperTop"
-    ></swiper-bar>
+    ></swiper-bar>-->
 
     <!-- 显示的书籍信息 -->
-    <view class="bookShow_detail">
+    <!-- <view class="bookShow_detail">
       <view class="bookDescribe">{{bookData.book_detail}}</view>
       <view class="bookShow_price_name">
         <view class="bookPrice">￥{{bookData.book_price}}</view>
         <view class="bookName">—《{{bookData.book_name}}》—</view>
       </view>
+    </view>-->
+
+    <!-- 切换按钮 -->
+    <view class="linkTabs">
+      <a class="tabA" :class="{ 'active': linkType }" @click="Link">详情</a>
+      <a class="tabA" :class="{ 'active': !linkType }" @click="Link">评价</a>
     </view>
 
     <!-- <view></view> -->
     <!-- <book-detail :formAddress="bookData." :saleMonth="bookData." ></book-detail> -->
-    <book-detail></book-detail>
+    <!-- 详情 -->
+    <book-detail v-if="linkType"></book-detail>
+
+    <!-- 评论 -->
+    <book-comment
+      v-else
+      :commentList="commentData"
+      :likeImg="likeImg"
+      :comImg="comImg"
+      :anonymousImg="anonymousImg"
+    ></book-comment>
+
+    <!-- 底部按钮 -->
+
     <bottom-tabbar></bottom-tabbar>
+    <view :style="{display:'block',width:'100%',heigth:'1rem'}"></view>
   </div>
 </template>
 
@@ -39,23 +59,29 @@ import { globalBus } from "@/components/globalBus";
 import navigationBar from "@/components/acomponents/navigation";
 import swiperBar from "@/components/acomponents/swiperBar";
 import bookDetail from "@/components/acomponents/bookDetail";
+import bookComment from "@/components/acomponents/bookComment";
 import bottomTabbar from "@/components/acomponents/bottomTabbar";
 export default {
   data() {
     return {
-      naviImgsrc: "/static/images/左@3x.png",
+      naviImgsrc: "/static/images/left.png",
       swiperHeight: "",
       swiperTop: "",
-      showNow: true,
-      //轮播图片
-      imgUrls: [],
-      bookData: []
+      imgUrls: [], //商品详情轮播图片
+      bookData: [], //书籍基本信息
+      linkType: false, //tab页类型，true为详情，false为评价
+      commentData: [], //存放获取到的评论信息
+      commentShow: [], //存放要展示的评价评论信息
+      likeImg: ["/static/images/good.png", "/static/images/good2.png"],
+      comImg: "/static/images/commons.png",
+      anonymousImg: this.GLOBAL.serverSrc + "/static/images/icon2.png"
     };
   },
   components: {
     navigationBar,
     swiperBar,
     bookDetail,
+    bookComment,
     bottomTabbar
   },
   mounted() {
@@ -90,10 +116,10 @@ export default {
       });
     },
     //-----------------------------------------------------   获取数据
-    getData(id) {
+    getData(bookId) {
       let _this = this;
       wx.request({
-        url: "http://192.168.2.11:8087/user/bookDetail/" + id,
+        url: this.GLOBAL.serverSrc + "/book/bookDetail/" + bookId,
         method: "GET",
         success(res) {
           _this.bookData = res.data.data;
@@ -102,12 +128,26 @@ export default {
           //console.log(_this.imgUrls);
         }
       });
+      wx.request({
+        url: this.GLOBAL.serverSrc + "/evaluate/evaluateList/" + bookId,
+        method: "GET",
+        success(res) {
+          _this.commentData = res.data.data;
+          console.log(_this.commentData);
+        }
+      });
+    },
+    Link() {
+      this.linkType = !this.linkType;
     }
   }
 };
 </script>
 
 <style scoped>
+.index {
+  background-color: #f5f5f5;
+}
 /* --------------------------------------------
     选择tabbar
 --------------------------------------------- */
@@ -150,12 +190,13 @@ export default {
 /* --------------------------------------------
     书籍详情
 --------------------------------------------- */
-.bookShow {
+
+.bookShow_detail {
   padding: 0.3rem 0.4rem;
   background-color: white;
   font-size: 10px;
   word-spacing: 0.08rem;
-  /* border: 1px solid red; */
+  border-bottom: 1px solid rgba(204, 204, 204, 0.8);
 }
 
 .showItem {

@@ -1,7 +1,13 @@
 <template>
   <div class="index1">
     <!-- 顶部导航栏 -->
-    <navigation-bar :title="'首页'" :backVisible="false" :fontSize="18" :imgsrc="naviImgsrc" :titleColor="'#521d23'"></navigation-bar>
+    <navigation-bar
+      :title="'首页'"
+      :backVisible="false"
+      :fontSize="18"
+      :imgsrc="naviImgsrc"
+      :titleColor="'#521d23'"
+    ></navigation-bar>
     <!-- 显示返回按钮的导航栏 -->
     <!-- fontSize：标题字体大小；backVisible:是否显示返回上一页按钮；linkBack:返回上一页的地址；linkKind：上一页的类型，1为普通页面，0为tab页 -->
     <!-- <navigation-bar
@@ -42,7 +48,7 @@ export default {
     let _this = this;
     this.$nextTick(function() {
       wx.request({
-        url: "http://192.168.2.11:8087/user/bookList/0",
+        url: this.GLOBAL.serverSrc + "/book/bookList/0",
         method: "GET",
         success(res) {
           _this.booksData = res.data.data;
@@ -77,14 +83,14 @@ export default {
       ],
       pickItem: "",
       imgUrls: [
-        "/static/images/banner1.png",
-        "/static/images/banner2.png",
-        "/static/images/banner3.png"
+        this.GLOBAL.serverSrc + "/static/images/banner1.png",
+        this.GLOBAL.serverSrc + "/static/images/banner2.png",
+        this.GLOBAL.serverSrc + "/static/images/banner3.png"
       ],
       swiperHeight: 150,
       showNow: false,
       swipFlag: true,
-      booksData: ''
+      booksData: ""
     };
   },
   components: {
