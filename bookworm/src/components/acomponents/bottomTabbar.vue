@@ -1,5 +1,5 @@
 <template>
-  <div class="comp-navbar">
+  <div>
      <!-- ==================================================     组件：商品详情页面底部的按钮组合     ======================================================= -->
    
     <cover-view @blur="blurs" class="tabbar">
@@ -80,7 +80,6 @@ export default {
 }
 .collect {
   flex: 1;
-
   line-height: 1rem;
   color: #36282b;
   font-size: 10px;

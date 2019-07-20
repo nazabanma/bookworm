@@ -1,4 +1,3 @@
-<script>
 // ==================================================      全局变量     ======================================================= -->
 // 末尾不带反斜杠
 const serverSrc = "http://api.wyxs.talesrunner.org";
@@ -38,4 +37,3 @@ export default {
 };
 
 Vue.prototype.globalData = globalData;
-</script>

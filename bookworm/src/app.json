@@ -4,11 +4,8 @@
         "pages/index1/main",
         "pages/test/main",
         "pages/test1/main",
-        "pages/index/main",
         "pages/cart1/main",
-        "pages/mine1/main",
-        "pages/logs/main",
-        "pages/counter/main"
+        "pages/mine1/main"
     ],
     "window": {
         "backgroundTextStyle": "light",

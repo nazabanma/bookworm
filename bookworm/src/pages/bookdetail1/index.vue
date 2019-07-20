@@ -11,21 +11,21 @@
     ></navigation-bar>
 
     <!-- 轮播页 -->
-    <!-- <swiper-bar
+    <swiper-bar
       :imgUrls="imgUrls"
       :swiperHeight="swiperHeight"
       :showNow="true"
       :swiperTop="swiperTop"
-    ></swiper-bar>-->
+    ></swiper-bar>
 
     <!-- 显示的书籍信息 -->
-    <!-- <view class="bookShow_detail">
+    <view class="bookShow_detail">
       <view class="bookDescribe">{{bookData.book_detail}}</view>
       <view class="bookShow_price_name">
         <view class="bookPrice">￥{{bookData.book_price}}</view>
         <view class="bookName">—《{{bookData.book_name}}》—</view>
       </view>
-    </view>-->
+    </view>
 
     <!-- 切换按钮 -->
     <view class="linkTabs">
@@ -42,15 +42,17 @@
     <book-comment
       v-else
       :commentList="commentData"
+      :likeIcon="likeIconData"
+      :commentArr="commentImgs"
       :likeImg="likeImg"
       :comImg="comImg"
       :anonymousImg="anonymousImg"
     ></book-comment>
 
     <!-- 底部按钮 -->
-
+    <!-- 补空位 -->
+    <view class="empty" ></view>
     <bottom-tabbar></bottom-tabbar>
-    <view :style="{display:'block',width:'100%',heigth:'1rem'}"></view>
   </div>
 </template>
 
@@ -70,8 +72,9 @@ export default {
       imgUrls: [], //商品详情轮播图片
       bookData: [], //书籍基本信息
       linkType: false, //tab页类型，true为详情，false为评价
-      commentData: [], //存放获取到的评论信息
-      commentShow: [], //存放要展示的评价评论信息
+      commentData: [], //存放获取到的评价信息
+      commentImgs: [], //存放评价图片
+      likeIconData: [], //存放评价点赞图标
       likeImg: ["/static/images/good.png", "/static/images/good2.png"],
       comImg: "/static/images/commons.png",
       anonymousImg: this.GLOBAL.serverSrc + "/static/images/icon2.png"
@@ -86,16 +89,17 @@ export default {
   },
   mounted() {
     this.getSrceenWidth();
-    this.getData(3);
+    this.getData(3, 1);
   },
   created() {
     this.getSwiperTop();
   },
   methods: {
     //-----------------------------------------------------   评论
-    Link(id) {
+    Link(book_id, userId) {
       wx.navigateTo({
-        url: "/pages/bookcomment1/main?book_id=" + id
+        url:
+          "/pages/bookcomment1/main?book_id=" + book_id + "&user_id=" + userId
       });
     },
     //-----------------------------------------------------   获取当前屏幕的宽度，作为轮播图片的高度
@@ -116,10 +120,11 @@ export default {
       });
     },
     //-----------------------------------------------------   获取数据
-    getData(bookId) {
+    getData(bookId, userId) {
       let _this = this;
+      //获取书籍信息
       wx.request({
-        url: this.GLOBAL.serverSrc + "/book/bookDetail/" + bookId,
+        url: _this.GLOBAL.serverSrc + "/book/bookDetail/" + bookId,
         method: "GET",
         success(res) {
           _this.bookData = res.data.data;
@@ -128,12 +133,30 @@ export default {
           //console.log(_this.imgUrls);
         }
       });
+      //获取评论数据
       wx.request({
-        url: this.GLOBAL.serverSrc + "/evaluate/evaluateList/" + bookId,
-        method: "GET",
+        url:
+          _this.GLOBAL.serverSrc +
+          "/evaluate/evaluateList?book_id=" +
+          bookId +
+          "&user_id=" +
+          userId,
+        method: "POST",
         success(res) {
           _this.commentData = res.data.data;
-          console.log(_this.commentData);
+          _this.commentShow;
+         // console.log(res.data.data);
+          for (let i = 0; i < res.data.data.length; i++) {
+            let Imgarry = res.data.data[i].img.split(";");
+            _this.commentImgs.push(Imgarry);
+            Imgarry = "";
+           // console.log(_this.commentImgs);
+            if (res.data.data[i].if_like) {
+              _this.likeIconData[i] = _this.likeImg[1];
+            } else {
+              _this.likeIconData[i] = _this.likeImg[0];
+            }
+          }
         }
       });
     },
@@ -288,5 +311,12 @@ export default {
 .detailImg image {
   width: 100%;
   display: block;
+}
+.empty {
+  height: 1.4rem;
+  display: block;
+  width: 100%;
+  position: relative;
+  background: #f5f5f5;
 }
 </style>
