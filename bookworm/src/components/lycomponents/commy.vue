@@ -1,6 +1,6 @@
 <template>
     <div>
-        <view class="cart">
+        <view class="cart" v-for="(items,index) in bookList" :key="index">
             <view class="top">
                 <img src="../../../static/images/mime2.png">
                 <view class="shopname">淘書斋</view>
@@ -9,7 +9,7 @@
                     <view class="res" v-else="res === '等待买家付款'">等待买家付款</view>
                 </view>
             </view>
-            <view class="middle" v-for="(items,index) in bookList" :key="index">
+            <view class="middle">
                 <img :src="items.book_img" alt="">
                 <view class="name">《{{items.book_name}}》</view>
                 <view class="right">
@@ -21,7 +21,9 @@
                     <view class="allprice">￥ {{items.book_price}}</view>
                     <view class="allnum">共{{items.count}}件商品 总计：</view>
                 </view>
+
             </view>
+            <!-- 按钮 操作 -->
             <view class="run">
                 <view class="runbtn" v-if="run === '待发货'">
                     <button class="btn2" @click="cancel">取消订单</button>
@@ -34,9 +36,52 @@
                 <view class="runbtn" v-else-if="run === '待评价'">
                     <button class="btn3" @click="assess">去评价</button>
                 </view>
+                <!-- <view class="runbtn" v-else-if="run === '评价后'">
+                    <button class="btn1" @click="del">删除订单</button>
+                </view> -->
                 <view class="runbtn" v-else="run === '待付款'">
                     <button class="btn4" @click="pay">付款</button>
                     <button class="btn1" @click="cancel">取消订单</button>
+                </view>
+
+            </view>
+
+        </view>
+
+        <!-- 弹窗 -->
+        <view v-if="isdisplay">
+            <!-- 遮盖层 -->
+            <view class="mask">
+                <!-- 弹窗内容 -->
+                <view class="modal">
+                    <view class="title">取消订单</view>
+                    <view class="choose">请选择取消订单的原因</view>
+                    <view class="options">
+                        <view class="row">
+                            <view class="text">我不想买了</view>
+                            <!-- <check-box></check-box> -->
+                        </view>
+                        <view class="row">
+                            <view class="text">信息填写错误，重新拍</view>
+                            <!-- <check-box></check-box> -->
+                        </view>
+                        <view class="row">
+                            <view class="text">卖家缺货</view>
+                            <!-- <check-box></check-box> -->
+                        </view>
+                        <view class="row">
+                            <view class="text">同城见面交易</view>
+                            <!-- <check-box></check-box> -->
+                        </view>
+                        <view class="row">
+                            <view class="text">其他原因</view>
+                            <!-- <check-box></check-box> -->
+                        </view>
+                    </view>
+                    <view class="footer">
+                        <view class="tem">暂不取消</view>
+                        <view class="ensure" @click="close">确定取消</view>
+                    </view>
                 </view>
             </view>
         </view>
@@ -45,32 +90,31 @@
 
 <script>
     export default {
-        // props: ["bookList", "res", "run"],
+        props: ["bookList", "run", "res", "isdisplay"],
 
+        // props: ["isdisplay"], //弹框的引用
         data() {
-
             return {
-                res: '等待买家付款',
-                run: '待付款',
-                bookList: [{
-                    book_img: '',
-                    book_name: '哎呀，我的牙！',
-                    book_price: '17.50',
-                    count: '1'
-                }], //books的集合
-                books: {
-                    book_img: '',
-                    book_name: '',
-                    book_price: '',
-                    count: ''
-                },
+                res: '',
+                run: '',
+                bookList: [],
             };
         },
 
         methods: {
             //==============  取消订单   ===========
             cancel() {
+                this.isdisplay = !this.isdisplay;
 
+                wx.hideTabBar({
+                    animation: false //隐藏tabbar
+                })
+
+                console.log("open = " + this.isdisplay);
+            },
+            close() {
+                this.isdisplay = !this.isdisplay;
+                console.log("close = " + this.isdisplay);
             },
             //==============  取消订单   ===========
 
@@ -107,25 +151,14 @@
 
             },
             //==============  付款   ===========
+            delete() {
 
-
-
+            },
         }
     }
 </script>
 
 <style scoped>
-    /* .container {
-        display: block;
-        top: 0px;
-        margin: 0;
-        height: auto;
-        position: relative;
-        width: 100%;
-        padding: 0.9rem 0 0;
-        background-color: #F5F5F5;
-    }*/
-    
     .cart {
         display: inline-block;
         width: 96%;
@@ -190,21 +223,26 @@
     .name {
         float: left;
         margin-left: 10rpx;
-        max-width: 50%;
+        max-width: 40%;
         font-size: 30rpx;
         color: #36282B;
+        /* white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; */
     }
     
     .right {
         float: none;
-        width: 22%;
+        width: 25%;
         height: 50%;
         top: 0rpx;
-        margin-left: 560rpx;
+        margin-left: 520rpx;
     }
     
     .price {
         float: right;
+        width: 100%;
+        text-align: right;
         margin-right: 20rpx;
         margin-top: 2rpx;
         font-size: 28rpx;
@@ -214,7 +252,10 @@
     
     .num {
         float: right;
+        width: 100%;
+        text-align: right;
         margin-right: 20rpx;
+        margin-top: 20rpx;
         font-size: 24rpx;
         color: #36282B;
     }
@@ -227,7 +268,7 @@
     
     .allnum {
         float: right;
-        margin-right: 0rpx;
+        margin-right: 2rpx;
         margin-top: 4rpx;
         width: 28%;
         letter-spacing: 2rpx;
@@ -238,7 +279,7 @@
     
     .allprice {
         font-size: 28rpx;
-        max-width: 22%;
+        max-width: 25%;
         float: right;
         margin-right: 20rpx;
         text-align: right;
@@ -287,4 +328,102 @@
     .btn4 {
         width: 16%;
     }
+    /* 以下为弹框样式 */
+    
+    .mask {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: rgb(184, 182, 182);
+        z-index: 9000;
+        opacity: 1;
+    }
+    
+    .modal {
+        /* display: none; */
+        /* 默认隐藏 */
+        position: fixed;
+        z-index: 2;
+        width: 100%;
+        height: 55%;
+        overflow: auto;
+        background: rgb(255, 255, 255);
+        bottom: 0;
+    }
+    /* 弹窗内容 */
+    
+    .title {
+        margin-top: 35rpx;
+        text-align: center;
+        font-size: 30rpx;
+        color: #36282B;
+        /* background: cyan; */
+    }
+    
+    .choose {
+        position: relative;
+        margin-top: 50rpx;
+        margin-left: 4.8%;
+        margin-right: 4.8%;
+        font-size: 24rpx;
+        /* background: antiquewhite; */
+    }
+    
+    .options {
+        position: relative;
+        margin-left: 4.8%;
+        margin-right: 4.8%;
+        /* background: azure; */
+    }
+    
+    .row {
+        float: left;
+        width: 100%;
+        font-size: 28rpx;
+        margin-top: 50rpx;
+        /* background: aquamarine; */
+    }
+    
+    .text {
+        float: left;
+    }
+    
+    check-box {
+        background: #000;
+        float: left;
+        margin-left: 642rpx;
+    }
+    
+    .footer {
+        position: fixed;
+        width: 100%;
+        height: 100rpx;
+        text-align: center;
+        font-size: 30rpx;
+        vertical-align: middle;
+        padding: 0rpx;
+        line-height: 98rpx;
+        bottom: 0;
+    }
+    
+    .tem {
+        float: left;
+        width: 49.5%;
+        height: 96%;
+        border: 1rpx solid #A9803E;
+        color: #A9803E;
+        bottom: 0;
+    }
+    
+    .ensure {
+        float: left;
+        width: 49.5%;
+        height: 96%;
+        border: 1rpx solid rgb(82, 29, 35);
+        color: rgb(82, 29, 35);
+        bottom: 0;
+    }
+    /* 弹框样式   end */
 </style>
