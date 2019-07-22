@@ -47,12 +47,15 @@
       :likeImg="likeImg"
       :comImg="comImg"
       :anonymousImg="anonymousImg"
+      :deleArr="deleArr"
+      :commentShowList="commentShowList"
+      :newInput="commentInput"
     ></book-comment>
 
     <!-- 底部按钮 -->
     <!-- 补空位 -->
-    <view class="empty" ></view>
-    <bottom-tabbar></bottom-tabbar>
+    <view class="empty"></view>
+    <bottom-tabbar :collectType="ifCollect" :bookId="bookId"></bottom-tabbar>
   </div>
 </template>
 
@@ -67,14 +70,19 @@ export default {
   data() {
     return {
       naviImgsrc: "/static/images/left.png",
+      bookId: "",
       swiperHeight: "",
       swiperTop: "",
       imgUrls: [], //商品详情轮播图片
       bookData: [], //书籍基本信息
+      ifCollect: "", //标识书籍是否收藏
       linkType: false, //tab页类型，true为详情，false为评价
       commentData: [], //存放获取到的评价信息
+      commentInput: [], //存放没条评价的输入框值
       commentImgs: [], //存放评价图片
-      likeIconData: [], //存放评价点赞图标
+      likeIconData: [], //存放评价点赞图标,
+      deleArr: [], //标识是否删除
+      commentShowList: [], //标识是否显示回复
       likeImg: ["/static/images/good.png", "/static/images/good2.png"],
       comImg: "/static/images/commons.png",
       anonymousImg: this.GLOBAL.serverSrc + "/static/images/icon2.png"
@@ -87,19 +95,29 @@ export default {
     bookComment,
     bottomTabbar
   },
+
   mounted() {
+    // globalBus.$on("bookID", bookID => {
+    //   this.bookId = bookID;
+    //   console.log("显示情况" + this.bookId);
+    // });
     this.getSrceenWidth();
-    this.getData(3, 1);
+    this.getData();
+    //获取隔壁组件传来的id
   },
   created() {
+    globalBus.$on("bookID", bookID => {
+      this.bookId = bookID;
+      console.log("显示情况" + this.bookId);
+    });
     this.getSwiperTop();
   },
   methods: {
     //-----------------------------------------------------   评论
-    Link(book_id, userId) {
+    Link() {
+      let _this = this;
       wx.navigateTo({
-        url:
-          "/pages/bookcomment1/main?book_id=" + book_id + "&user_id=" + userId
+        url: "/pages/bookcomment1/main"
       });
     },
     //-----------------------------------------------------   获取当前屏幕的宽度，作为轮播图片的高度
@@ -119,38 +137,47 @@ export default {
         //console.log("距离顶部" + this.swiperTop);
       });
     },
+
     //-----------------------------------------------------   获取数据
-    getData(bookId, userId) {
+    getData() {
       let _this = this;
-      //获取书籍信息
+      //=========================================================    获取书籍信息
       wx.request({
-        url: _this.GLOBAL.serverSrc + "/book/bookDetail/" + bookId,
-        method: "GET",
+        url: _this.GLOBAL.serverSrc + "/book/bookDetail",
+        method: "POST",
+        data: { user_id: _this.GLOBAL.userId, book_id: _this.bookId },
         success(res) {
           _this.bookData = res.data.data;
           let Imgarry = res.data.data.book_img.split(";");
           _this.imgUrls = Imgarry;
-          //console.log(_this.imgUrls);
+          _this.ifCollect = res.data.data.ifCollect;
+          console.log(_this.ifCollect);
         }
       });
-      //获取评论数据
+
+      //=========================================================    获取评论数据
       wx.request({
         url:
           _this.GLOBAL.serverSrc +
           "/evaluate/evaluateList?book_id=" +
-          bookId +
+          _this.bookId +
           "&user_id=" +
-          userId,
+          _this.GLOBAL.userId,
         method: "POST",
         success(res) {
           _this.commentData = res.data.data;
           _this.commentShow;
-         // console.log(res.data.data);
+          // console.log(res.data.data);
           for (let i = 0; i < res.data.data.length; i++) {
             let Imgarry = res.data.data[i].img.split(";");
             _this.commentImgs.push(Imgarry);
             Imgarry = "";
-           // console.log(_this.commentImgs);
+
+            _this.commentShowList.push(0);
+            _this.commentInput.push("");
+            // console.log(_this.commentShowList[i]);
+
+            // console.log(_this.commentImgs);
             if (res.data.data[i].if_like) {
               _this.likeIconData[i] = _this.likeImg[1];
             } else {

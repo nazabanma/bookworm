@@ -1,7 +1,6 @@
 <template>
   <div>
-     <!-- ==================================================     组件：商品详情页面底部的按钮组合     ======================================================= -->
-   
+    <!-- ==================================================     组件：商品详情页面底部的按钮组合     ======================================================= -->
     <cover-view @blur="blurs" class="tabbar">
       <cover-view class="collect">
         <cover-image
@@ -32,14 +31,14 @@
 
 <script>
 export default {
-  props: [],
+  props: ["collectType", "bookId"],
   data() {
     return {
       // imgsrc1: "/static/images/收藏——未选中@3x.png",
       // imgsrc2: "/static/images/收藏——选中@3x.png",
       // backSrc: "/static/images/圆角矩形3拷贝@3x.png",
       // backSrc2: "/static/images/圆角矩形3@3x.png",
-      collectType: 0
+      // collectType: 0
     };
   },
   mounted() {
@@ -56,9 +55,27 @@ export default {
     collect() {
       this.collectType = !this.collectType;
       console.log("collect");
+      //=========================================================    获取书籍收藏信息
+      wx.request({
+        url: _this.GLOBAL.serverSrc + "/collect/collectAdd",
+        method: "POST",
+        data: { user_id: _this.GLOBAL.userId, book_id: this.bookId },
+        success(res) {
+          console.log(_this.ifCollect);
+        }
+      });
     },
+    //=========================================================    添加到购物车
     addToCart() {
-      console.log("addToCart");
+      let _this=this;
+      wx.request({
+        url: _this.GLOBAL.serverSrc + "/cart/cartAdd",
+        method: "POST",
+        data: { user_id: _this.GLOBAL.userId, book_id: _this.bookId },
+        success(res) {
+          console.log("addToCart");
+        }
+      });
     },
     BuyNow() {
       console.log("BuyNow");
