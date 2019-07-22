@@ -1,5 +1,7 @@
 <template>
   <div class="comp-navbar">
+    <!-- ==================================================     组件：导航栏     ======================================================= -->
+
     <!-- 占位栏 -->
     <!-- 这里是因为导航栏是fixed的，不占具体的页面位置，添加占位符避免页面中最顶上的元素被覆盖 -->
     <cover-view class="placeholder-bar" :style="{height: navBarHeight + 'px'}"></cover-view>
@@ -171,10 +173,10 @@ export default {
 .bar-title {
   height: 100%;
   /* background-color: greenyellow; */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  display: table-cell; /*按照单元格的样式显示元素*/
+  vertical-align: bottom;
+  /* flex-direction: column;
+  justify-content: center; */
   /* padding-left: 10rpx; */
-  font-size: 36rpx;
 }
 </style>

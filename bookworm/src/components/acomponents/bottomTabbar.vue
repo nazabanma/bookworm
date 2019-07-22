@@ -1,5 +1,6 @@
 <template>
-  <div class="comp-navbar">
+  <div>
+    <!-- ==================================================     组件：商品详情页面底部的按钮组合     ======================================================= -->
     <cover-view @blur="blurs" class="tabbar">
       <cover-view class="collect">
         <cover-image
@@ -13,7 +14,8 @@
           class="collect_image"
           :src="'/static/images/collect.png'"
           @click="collect()"
-        ></cover-image>收藏
+        ></cover-image>
+        <cover-view class="collect_text">收藏</cover-view>
       </cover-view>
       <cover-view class="addToCart" @click="addToCart">
         <cover-image class="back_image" :src="'/static/images/backbtn2.png'"></cover-image>
@@ -29,14 +31,14 @@
 
 <script>
 export default {
-  props: [],
+  props: ["collectType", "bookId"],
   data() {
     return {
       // imgsrc1: "/static/images/收藏——未选中@3x.png",
       // imgsrc2: "/static/images/收藏——选中@3x.png",
       // backSrc: "/static/images/圆角矩形3拷贝@3x.png",
       // backSrc2: "/static/images/圆角矩形3@3x.png",
-      collectType: 0
+      // collectType: 0
     };
   },
   mounted() {
@@ -53,9 +55,27 @@ export default {
     collect() {
       this.collectType = !this.collectType;
       console.log("collect");
+      //=========================================================    获取书籍收藏信息
+      wx.request({
+        url: _this.GLOBAL.serverSrc + "/collect/collectAdd",
+        method: "POST",
+        data: { user_id: _this.GLOBAL.userId, book_id: this.bookId },
+        success(res) {
+          console.log(_this.ifCollect);
+        }
+      });
     },
+    //=========================================================    添加到购物车
     addToCart() {
-      console.log("addToCart");
+      let _this=this;
+      wx.request({
+        url: _this.GLOBAL.serverSrc + "/cart/cartAdd",
+        method: "POST",
+        data: { user_id: _this.GLOBAL.userId, book_id: _this.bookId },
+        success(res) {
+          console.log("addToCart");
+        }
+      });
     },
     BuyNow() {
       console.log("BuyNow");
@@ -77,9 +97,7 @@ export default {
 }
 .collect {
   flex: 1;
-  text-align: center;
-  vertical-align: middle;
-  /* line-height: 1rem; */
+  line-height: 1rem;
   color: #36282b;
   font-size: 10px;
 }
@@ -87,7 +105,16 @@ export default {
   display: block;
   width: 0.64rem;
   height: 0.5rem;
-  margin: 0.02rem auto 0.1rem;
+  margin: 0.04rem auto 0.1rem;
+}
+.collect_text {
+  display: block;
+  width: 2em;
+  height: 1rem;
+  left: 50%;
+  right: 50%;
+  margin: auto;
+  text-align: center;
 }
 /* ------------------------------------清除button所有默认样式 */
 button,
@@ -110,7 +137,6 @@ button::after {
   line-height: 1rem;
   flex: 2;
   color: white;
-  border-left: 1px solid white;
 }
 .addToCart button,
 .Buy button {

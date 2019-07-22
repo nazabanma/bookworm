@@ -1,7 +1,13 @@
 <template>
   <div class="index1">
     <!-- 顶部导航栏 -->
-    <navigation-bar :title="'首页'" :backVisible="false" :fontSize="18" :imgsrc="naviImgsrc" :titleColor="'#521d23'"></navigation-bar>
+    <navigation-bar
+      :title="'首页'"
+      :backVisible="false"
+      :fontSize="18"
+      :imgsrc="naviImgsrc"
+      :titleColor="'#521d23'"
+    ></navigation-bar>
     <!-- 显示返回按钮的导航栏 -->
     <!-- fontSize：标题字体大小；backVisible:是否显示返回上一页按钮；linkBack:返回上一页的地址；linkKind：上一页的类型，1为普通页面，0为tab页 -->
     <!-- <navigation-bar
@@ -38,15 +44,23 @@ import swiperBar from "@/components/acomponents/swiperBar";
 import bookList from "@/components/acomponents/bookList";
 
 export default {
+  provide() {
+    return {
+      reload: this.reload
+    };
+  },
+  inject: ["reload"],
   created() {
+    this.getBookData(this.pickItem);
     let _this = this;
     this.$nextTick(function() {
+      // -----------------------------  获取书籍类型
       wx.request({
-        url: "http://192.168.2.11:8087/user/bookList/0",
+        url: this.GLOBAL.serverSrc + "/book/bookType",
         method: "GET",
         success(res) {
-          _this.booksData = res.data.data;
-          // console.log("获取到的书籍成功，数据");
+          _this.kindList = res.data.data;
+          console.log(_this.kindList);
           //console.log(_this.booksData);
         }
       });
@@ -60,31 +74,31 @@ export default {
       naviImgsrc: "/static/images/left.png",
       // 类型
       kindList: [
-        { id: "1", typename: "推荐" },
-        { id: "2", typename: "图书" },
-        { id: "3", typename: "电子书" },
-        { id: "4", typename: "听书" },
-        { id: "5", typename: "网络文学" },
-        { id: "6", typename: "二手书" },
-        { id: "7", typename: "其他1" },
-        { id: "8", typename: "其他2" },
-        { id: "9", typename: "其他3" },
-        { id: "10", typename: "其他4" },
-        { id: "11", typename: "其他5" },
-        { id: "12", typename: "其他6" },
-        { id: "13", typename: "其他7" },
-        { id: "14", typename: "其他8" }
+        // { id: "1", typename: "推荐" },
+        // { id: "2", typename: "图书" },
+        // { id: "3", typename: "电子书" },
+        // { id: "4", typename: "听书" },
+        // { id: "5", typename: "网络文学" },
+        // { id: "6", typename: "二手书" },
+        // { id: "7", typename: "其他1" },
+        // { id: "8", typename: "其他2" },
+        // { id: "9", typename: "其他3" },
+        // { id: "10", typename: "其他4" },
+        // { id: "11", typename: "其他5" },
+        // { id: "12", typename: "其他6" },
+        // { id: "13", typename: "其他7" },
+        // { id: "14", typename: "其他8" }
       ],
-      pickItem: "",
+      pickItem: 0,
       imgUrls: [
-        "/static/images/banner1.png",
-        "/static/images/banner2.png",
-        "/static/images/banner3.png"
+        this.GLOBAL.serverSrc + "/static/images/banner1.png",
+        this.GLOBAL.serverSrc + "/static/images/banner2.png",
+        this.GLOBAL.serverSrc + "/static/images/banner3.png"
       ],
       swiperHeight: 150,
       showNow: false,
       swipFlag: true,
-      booksData: ''
+      booksData: ""
     };
   },
   components: {
@@ -96,12 +110,38 @@ export default {
   },
 
   methods: {
+    //================================================   刷新当前页
+    reload() {
+      this.isRouterAlive = false;
+      console.log("刷新");
+      this.$nextTick(function() {
+        this.isRouterAlive = true;
+      });
+    },
+    getBookData(pick) {
+      let _this = this;
+      this.$nextTick(function() {
+        // -----------------------------  获取书籍列表
+        wx.request({
+          url: this.GLOBAL.serverSrc + "/book/bookList/" + pick,
+          method: "GET",
+          success(res) {
+            _this.booksData = res.data.data;
+            // console.log("获取到的书籍成功，数据");
+            //console.log(_this.booksData);
+          }
+        });
+      });
+    },
     show() {
       // console.log("url(" + this.searchSrc + ")");
       //console.log("获取到的书籍列表:" + this.booksData);
     },
     getPick(msg) {
-      console.log("点击的类别：" + msg.typename);
+      console.log("点击的类别：" + msg);
+      this.pickItem = msg;
+      this.reload();
+      this.getBookData(msg);
     }
   }
 };

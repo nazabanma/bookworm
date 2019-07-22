@@ -1,5 +1,7 @@
 <template>
   <div>
+    <!-- ==================================================     组件：首页分类点击切换     ======================================================= -->
+
     <view v-if="show" class="container">
       <view
         class="kindItems"
@@ -7,7 +9,7 @@
         :key="index"
         @click="linkType(item)"
       >
-        <a class="kindItem">{{item.typename}}</a>
+        <a class="kindItem" :class="{ 'active': (pick_item==item.book_type_id) }">{{item.type_name}}</a>
       </view>
       <view class="btn" @click="moreKind">
         <img class="btnImg" :src="btnSrc" />
@@ -24,7 +26,7 @@
         <view class="kindBtns" v-for="(item, index) in BtnList" :key="index">
           <view class="btnTr">
             <block v-for="(i,k) in item" :key="k">
-              <a class="btnTd" @click="linkType(i)">{{i.typename}}</a>
+              <a class="btnTd" @click="linkType(i)">{{i.type_name}}</a>
             </block>
           </view>
         </view>
@@ -41,6 +43,7 @@ export default {
     return {
       btnSrc: "/static/images/down.png",
       showItem: true,
+      pick_item:'',
       showList: [],
       btnSrc2: "/static/images/up.png",
       BtnList: [],
@@ -49,8 +52,6 @@ export default {
     };
   },
   mounted() {
-    //console.log(this.kindList[1]);
-    //console.log(this.kindList.length);
     let length = this.kindList.length;
     for (let i = 0; i < 6; i++) {
       // this.showList.splice(i, 0);
@@ -66,7 +67,9 @@ export default {
   },
   methods: {
     linkType(item) {
-      this.$emit("pickItem", item);
+      this.pick_item=item.book_type_id;
+      //console.log(item.book_type_id);
+      this.$emit("pickItem", item.book_type_id);
     },
     moreKind() {
       this.show = !this.show;
@@ -135,12 +138,12 @@ export default {
 .btn {
   display: block;
   width: 0.4rem;
-  height: 0.2rem;
+  height: 0.4rem;
   background-color: rgba(245, 245, 245, 0.9);
   box-shadow: 0 0 0.1rem 0.1rem rgba(245, 245, 245, 0.95);
   position: relative;
-  top: 0.15rem;
-  right: 0.3rem;
+  top: 0.1rem;
+  right: 0.2rem;
   z-index: 2;
   text-align: center;
   border-radius: 0.05rem;
@@ -151,7 +154,7 @@ export default {
   height: 0.16rem;
   display: block;
   position: relative;
-  top: 0.02rem;
+  top: 0.08rem;
   left: 0.07rem;
   z-index: 3;
 }
@@ -205,7 +208,7 @@ export default {
   margin: 0;
   border: 1px solid #d2ac6e;
   color: #d2ac6e;
-   border-radius: 0.1rem;
+  border-radius: 0.1rem;
 }
 .btnLable {
   display: block;
@@ -216,7 +219,7 @@ export default {
 .btn2 {
   display: inline-block;
   width: 0.4rem;
-  height: 0.2rem;
+  height: 100%;
   /* box-shadow: 0 0 0.1rem 0.1rem rgba(245, 245, 245, 0.95); */
   position: relative;
   margin-top: 0.1rem;

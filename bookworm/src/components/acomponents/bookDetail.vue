@@ -1,10 +1,6 @@
 <template>
   <div :style="{background:'#f5f5f5'}">
-    <view class="linkTabs">
-      <a class="tabA active">详情</a>
-      <a  class="tabA" @click="Link">评价</a>
-    </view>
-    <!------------------------------------------------- 详情:书籍信息     ------------------->
+    <!-- ==================================================     组件：详情:书籍信息     ======================================================= -->
     <view class="bookShow">
       <view class="showItem index">
         <span class="title">
@@ -33,9 +29,9 @@
         </span>
       </view>
     </view>
-    <!-- <view class="detailImg">
+    <view class="detailImg">
       <image mode="widthFix" :src="book.detailImg" />
-    </view> -->
+    </view>
     <!-- <view></view>
     <view></view>-->
   </div>
@@ -51,17 +47,12 @@ export default {
         deliverCase: "0.00",
         ensure: "正品保证·极速退款·退货运费险·七天退换",
         parameter: "ISBN编号 书名",
-        detailImg: "",
-        linkType:0
+        detailImg: ""
       }
     };
   },
   methods: {
-    Link(id) {
-      wx.navigateTo({
-        url: "/pages/bookcomment1/main?book_id=" + id
-      });
-    }
+
   },
 
   created() {
@@ -71,45 +62,6 @@ export default {
 </script>
 
 <style scoped>
-/* --------------------------------------------
-    选择tabbar
---------------------------------------------- */
-.linkTabs {
-  width: 100%;
-  padding: 0.2rem 0 0.15rem;
-  display: flex;
-  justify-content: space-evenly;
-}
-.tabA {
-  display: inline-block;
-  /* flex: 1; */
-  flex-grow: 1;
-  flex-basis: 0.8rem;
-  max-width: 0.88rem;
-  font-size: 15px;
-  text-align: center;
-  vertical-align: middle;
-  color: #36282b;
-}
-/* 选中之后的样式 */
-/* .tabA:after, */
-.tabA:visited:after,
-.tabA:hover:after,
-.tabA:active:after,
-.tabA.active:after {
-  position: relative;
-  display: block;
-  content: "";
-  width: 80%;
-  margin: 0 auto;
-  height: 4rpx;
-  left: 0;
-  top: 0.1rem;
-  bottom: 0.3rem;
-  background: #521d23;
-  border-radius: 2rpx;
-  color: #521d23;
-}
 /* --------------------------------------------
     书籍详情
 --------------------------------------------- */
@@ -164,14 +116,15 @@ export default {
   color: #787172;
 }
 /* --------------------------------------------
-    书籍详情
+    书籍详情图片
 --------------------------------------------- */
 .detailImg {
   margin-top: 0.3rem;
   text-align: center;
   position: relative;
   width: 100%;
-  background-color: white;
+  /* background-color: white; */
+  background-color: red;
 }
 .detailImg image {
   width: 100%;
