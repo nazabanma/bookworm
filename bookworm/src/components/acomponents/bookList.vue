@@ -126,9 +126,8 @@ export default {
   -webkit-column-count: 2; /* Safari 和 Chrome */
   column-count: 2;
   -moz-column-gap: 10rpx;
-  -webkit-column-gap:10rpx;
+  -webkit-column-gap: 10rpx;
   column-gap: 10rpx;
-
 }
 /* 书籍卡片 */
 .bookCard {
@@ -138,6 +137,9 @@ export default {
   background-color: white;
   text-align: center;
   margin-top: 12rpx;
+  /* -moz-page-break-inside: avoid; */
+  -webkit-column-break-inside: avoid;
+  break-inside: avoid;
   /* position: absolute; */
 }
 /*-----------------  插入的图片 */
