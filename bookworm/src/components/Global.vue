@@ -7,7 +7,7 @@ import Vue from 'vue';
 let globalData = new Vue({
     data: function() {
         return {
-            userId: userId,
+            userId: "",
             userName: "",
             userIcon: ""
         };

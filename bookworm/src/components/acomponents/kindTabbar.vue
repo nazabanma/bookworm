@@ -9,7 +9,7 @@
         :key="index"
         @click="linkType(item)"
       >
-        <a class="kindItem">{{item.typename}}</a>
+        <a class="kindItem" :class="{ 'active': (pick_item==item.id) }">{{item.name}}</a>
       </view>
       <view class="btn" @click="moreKind">
         <img class="btnImg" :src="btnSrc" />
@@ -26,7 +26,7 @@
         <view class="kindBtns" v-for="(item, index) in BtnList" :key="index">
           <view class="btnTr">
             <block v-for="(i,k) in item" :key="k">
-              <a class="btnTd" @click="linkType(i)">{{i.typename}}</a>
+              <a class="btnTd" @click="linkType(i)">{{i.name}}</a>
             </block>
           </view>
         </view>
@@ -43,6 +43,7 @@ export default {
     return {
       btnSrc: "/static/images/down.png",
       showItem: true,
+      pick_item:'',
       showList: [],
       btnSrc2: "/static/images/up.png",
       BtnList: [],
@@ -51,8 +52,6 @@ export default {
     };
   },
   mounted() {
-    //console.log(this.kindList[1]);
-    //console.log(this.kindList.length);
     let length = this.kindList.length;
     for (let i = 0; i < 6; i++) {
       // this.showList.splice(i, 0);
@@ -68,7 +67,9 @@ export default {
   },
   methods: {
     linkType(item) {
-      this.$emit("pickItem", item);
+      this.pick_item=item.id;
+      //console.log(item.book_type_id);
+      this.$emit("pickItem", item.id);
     },
     moreKind() {
       this.show = !this.show;

@@ -1,76 +1,90 @@
 <template>
   <div :style="{background:'#f5f5f5'}">
-    <!-- ==================================================      详情:书籍信息        ======================================================= -->
-    <!-- 最外层view -->
-    <view class="evaluationtList" v-for="(item,index) in commentList" :key="index">
-      <!-- 单条评价 -->
-      <view class="evaluationt">
-        <view class="evaluationt_left">
-          <image class="evaluationt_icon" v-if="item.if_anonymous" :src="anonymousImg" />
-          <image class="evaluationt_icon" v-else :src="item.head_img" />
-        </view>
-        <view class="evaluationt_right">
-          <view class="evaluationt_head">
-            <view class="evaluationt_name" v-if="item.if_anonymous">淘书斋用户</view>
-            <view class="evaluationt_name" v-else>{{item.name}}</view>
-            <view class="evaluationt_time">{{item.time}}</view>
-          </view>
-          <view class="evaluationt_content">{{item.content}}</view>
-          <!-- 评价图片 -->
-          <view class="evaluationt_imgsPanel">
-            <view class="evaluationt_imgs" v-for="(i,k) in commentArr[index]" :key="k">
-              <image class="evaluationt_imgs" :src="i" />
+    <view v-if="!emptyFlag">
+      <router-view v-if="isRouterAlive">
+        <!-- ==================================================      详情:书籍信息        ======================================================= -->
+        <!-- 最外层view -->
+        <view class="evaluationtList" v-for="(item,index) in commentList" :key="index">
+          <!-- 单条评价 -->
+          <view class="evaluationt">
+            <view class="evaluationt_left">
+              <image class="evaluationt_icon" v-if="item.if_anonymous" :src="anonymousImg" />
+              <image class="evaluationt_icon" v-else :src="item.head_img" />
             </view>
-          </view>
-          <!-- 点赞、回复 -->
-          <view :style="{marginTop:'0.1rem'}">
-            <view class="likes_comment">
-              <view class="eval_likes" @click="Likeadd(index)">
-                <image class="likes_imgs" :src="likeIcon[index]" />
-                {{item.like_count}}
+            <view class="evaluationt_right">
+              <view class="evaluationt_head">
+                <view class="evaluationt_head_left">
+                  <view class="evaluationt_name" v-if="item.if_anonymous">淘书斋用户</view>
+                  <view class="evaluationt_name" v-else>{{item.name}}</view>
+                  <view class="evaluationt_time">{{item.time}}</view>
+                </view>
+                <view
+                  class="deleteAll"
+                  v-if="item.if_me"
+                  @click="deleteAll(index,item.order_item_id)"
+                >删除</view>
               </view>
-              <view class="eval_comment">
-                <image class="comment_imgs" :src="comImg" />
-                {{item.comment.length}}
+              <view class="evaluationt_content">{{item.content}}</view>
+              <!-- 评价图片 -->
+              <view class="evaluationt_imgsPanel">
+                <view class="evaluationt_imgs" v-for="(i,k) in commentArr[index]" :key="k">
+                  <image class="evaluationt_imgs" :src="i" />
+                </view>
+              </view>
+              <!-------------------------------------- 点赞、回复 -------------------->
+              <view :style="{marginTop:'0.1rem'}">
+                <view class="likes_comment">
+                  <view class="eval_likes" @click="Likeadd(index)">
+                    <image class="likes_imgs" :src="likeIcon[index]" />
+                    {{item.like_count}}
+                  </view>
+                  <!-- 点击控制回复的显示隐藏 -->
+                  <view class="eval_comment" @click="CommentShow($key)">
+                    <image class="comment_imgs" :src="comImg" />
+                    {{item.comment.length}}
+                  </view>
+                </view>
+              </view>
+            </view>
+          </view>
+          <!-- 单条评价的评论列表 -->
+          <view v-if="item.comment.length">
+            <!-- <view v-if="ThiscommentShow"> -->
+            <view v-show="$key!=hidFlag">
+              <view class="comment" v-for="(i,k) in item.comment" :key="k">
+                <!-- 单条评论 -->
+                <view class="commentList">
+                  <view class="comment_left">
+                    <!-- <image class="comment_icon" :src="comIcon" /> -->
+                  </view>
+                  <view class="comment_right">
+                    <view class="comment_name">{{i.name}}</view>
+                    <view class="comment_time">{{i.time}}</view>
+                    <view
+                      class="delete"
+                      v-if="i.if_me"
+                      @click="deleteComment(index,k)"
+                      :data-index="k"
+                    >删除</view>
+                    <view class="comment_content">{{i.content}}</view>
+                  </view>
+                </view>
+              </view>
+            </view>
+          </view>
+          <view class="evaluationt">
+            <view class="evaluationt_left"></view>
+            <view class="evaluationt_right">
+              <input class="commentInput" v-model="newInput[index]" />
+              <view class="sendView">
+                <img class="sendImg" src="/static/images/send.png" @click="submitComment(index)" />
               </view>
             </view>
           </view>
         </view>
-      </view>
-      <!-- 单条评价的评论列表 -->
-      <view v-if="item.comment.length">
-        <view class="comment" v-for="(i,k) in item.comment" :key="k">
-          <!-- 单条评论 -->
-          <view class="commentList">
-            <view class="comment_left">
-              <!-- <image class="comment_icon" :src="comIcon" /> -->
-            </view>
-            <view class="comment_right">
-              <view class="comment_name">{{i.name}}</view>
-              <view class="comment_time">{{i.time}}</view>
-              <view class="comment_content">{{i.content}}</view>
-            </view>
-            <div v-if="addDelete(index,i)" class="delete" @click="deleteComment(index,k)" :data-index="k">删除</div>
-          </view>
-        </view>
-
-        <!-- 进行评论 -->
-        <!-- <view v-if="temporaryComment" class="commentList">
-          <view class="comment_left"></view>
-          <view class="comment_right">
-            <view class="comment_name">{{temporaryComment.name}}</view>
-            <view class="comment_time">{{temporaryComment.time}}</view>
-            <view class="comment_content">{{temporaryComment.content}}</view>
-          </view>
-        </view>-->
-      </view>
-      <view class="evaluationt">
-        <view class="evaluationt_left"></view>
-        <view class="evaluationt_right">
-          <input class="commentInput" @change="submitComment(index)" v-model="newComment.content" />
-        </view>
-      </view>
+      </router-view>
     </view>
+    <view v-else class="emptyData">暂无评论</view>
   </div>
 </template>
 
@@ -81,16 +95,31 @@ export default {
   // likeImg:点赞图标路径
   // comImg:评论图标路径
   props: [
+    "emptyFlag",
     "commentList",
+    "newInput",
     "likeIcon",
     "likeImg",
     "comImg",
     "anonymousImg",
-    "commentArr"
+    "commentArr",
+    "deleArr",
+    "commentShowList"
   ],
+  provide() {
+    return {
+      reload: this.reload
+    };
+  },
+  inject: ["reload"],
   data() {
     return {
-      newComment: { name: "", time: "", content: "" }
+      isRouterAlive: true, //刷新当前页
+      newComment: { name: "", time: "", content: "", if_me: "" },
+      newCommentContent: "",
+      // newComment: { name: "", time: "", content: "", if_me: "" },
+      ThiscommentShow: "",
+      hidFlag: -1
       // likeType: 0,
       //likeIcon: []
       //evalIcon: this.GLOBAL.serverSrc + "/static/images/icon2.png",
@@ -101,17 +130,26 @@ export default {
   },
   mounted() {
     console.log("this.GLOBAL.userId：" + this.GLOBAL.userId);
-    // console.log("this.GLOBAL.userName：" + this.GLOBAL.userName);
+    //     menus = this.map(menu=>{
+    //     menu.isShow = false;
+    //         return menu;
+    // })
   },
   methods: {
-    //获取数据
-    setData() {},
+    //================================================   刷新当前页
+    reload() {
+      this.isRouterAlive = false;
+      console.log("刷新");
+      this.$nextTick(function() {
+        this.isRouterAlive = true;
+      });
+    },
     //评论图片剪切成数组
     commentImg(commentList) {
       let Imgarry = commentList.data.data.book_img.split(";");
       _this.imgUrls = Imgarry;
     },
-    //点赞
+    //================  点赞
     Likeadd(i) {
       let _this = this;
       if (this.commentList[i].like_count <= 0) {
@@ -143,14 +181,28 @@ export default {
         }
       });
     },
+    //================ 点击控制回复的显示隐藏
+    CommentShow(index) {
+      this.commentShowList[index] = !this.commentShowList[index];
+      // this.ThiscommentShow = this.commentShowList[index];
+      this.hidFlag = index;
+      console.log(this.hidFlag);
+      // console.log(index);
+      console.log(this.commentShowList[index]);
+      console.log("this.hidFlag" + this.hidFlag);
+      // console.log(this.ThiscommentShow);
+    },
     //================================================   进行评论
     submitComment(i) {
       // 全局动态变量
       this.newComment.name = this.GLOBAL.globalData.userName;
       this.newComment.time = this.getTime();
-      console.log(this.newComment.time);
+      this.newComment.if_me = true;
+      this.newComment.content = this.newInput[i];
+      // console.log(this.newComment.content);
+      // console.log(this.commentList[i].comment);
       this.commentList[i].comment.push(this.newComment);
-
+      //console.log(this.commentList[i].comment);
       //提交评论
       let _this = this;
       wx.request({
@@ -163,22 +215,64 @@ export default {
         },
         method: "POST",
         success(res) {
-          _this.newComment = { name: "", time: "", content: "" };
           console.log(res.data);
         }
       });
+      //this.reload();
+      this.newInput[i] = "";
+      this.newComment = { name: "", time: "", content: "", if_me: "" };
     },
     //================================================   删除评论
-    addDelete(index,i) {
-      console.log(this.commentList[index].comment[i]);
-      if (this.GLOBAL.globalData.userName == this.commentList[index].comment[i].name) {
-        return true;
-      }
-      else{
-         return false;
-      }
+    //================   添加删除按钮
+    // addDelete(index, i) {
+    //   console.log(this.GLOBAL.userId);
+    //   console.log(this.commentList[index].comment[i].user_id);
+    //   if (this.GLOBAL.userId == this.commentList[index].comment[i].user_id) {
+    //    this.deleFlag[index][i] = 1;
+    //   } else {
+    //     console.log(0);
+    //     this.deleFlag[index][i] = 0;
+    //   }
+    // },
+
+    //================ 进行删除操作,删除所有评价
+    deleteAll(index, data) {
+      //进行删除
+      console.log(this.commentList[index].order_item_id);
+      let _this = this;
+      wx.request({
+        url:
+          _this.GLOBAL.serverSrc +
+          "/evaluate/evaluateDeleteAll?order_item_id=" +
+          _this.commentList[index].order_item_id,
+        data: {
+          order_item_id: _this.commentList[index].order_item_id
+        },
+        method: "POST",
+        success(res) {
+          console.log(res.data);
+        }
+      });
+      this.commentList.splice(index, 1);
+      this.reload();
     },
+    //================ 进行删除操作,index:平价下标，i:回复下标
     deleteComment(index, i) {
+      //进行删除
+      let _this = this;
+      wx.request({
+        url:
+          _this.GLOBAL.serverSrc +
+          "/evaluate/evaluateDelete?evaluate_id=" +
+          _this.commentList[index].comment[i].evaluate_id,
+        data: {
+          evaluate_id: _this.commentList[index].comment[i].evaluate_id
+        },
+        method: "POST",
+        success(res) {
+          console.log(res.data);
+        }
+      });
       this.commentList[index].comment.splice(i, 1);
     },
     getTime() {
@@ -201,6 +295,17 @@ export default {
 </script>
 
 <style scoped>
+.emptyData {
+  display: block;
+  width: 100%;
+  height: 4rem;
+  line-height: 4rem;
+  background-color: white;
+  text-align: center;
+  font-size: 14px;
+  color: #36282b;
+  /* padding-top: 0.3rem; */
+}
 /*-----------------  评价 */
 .evaluationtList {
   background-color: white;
@@ -234,6 +339,19 @@ export default {
   color: #36282b;
   vertical-align: middle;
 }
+.evaluationt_head_left {
+  display: inline-block;
+  width: 85%;
+}
+/*-----------------  删除 */
+.deleteAll {
+  display: inline-block;
+  /* width: 2.5em; */
+  top: 2px;
+  right: 0rem;
+  /* margin-left: 1.5rem; */
+  font-size: 12px;
+}
 .evaluationt_name {
   display: inline;
   margin-right: 0.4rem;
@@ -245,6 +363,7 @@ export default {
 }
 .evaluationt_content {
   margin-top: 0.1rem;
+  margin-right: 0.5rem;
   font-size: 14px;
   color: #36282b;
 }
@@ -316,9 +435,24 @@ export default {
   font-size: 10px;
 }
 .comment_content {
+  /* display: block; */
+  max-width: 100%;
   margin-top: 6px;
+  padding: 0;
+  margin-right: 0.5rem;
   font-size: 12px;
   color: #36282b;
+  /* 首行缩进两字符 */
+  /* text-indent: 2em; */
+  /* 强制换行 */
+  word-wrap: break-word;
+  word-break: break-all;
+  /* 控制三行显示 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 /* 评价输入框 */
 .commentInput {
@@ -326,9 +460,31 @@ export default {
   /* width: 100%; */
   height: 0.3rem;
   margin: 0.3rem 0.5rem auto 0;
-  padding: 0.15rem 0.25rem;
+  padding: 0.15rem 0.6rem 0.15rem 0.25rem;
   background: #f5f5f5;
   color: #787172;
   font-size: 14px;
+}
+.sendView {
+  width: 0.35rem;
+  height: 0.6rem;
+  position: absolute;
+  right: 0.7rem;
+  margin-top: -0.5rem;
+  text-align: center;
+}
+
+.sendImg {
+  width: 0.4rem;
+  height: 0.32rem;
+  display: inline-block;
+}
+/*-----------------  删除 */
+
+.delete {
+  display: inline-block;
+  width: 3em;
+  margin-left: 2.5rem;
+  font-size: 12px;
 }
 </style>
