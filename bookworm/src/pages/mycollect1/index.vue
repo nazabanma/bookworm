@@ -41,7 +41,7 @@
       </view>
     </view>
     <view v-if="emptyFlag" class="emptyPanel">
-      <image class="empty_img"  :src="emptyImg" />
+      <image class="empty_img" mode="widthFix" :src="emptyImg" />
     </view>
 
     <view class="empty"></view>
@@ -71,8 +71,15 @@ import { globalBus } from "@/components/globalBus";
 import navigationBar from "@/components/acomponents/navigation";
 
 export default {
+  provide() {
+    return {
+      reload: this.reload
+    };
+  },
+  inject: ["reload"],
   data() {
     return {
+      isRouterAlive: "",
       emptyFlag: 1,
       emptyImg:
         this.GLOBAL.serverSrc + "/static/images/msg_empty_collection.png",
@@ -90,6 +97,18 @@ export default {
   },
 
   methods: {
+    //================================================   刷新当前页
+    reload() {
+      // this.isRouterAlive = false;
+      // this.$nextTick(function() {
+      //   this.isRouterAlive = true;
+      // });
+      console.log("刷新");
+      if (getCurrentPages().length != 0) {
+        //刷新当前页面的数据
+        getCurrentPages()[getCurrentPages().length - 1].onShow();
+      }
+    },
     //=========================================================    获取收藏数据
     getData() {
       let _this = this;
@@ -125,7 +144,6 @@ export default {
         _this.checkedCount--;
       }
       this.checkMsg.push();
-      
       // console.log(this.checkMsg);
     },
     //=========================================================    全选
@@ -153,32 +171,54 @@ export default {
       });
       globalBus.$emit("bookID", bookID);
     },
-    getList() {
+    //=========================================================    获取选中的列表
+    getList(msg) {
       let _this = this;
+      let tmpList = [];
       for (let i = 0; i < _this.checkMsg.length; i++) {
         if (_this.checkMsg[i] == 1) {
-          _this.pickList.push(_this.collectList[i].book_id);
+          _this.pickList.push(_this.collectList[i].collect_id);
+          // console.log(_this.pickList);
+          // tmpList = _this.pickList;
+          if (msg) {
+            _this.collectList.splice(i, 1);
+            _this.checkMsg = [];
+          }
         }
-        return _this.pickList;
       }
+      if (!_this.pickList.length) {
+        console.log("empty");
+        return;
+      }
+
+      //console.log(_this.pickList);
+      return _this.pickList;
     },
 
     cancelCollectArr() {
-      let collectsList = this.getList();
+      // 选中部分
       let _this = this;
-      wx.request({
-        url: _this.GLOBAL.serverSrc + "/collect/collectDelete",
-        method: "POST",
-        data: {
-          user_id: _this.GLOBAL.userId,
-          collects: collectsList
-        },
-        success(res) {
-          console.log("cancelCollectArr");
-        }
-      });
+      let collectsList = this.getList(1);
+      let jsonArr = JSON.stringify(collectsList);
+      if (collectsList.length) {
+        //数组中有数据再进行提交
+        wx.request({
+          url: _this.GLOBAL.serverSrc + "/collect/collectDelete",
+          method: "POST",
+          data: {
+            collects: jsonArr
+          },
+          success(res) {
+            console.log(res);
+            console.log(collectsList);
+            _this.reload();
+            console.log("cancelCollectArr");
+          }
+        });
+      }
     },
     cancelCollectAll() {
+      // 全选时
       let _this = this;
       wx.request({
         url: _this.GLOBAL.serverSrc + "/collect/collectDeleteAll",
@@ -187,32 +227,41 @@ export default {
           user_id: _this.GLOBAL.userId
         },
         success(res) {
+          _this.collectList = [];
+          _this.checkMsg = [];
+          _this.checkedAll = false;
+          _this.reload();
           console.log("cancelCollectAll");
         }
       });
     },
     cancelCollect() {
+      //提交时根据checkedAll判断  选择类型 ，从而分类提交
       let _this = this;
       if (_this.checkedAll) {
-        this.cancelCollectAll();
+        _this.cancelCollectAll();
       } else {
-        this.cancelCollectArr();
+        _this.cancelCollectArr();
       }
     },
     addToCart() {
-      let collectsList = this.getList();
       let _this = this;
-      wx.request({
-        url: _this.GLOBAL.serverSrc + "/collect/removeToCart",
-        method: "POST",
-        data: {
-          user_id: _this.GLOBAL.userId,
-          collects: collectsList
-        },
-        success(res) {
-          console.log("addToCart");
-        }
-      });
+      let collectsList = this.getList(0);
+      if (collectsList.length) {
+        //数组中有数据再进行提交
+        let jsonArr = JSON.stringify(collectsList);
+        wx.request({
+          url: _this.GLOBAL.serverSrc + "/collect/removeToCart",
+          method: "POST",
+          data: {
+            user_id: _this.GLOBAL.userId,
+            collects: jsonArr
+          },
+          success(res) {
+            console.log("addToCart");
+          }
+        });
+      }
     }
   },
   watch: {

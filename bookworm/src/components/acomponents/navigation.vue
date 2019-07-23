@@ -99,6 +99,9 @@ export default {
           url: this.linkBack
         });
       }
+      // wx.navigateBack({
+      //   delta: 1
+      // });
     },
     blurs() {
       window.scroll(0, 0);

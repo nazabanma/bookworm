@@ -51,6 +51,7 @@ export default {
   },
   inject: ["reload"],
   created() {
+    this.getBookData(this.pickItem);
     let _this = this;
     this.$nextTick(function() {
       // ----------------------------------------  获取书籍类型

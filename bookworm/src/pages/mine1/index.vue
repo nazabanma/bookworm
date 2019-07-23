@@ -175,7 +175,6 @@ export default {
   margin: 0.5rem auto;
   z-index: 2;
 }
-
 /* 名字 */
 .name {
   display: block;
@@ -188,7 +187,6 @@ export default {
   /* background-color: red; */
   z-index: 2;
 }
-
 /* 收藏和地址 */
 .collect_address {
   display: -webkit-flex;
