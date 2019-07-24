@@ -1,11 +1,11 @@
 {
     "pages": [
-        "pages/cart1/main",
+        "pages/order_submit/main",
         "pages/index1/main",
-        "pages/bookdetail1/main",
+        "pages/cart1/main",
         "pages/mycollect1/main",
+        "pages/bookdetail1/main",
         "pages/mine1/main",
-        "pages/test/main",
         "pages/test1/main"
     ],
     "window": {

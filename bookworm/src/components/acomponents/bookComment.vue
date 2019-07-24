@@ -132,9 +132,7 @@ export default {
       //evalIcon: this.GLOBAL.serverSrc + "/static/images/icon2.png",
     };
   },
-  filters: {
-    formatDate: function(value) {}
-  },
+
   mounted() {
     console.log("this.GLOBAL.userId：" + this.GLOBAL.userId);
     //     menus = this.map(menu=>{
@@ -170,19 +168,19 @@ export default {
     //================  点赞
     Likeadd(i) {
       let _this = this;
-      if (this.commentList[i].like_count <= 0) {
-        this.commentList[i].like_count = +1;
-        this.likeIcon[i] = this.likeImg[1];
-        this.commentList[i].if_like = !this.commentList[i].if_like;
+      if (_this.commentList[i].like_count <= 0) {
+        _this.commentList[i].like_count = +1;
+        _this.likeIcon[i] = _this.likeImg[1];
+        _this.commentList[i].if_like = !_this.commentList[i].if_like;
       } else {
-        if (this.commentList[i].if_like) {
-          this.commentList[i].like_count -= 1;
-          this.likeIcon[i] = this.likeImg[0];
-          this.commentList[i].if_like = !this.commentList[i].if_like;
+        if (_this.commentList[i].if_like) {
+          _this.commentList[i].like_count -= 1;
+          _this.likeIcon[i] = _this.likeImg[0];
+          _this.commentList[i].if_like = !_this.commentList[i].if_like;
         } else {
-          this.commentList[i].like_count += 1;
-          this.likeIcon[i] = this.likeImg[1];
-          this.commentList[i].if_like = !this.commentList[i].if_like;
+          _this.commentList[i].like_count += 1;
+          _this.likeIcon[i] = _this.likeImg[1];
+          _this.commentList[i].if_like = !_this.commentList[i].if_like;
         }
       }
       //点赞|取消点赞

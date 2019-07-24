@@ -91,17 +91,17 @@ export default {
       // }
       // console.log("数组" + pages + "当前" + currPage + "上一页" + prevPage);
       if (this.linkKind) {
-        wx.navigateTo({
-          url: this.linkBack
+        // wx.navigateTo({
+        //   url: this.linkBack
+        // });
+        wx.navigateBack({
+          delta: 1
         });
       } else {
         wx.switchTab({
           url: this.linkBack
         });
       }
-      // wx.navigateBack({
-      //   delta: 1
-      // });
     },
     blurs() {
       window.scroll(0, 0);

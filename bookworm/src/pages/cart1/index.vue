@@ -2,46 +2,48 @@
   <div class="index1">
     <!------------------------------------------------------ 顶部导航栏 -->
     <navigation-bar
-      :title="'我的收藏'"
-      :backVisible="true"
+      :title="'购物车'"
+      :backVisible="false"
       :fontSize="16"
       :imgsrc="'/static/images/left.png'"
-      :linkBack="'/pages/index1/main'"
+      :linkBack="''"
       :linkKind="false"
     ></navigation-bar>
-    <view>
+    <view class="head">
       <view class="logo">
         <image class="logo_img" :src="logoSrc" />
         <image class="logoTitle_img" :src="logotitleSrc" />
       </view>
-      <view class="head_title" v-model="manageFlag" @click="manageCart">
-        <view v-if="manageFlag">管理</view>
-        <view v-else>完成</view>
+      <view class="head_title" v-if="emptyFlag!=1" v-model="manageFlag" @click="manageCart">
+        <view v-if="manageFlag" @click="changeFlag">管理</view>
+        <view v-else @click="changeFlag">完成</view>
       </view>
     </view>
     <!------------------------------------------------------ 我的收藏列表 -->
-    <view v-if="emptyFlag==0" class="cartPanel">
+    <view class="cartPanel">
       <view class="cartList" v-for="(item,index) in cartList" :key="index">
         <!-- 某个收藏 -->
         <view class="cartItem">
-          <view class="cart_left">
+          <view class="cart_left" @click="pickThis(index)">
             <view class="cart_area">
-              <view @click="pickThis(index)" class="circle" :class="{' active':checkMsg[index]}"></view>
+              <view class="circle" :class="{' active':checkMsg[index]}"></view>
             </view>
           </view>
           <view class="cart_right">
-            <view class="cart_content__left">
+            <view class="cart_content__left" @click="linkTo(item.book_id)">
               <image class="cart_img" :src="item.book_img" />
             </view>
-            <view class="cart__right" @click="linkTo(item.book_id)">
-              <view class="cart__name">《{{item.book_name}}》</view>
-              <!-- <view class="cart__num">{{item.}}</view> -->
+            <view class="cart_content__right">
+              <view class="cart_content__right_top" @click="linkTo(item.book_id)">
+                <view class="cart_content__name">《{{item.book_name}}》</view>
+                <view class="cart_content__num">{{item.book_author}}</view>
+              </view>
               <view class="cart_content__footer">
                 <view class="cart_content__price">￥{{item.book_price}}</view>
                 <view class="cart_content__count">
-                  <view class="cart_count_dec">-</view>
+                  <view class="cart_count_dec" @click="decCount(index)">-</view>
                   <view class="cart_count_num">{{item.count}}</view>
-                  <view class="cart_count_ind">+</view>
+                  <view class="cart_count_inc" @click="incCount(index)">+</view>
                 </view>
               </view>
             </view>
@@ -51,11 +53,12 @@
     </view>
     <view v-if="emptyFlag==1" class="emptyPanel">
       <image class="empty_img" mode="widthFix" :src="emptyImg" />
+      <view>清空购物车，您就又能见奴家了~</view>
     </view>
 
-    <view class="empty"></view>
-    <!-- ==================================================     组件：商品详情页面底部的按钮组合     ======================================================= -->
-    <view class="foot_tabbar">
+    <view v-if="emptyFlag!=1" class="empty"></view>
+    <!-- ==================================================     管理按钮组合     ======================================================= -->
+    <view v-if="emptyFlag!=1&&!manageFlag" class="foot_tabbar">
       <view class="cart">
         <view class="cart_area">
           <view
@@ -68,15 +71,41 @@
         <view class="cart_text">全选</view>
       </view>
       <view class="btnLine">
-        <view class="cancelBtn" @click="cancelcart">取消收藏</view>
-        <view class="addBtn" @click="addToCart">加入购物车</view>
+        <!----------------------------------------------- 清空购物车 -->
+        <view class="clear" @click="cancelcartAll">
+          <image class="clear_img" :src="clearSrc" />
+          <view class="clear_title">清空</view>
+        </view>
+        <view class="cancelBtn" @click="addToCollect">移入收藏夹</view>
+        <view class="addBtn" @click="deleCart">删除</view>
+      </view>
+    </view>
+    <!-- ==================================================     默认按钮组合     ======================================================= -->
+    <view v-if="emptyFlag!=1&&manageFlag" class="foot_tabbar">
+      <view class="cart">
+        <view class="cart_area">
+          <view
+            class="circle"
+            @click="checkAll"
+            v-model="checkedAll"
+            :class="{'active':checkedAll}"
+          ></view>
+        </view>
+        <view class="cart_text">全选</view>
+      </view>
+      <view class="btnLine">
+        <view class="sumCart">
+          合计：
+          <view class="sumNum" v-model="sumCart">￥{{sumCart}}</view>
+        </view>
+        <view class="subBtn" @click="subCart">结算</view>
       </view>
     </view>
   </div>
 </template>
 
 <script>
-// import { globalBus } from "@/components/globalBus";
+import { globalBus } from "@/components/globalBus";
 import navigationBar from "@/components/acomponents/navigation";
 
 export default {
@@ -91,8 +120,9 @@ export default {
       // isRouterAlive: "",
       manageFlag: 1,
       emptyFlag: -1,
-      logoSrc:"/static/images/store.png",
-      logotitleSrc:"/static/images/logoTitle.png",
+      logoSrc: "/static/images/store.png",
+      logotitleSrc: "/static/images/logoTitle.png",
+      clearSrc: "/static/images/clear.png",
       emptyImg:
         this.GLOBAL.serverSrc + "/static/images/msg_empty_shopping_cart.png",
       //pick_item: 1,
@@ -100,26 +130,52 @@ export default {
       checkedCount: 0,
       cartList: [], //获取到的数据列表
       pickList: [], //选中的列表
-      checkMsg: [] //添加样式的列表
+      checkMsg: [], //添加样式的列表
+      sumList: [], //存放单个的总价
+      sumCart: "0.00"
     };
   },
 
   components: {
     navigationBar
   },
-
+  mounted() {
+    // let _this = this;
+    // for (let i = 0; i < _this.checkMsg.length; i++) {
+    //   if (_this.checkMsg[i] == 1) {
+    //   }
+    // }
+  },
+  filters: {
+    priceFilter: function(value) {
+      // value = value.toString();
+      if (!value) return "";
+      value = value.toString();
+      let result = parseFloat(value).toFixed(2);
+      console.log(result);
+      result = result.toString();
+      return result;
+    }
+  },
   methods: {
     //================================================   刷新当前页
     reload() {
-      // this.isRouterAlive = false;
-      // this.$nextTick(function() {
-      //   this.isRouterAlive = true;
-      // });
+      this.isRouterAlive = false;
+      this.$nextTick(function() {
+        this.isRouterAlive = true;
+      });
       console.log("刷新");
-      if (getCurrentPages().length != 0) {
-        //刷新当前页面的数据
-        getCurrentPages()[getCurrentPages().length - 1].onShow();
-      }
+      // if (getCurrentPages().length != 0) {
+      //   //刷新当前页面的数据
+      //   getCurrentPages()[getCurrentPages().length - 1].onShow();
+      // }
+    },
+    changeFlag() {
+      this.manageFlag = !this.manageFlag;
+      this.checkMsg = [];
+      this.checkedAll = false;
+      this.sumCart = 0;
+      this.reload();
     },
     //=========================================================    获取购物车数据
     getData() {
@@ -140,23 +196,78 @@ export default {
               _this.checkMsg.push(0);
             }
             _this.emptyFlag = 0;
-          }
-          else{
+          } else {
             _this.emptyFlag = 1;
           }
         }
       });
     },
-    //=========================================================    点击
-    pickThis(bookID) {
+    //=========================================================    数量
+    decCount(i) {
+      //this.cartList[i].count--;
       let _this = this;
-      if (!this.checkMsg[bookID]) {
-        _this.checkMsg[bookID] = 1;
+      if (_this.cartList[i].count > 1) {
+        _this.cartList[i].count -= 1;
+        wx.request({
+          url: _this.GLOBAL.serverSrc + "/cart/cartUpdate",
+          method: "POST",
+          data: {
+            cart_id: _this.cartList[i].shop_cart_id,
+            count: _this.cartList[i].count
+          },
+          success(res) {
+            console.log("decCount");
+          }
+        });
+        _this.cartSum();
+      }
+    },
+    incCount(i) {
+      let _this = this;
+      this.cartList[i].count++;
+      wx.request({
+        url: _this.GLOBAL.serverSrc + "/cart/cartUpdate",
+        method: "POST",
+        data: {
+          cart_id: _this.cartList[i].shop_cart_id,
+          count: _this.cartList[i].count
+        },
+        success(res) {
+          console.log("incCount");
+        }
+      });
+      _this.cartSum();
+    },
+    //=========================================================    计算金额
+    cartSum() {
+      let _this = this;
+      this.sumCart = 0;
+      for (let i = 0; i < _this.checkMsg.length; i++) {
+        if (_this.checkMsg[i] == 1) {
+          _this.sumCart +=
+            _this.cartList[i].book_price * _this.cartList[i].count;
+        }
+      }
+      //  _this.sumCart=this.priceFilter|_this.sumCart;
+    },
+    //=========================================================    点击
+    pickThis(i) {
+      let _this = this;
+      if (!this.checkMsg[i]) {
+        _this.checkMsg[i] = 1;
         _this.checkedCount++;
       } else {
-        _this.checkMsg[bookID] = 0;
+        _this.checkMsg[i] = 0;
         _this.checkedCount--;
+        _this.sumList[i] = 0;
       }
+      //判断是否全选
+      if (_this.checkedCount == this.cartList.length) {
+        _this.checkedAll = true;
+      } else {
+        _this.checkedAll = false;
+      }
+      this.cartSum();
       this.checkMsg.push();
       // console.log(this.checkMsg);
     },
@@ -176,6 +287,7 @@ export default {
           _this.checkMsg.push(index);
         });
       }
+      _this.cartSum();
       _this.checkedAll = !_this.checkedAll;
     },
     //=========================================================    点击跳转
@@ -185,13 +297,14 @@ export default {
       });
       globalBus.$emit("bookID", bookID);
     },
-    //=========================================================    获取选中的列表
+    //=========================================================    获取选中的列表,返回选中的id
     getList(msg) {
       let _this = this;
       let tmpList = [];
       for (let i = 0; i < _this.checkMsg.length; i++) {
         if (_this.checkMsg[i] == 1) {
           _this.pickList.push(_this.cartList[i].shop_cart_id);
+
           // console.log(_this.pickList);
           // tmpList = _this.pickList;
           if (msg) {
@@ -249,7 +362,7 @@ export default {
         }
       });
     },
-    cancelcart() {
+    deleCart() {
       //提交时根据checkedAll判断  选择类型 ，从而分类提交
       let _this = this;
       if (_this.checkedAll) {
@@ -258,38 +371,32 @@ export default {
         _this.cancelcartArr();
       }
     },
-    addToCart() {
+    addToCollect() {
       let _this = this;
       let cartsList = this.getList(0);
       if (cartsList.length) {
         //数组中有数据再进行提交
         let jsonArr = JSON.stringify(cartsList);
         wx.request({
-          url: _this.GLOBAL.serverSrc + "/cart/removeToCart",
+          url: _this.GLOBAL.serverSrc + "/cart/removeToCollect",
           method: "POST",
           data: {
             user_id: _this.GLOBAL.userId,
             carts: jsonArr
           },
           success(res) {
-            console.log("addToCart");
+            console.log("addToCollect");
           }
         });
       }
     }
   },
   watch: {
-    checkMsg: {
+    sumCart: {
       handler: function(newVal, oldVal) {}
     },
-    checkedCount: {
-      handler: function(newVal, oldVal) {
-        if (newVal == this.cartList.length) {
-          this.checkedAll = true;
-        } else {
-          this.checkedAll = false;
-        }
-      }
+    checkMsg: {
+      handler: function(newVal, oldVal) {}
     }
   },
 
@@ -301,6 +408,18 @@ export default {
 </script>
 
 <style scoped>
+/* -------------------------------------------------------------------------------------
+                                      默认与空处理
+---------------------------------------------------------------------------------------*/
+.index1 {
+  /*Firefox*/
+  min-height: -moz-calc(94vh);
+  /*chrome safari*/
+  min-height: -webkit-calc(94vh);
+  /*Standard */
+  min-height: calc(94vh);
+  background-color: #f5f5f5;
+}
 .empty {
   height: 1rem;
   display: block;
@@ -308,27 +427,91 @@ export default {
   position: relative;
   background: #f5f5f5;
 }
-.index1 {
-  /* height: 600px; */
-  background-color: #f5f5f5;
-}
-.cartPanel {
+.emptyPanel {
   display: block;
   width: 100%;
+  height: 100%;
+  font-size: 12px;
+  color: #787172;
+  text-align: center;
+  /*Firefox*/
+  height: -moz-calc(83vh);
+  /*chrome safari*/
+  height: -webkit-calc(83vh);
+  /*Standard */
+  height: calc(83vh);
+}
+.empty_img {
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+/* -------------------------------------------------------------------------------------
+                                      头部
+---------------------------------------------------------------------------------------*/
+.head {
+  display: -webkit-flex;
+  display: flex;
+  padding: 0.2rem 0.36rem 0.2rem 0.9rem;
+}
+.logo {
+  height: 46rpx;
+  flex-basis: 160rpx;
+}
+/* 图片 */
+.logo_img,
+.logoTitle_img {
+  display: inline-block;
+  height: 46rpx;
+}
+.logo_img {
+  width: 50rpx;
+}
+.logoTitle_img {
+  width: 110rpx;
+}
+.head_title {
+  display: inline-block;
+  flex: 1;
+  width: 120rpx;
+  height: 46rpx;
+  font-size: 12px;
+  color: #36282b;
+  vertical-align: middle;
+  line-height: 46rpx;
+  text-align: right;
+}
+
+/* -------------------------------------------------------------------------------------
+                                      卡片
+---------------------------------------------------------------------------------------*/
+
+.cartPanel {
+  display: block;
+  /* width: 100%; */
   height: auto;
   overflow: hidden;
-  background-color: white;
+  padding: 0 0.3rem 0.1rem;
 }
 .cartList {
-  width: 100%;
+  /* width: 100%; */
   height: 2.5rem;
-  border-bottom: 1px solid #f5f5f5;
+  /* border-bottom: 1px solid red; */
   /* padding: 0.1rem 0.3rem; */
+  border-radius: 20rpx;
+  /* margin-top: 20rpx; */
+  /* background-color: red; */
 }
 .cartItem {
   display: -webkit-flex;
   display: flex;
+  height: 2.5rem;
+  border-radius: 20rpx;
+  margin-top: 20rpx;
+  background-color: white;
 }
+/* ---------------------------------------------------
+卡片左侧，选择框
+------------------------------------------------------*/
 .cart_left {
   flex: 1;
   max-width: 100rpx;
@@ -377,13 +560,18 @@ export default {
   /* transform: translate(-50%, -50%) scale(1);
   -webkit-transform: translate(-50%, -50%) scale(1); */
 }
-
+/* ---------------------------------------------------
+卡片右侧，数据
+------------------------------------------------------*/
 .cart_right {
   flex: 7;
   width: 1rem;
-  /* border: 1px solid red; */
+  /* background:  red; */
   overflow: hidden;
 }
+/* ---------------------
+内容左侧
+-----------------------*/
 .cart_content__left {
   display: table-cell;
   /* border: 1px solid gold; */
@@ -402,11 +590,18 @@ export default {
   max-height: 2rem;
   /* border: 1px solid blue; */
 }
+/* ---------------------
+内容右侧 
+-----------------------*/
 .cart_content__right {
+  /* background: red; */
   display: table-cell;
   width: 4rem;
   height: 100%;
   padding: 0.2rem 0.2rem 0.2rem 0.4rem;
+}
+.cart_content__right_top {
+  padding-bottom: 0.8rem;
 }
 .cart_content__name {
   display: block;
@@ -417,16 +612,70 @@ export default {
 }
 .cart_content__num {
   display: block;
-  color: #b9abaa;
-  font-size: 10px;
+  color: #787172;
+  font-size: 11px;
   margin-top: 0.1rem;
 }
+/* -------------
+底部价格和数量 
+---------------*/
+.cart_content__footer {
+  display: -webkit-flex;
+  display: flex;
+  /* margin-top: 0.8rem; */
+  height: 40rpx;
+  overflow: hidden;
+  vertical-align: middle;
+}
 .cart_content__price {
-  display: block;
+  display: inline-block;
+  flex: 2;
+  height: 100%;
+  /* background: red; */
   color: #bc2b37;
   font-size: 15px;
-  margin-top: 0.8rem;
+  vertical-align: middle;
 }
+.cart_content__count {
+  display: inline-block;
+  flex: 1;
+  flex-basis: 110rpx;
+  /* max-width: 1.3rem; */
+  width: 1.1rem;
+  height: 100%;
+  text-align: right;
+  padding-right: 10rpx;
+  vertical-align: middle;
+  /* background: blue; */
+}
+
+.cart_count_dec,
+.cart_count_num,
+.cart_count_inc {
+  display: inline-block;
+  color: #787172;
+  font-size: 14px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 14px;
+}
+.cart_count_num {
+  margin-left: 10rpx;
+  margin-right: 10rpx;
+}
+.cart_count_dec {
+  /* background: red; */
+  width: 0.4rem;
+  height: 0.4rem;
+}
+.cart_count_inc {
+  /* background: blue; */
+  width: 0.4rem;
+  height: 0.4rem;
+}
+/* -------------------------------------------------------------------------------------
+                                      底部
+---------------------------------------------------------------------------------------*/
 /* ------------------------------------清除button所有默认样式 */
 button,
 .button-hover {
@@ -450,7 +699,7 @@ button::after {
   position: fixed;
   bottom: 0;
   z-index: 999;
-  background-color: #f5f5f5;
+  background-color: white;
   display: -webkit-flex;
   display: flex;
 }
@@ -484,35 +733,101 @@ button::after {
 .btnLine {
   flex: 3;
   /* display: inline-block; */
-  width: 4.5rem;
+  /* width: 4.5rem; */
   min-width: 4.5rem;
+  height: 1rem;
   /* background: red; */
   align-items: center; /*垂直居中*/
   vertical-align: middle;
   /* line-height: 1rem; */
+  /* background-color: red; */
+  padding: 0 0.36rem 0 0;
+  /* padding-top: 0.15rem; */
+  text-align: right;
 }
 
 .cancelBtn,
-.addBtn {
+.addBtn,
+.subBtn {
+  margin-top: 0.15rem;
   display: inline-block;
   max-height: 0.6rem;
-  margin-top: 0.15rem;
-  padding: 15rpx 20rpx;
+  /* padding: 15rpx 20rpx; */
   font-size: 15px;
   background-color: transparent;
 }
-
+.clear {
+  /* height: 1rem; */
+  display: inline-block;
+  font-size: 12px;
+  color: #36282b;
+  margin-right: 20rpx;
+  vertical-align: middle;
+  line-height: 12px;
+  align-items: center; /*垂直居中*/
+  vertical-align: middle;
+}
+.clear_img {
+  display: inline-block;
+  width: 30rpx;
+  height: 40rpx;
+  /* top: 0.25rem; */
+  margin-right: 10rpx;
+}
+.clear_title {
+  display: inline-block;
+  height: 40rpx;
+  vertical-align: middle;
+  line-height: 12px;
+  /* width: 30rpx; */
+  /* margin-top: -0.15rem; */
+}
+/* 移入收藏夹 */
 .cancelBtn {
   border: 1rpx solid #d2ac6e;
   border-radius: 17px;
   color: #d2ac6e;
-  margin-left: 80px;
-  margin-right: 40rpx;
+  /* margin-left: 80px; */
+  margin-right: 20rpx;
+  /* padding: 15rpx 20rpx; */
+  padding: 15rpx 40rpx;
 }
+/* 删除 */
 .addBtn {
   border: 1px solid #521d23;
   border-radius: 35rpx;
   color: #521d23;
-  margin-right: 36rpx;
+  /* margin-right: 36rpx; */
+  padding: 15rpx 40rpx;
+}
+/* 结算 */
+.subBtn {
+  padding: 15rpx 70rpx;
+  border: 1rpx solid #d2ac6e;
+  border-radius: 20px;
+  font-size: 18px;
+  color: white;
+  background-color: #521d23;
+  border: 1px solid #521d23;
+}
+.sumCart {
+  display: inline-block;
+  height: 24rpx;
+  padding: 0;
+  margin: 0;
+  margin-right: 0.5rem;
+  margin-top: -0.15rem;
+  color: #36282b;
+  font-size: 24rpx;
+  vertical-align: middle;
+  line-height: 24rpx;
+}
+.sumNum {
+  display: inline-block;
+  height: 24rpx;
+  padding: 0;
+  color: #d2ac6e;
+  font-size: 24rpx;
+  line-height: 24rpx;
 }
 </style>

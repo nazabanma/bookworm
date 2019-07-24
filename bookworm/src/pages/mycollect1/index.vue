@@ -4,14 +4,14 @@
     <navigation-bar
       :title="'我的收藏'"
       :backVisible="true"
-      :fontSize="16"
+      :fontSize="15"
       :imgsrc="'/static/images/left.png'"
       :linkBack="'/pages/index1/main'"
       :linkKind="false"
     ></navigation-bar>
 
     <!------------------------------------------------------ 我的收藏列表 -->
-    <view v-if="!emptyFlag" class="collectPanel">
+    <view v-if="emptyFlag==0" class="collectPanel">
       <view class="collectList" v-for="(item,index) in collectList" :key="index">
         <!-- 某个收藏 -->
         <view class="collectItem">
@@ -40,13 +40,14 @@
         </view>
       </view>
     </view>
-    <view v-if="emptyFlag" class="emptyPanel">
+    <view v-if="emptyFlag==1" class="emptyPanel">
       <image class="empty_img" mode="widthFix" :src="emptyImg" />
+      <view>客官，你还没有收藏任何宝贝呢~</view>
     </view>
 
-    <view class="empty"></view>
+    <view v-if="emptyFlag!=1" class="empty"></view>
     <!-- ==================================================     组件：商品详情页面底部的按钮组合     ======================================================= -->
-    <view class="foot_tabbar">
+    <view v-if="emptyFlag!=1" class="foot_tabbar">
       <view class="collect">
         <view class="collect_area">
           <view
@@ -80,7 +81,7 @@ export default {
   data() {
     return {
       isRouterAlive: "",
-      emptyFlag: 1,
+      emptyFlag: -1,
       emptyImg:
         this.GLOBAL.serverSrc + "/static/images/msg_empty_collection.png",
       //pick_item: 1,
@@ -129,6 +130,8 @@ export default {
               _this.checkMsg.push(0);
             }
             _this.emptyFlag = 0;
+          } else {
+            _this.emptyFlag = 1;
           }
         }
       });
@@ -258,6 +261,9 @@ export default {
             collects: jsonArr
           },
           success(res) {
+            _this.checkMsg = [];
+            _this.checkedAll = false;
+            _this.reload();
             console.log("addToCart");
           }
         });
@@ -287,6 +293,12 @@ export default {
 </script>
 
 <style scoped>
+/* -------------------------------------------------------------------------------------
+                                      默认与空处理
+---------------------------------------------------------------------------------------*/
+.index1 {
+  background-color: #f5f5f5;
+}
 .empty {
   height: 1rem;
   display: block;
@@ -294,9 +306,27 @@ export default {
   position: relative;
   background: #f5f5f5;
 }
-.index1 {
-  /* height: 600px; */
-  background-color: #f5f5f5;
+
+/* -------------------------------------------------------------------------------------
+                                      卡片
+---------------------------------------------------------------------------------------*/
+.emptyPanel {
+  display: block;
+  width: 100%;
+  height: 100%;
+  font-size: 12px;
+  color: #787172;
+  text-align: center;
+  /*Firefox*/
+  height: -moz-calc(92vh);
+  /*chrome safari*/
+  height: -webkit-calc(92vh);
+  /*Standard */
+  height: calc(92vh);
+}
+.empty_img {
+  display: inline-block;
+  margin: 1rem 0;
 }
 .collectPanel {
   display: block;
