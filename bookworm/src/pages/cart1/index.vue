@@ -146,17 +146,17 @@ export default {
     //   }
     // }
   },
-  filters: {
-    priceFilter: function(value) {
-      // value = value.toString();
-      if (!value) return "";
-      value = value.toString();
-      let result = parseFloat(value).toFixed(2);
-      console.log(result);
-      result = result.toString();
-      return result;
-    }
-  },
+  // filters: {
+  //   priceFilter: function(value) {
+  //     // value = value.toString();
+  //     if (!value) return "";
+  //     value = value.toString();
+  //     let result = parseFloat(value).toFixed(2);
+  //     console.log(result);
+  //     result = result.toString();
+  //     return result;
+  //   }
+  // },
   methods: {
     //================================================   刷新当前页
     reload() {
@@ -244,8 +244,11 @@ export default {
       this.sumCart = 0;
       for (let i = 0; i < _this.checkMsg.length; i++) {
         if (_this.checkMsg[i] == 1) {
-          _this.sumCart +=
+          _this.sumCart =
+            _this.sumCart +
             _this.cartList[i].book_price * _this.cartList[i].count;
+          _this.sumCart = parseFloat(_this.sumCart).toFixed(2);
+          console.log(_this.sumCart);
         }
       }
       //  _this.sumCart=this.priceFilter|_this.sumCart;

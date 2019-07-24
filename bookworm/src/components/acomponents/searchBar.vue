@@ -1,15 +1,16 @@
 <template>
   <div class="searchPanel">
-     <!-- ==================================================     组件：搜索框     ======================================================= -->
-   
-    <view class="container">
-      <view :style="{display:'table-cell',verticalAlign:'top',paddingRight:'0.25rem'}">
-        <img class="logo" :src="logoSrc" />
-      </view>&nbsp;
-      <view :style="{display:'table-cell',verticalAlign:'top'}">
-        <input type="text" class="search_input" :value="searchValue" @change="onChange" />
-        <!-- 搜索框图标 -->
-        <img class="searchImg" :src="searchSrc" />
+    <!-- ==================================================     组件：搜索框     ======================================================= -->
+    <view class="searchPanel">
+      <view class="container">
+        <view :style="{display:'table-cell',verticalAlign:'top',paddingRight:'0.25rem'}">
+          <img class="logo" :src="logoSrc" />
+        </view>&nbsp;
+        <view :style="{display:'table-cell',verticalAlign:'top'}">
+          <input type="text" class="search_input" :value="searchValue" @change="onChange" />
+          <!-- 搜索框图标 -->
+          <img class="searchImg" :src="searchSrc" />
+        </view>
       </view>
     </view>
   </div>

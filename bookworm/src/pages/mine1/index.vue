@@ -117,7 +117,6 @@ export default {
     });
   },
   methods: {
-    //-----------------------------------------------------   获取navigation的高度，作为轮播图片的margin-top
 
     backImg() {}
   },

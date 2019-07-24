@@ -20,7 +20,20 @@
     ></navigation-bar>-->
 
     <!-- logo和搜索框 -->
-    <search-bar :logoSrc="logoSrc" :searchSrc="searchSrc" :searchValue="searchValue"></search-bar>
+    <!-- <search-bar :logoSrc="logoSrc" :searchSrc="searchSrc" :searchValue="searchValue"></search-bar> -->
+
+    <view class="searchPanel">
+      <view class="container">
+        <view :style="{display:'table-cell',verticalAlign:'top',paddingRight:'0.25rem'}">
+          <img class="logo" :src="logoSrc" />
+        </view>&nbsp;
+        <view :style="{display:'table-cell',verticalAlign:'top'}">
+          <input type="text" class="search_input" :value="searchValue" @change="onChange" />
+          <!-- 搜索框图标 -->
+          <img class="searchImg" :src="searchSrc" />
+        </view>
+      </view>
+    </view>
 
     <!-- 导航栏页 -->
     <kind-tabbar :kindList="kindList" @pickItem="getPick"></kind-tabbar>
@@ -150,6 +163,11 @@ export default {
       });
     });
     //this.getBookData(this.pickItem);
+  },
+  // 搜索框
+  onChange(event) {
+    this.value = event.mp.detail;
+    console.log(this.value);
   }
 };
 </script>
@@ -157,5 +175,42 @@ export default {
 .index1 {
   /* height: 600px; */
   background-color: #f5f5f5;
+}
+/* --------------------------------------------------------------   搜索框*/
+.searchPanel {
+  display: block;
+  position: relative;
+  z-index: 99999;
+}
+.container {
+  display: table;
+  width: 100%;
+  height: 0.8rem;
+  padding: 0.15rem 0.25rem;
+  vertical-align: middle;
+}
+.logo {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 0.25rem;
+  padding: 0;
+  margin-top: 0.04rem;
+  background-color: #ffffff;
+}
+.search_input {
+  width: 5.4rem;
+  height: 0.58rem;
+  border-radius: 0.25rem;
+  padding: 0.02rem 0.2rem 0.02rem 0.6rem;
+  margin: 0;
+  font-size: 14px;
+  background-color: #ffffff;
+  color: #787172;
+}
+.searchImg {
+  width: 0.35rem;
+  height: 0.35rem;
+  position: absolute;
+  margin: -0.475rem 0.15rem;
 }
 </style>
