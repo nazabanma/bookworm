@@ -50,23 +50,7 @@ export default {
     };
   },
   inject: ["reload"],
-  created() {
-    this.getBookData(this.pickItem);
-    let _this = this;
-    this.$nextTick(function() {
-      // ----------------------------------------  获取书籍类型
-      wx.request({
-        url: this.GLOBAL.serverSrc + "/book/bookType",
-        method: "GET",
-        success(res) {
-          _this.kindList = res.data.data;
-          console.log(_this.kindList);
-          //console.log(_this.booksData);
-        }
-      });
-    });
-    this.getBookData(this.pickItem);
-  },
+
   data() {
     return {
       logoSrc: "/static/images/logo.png",
@@ -144,6 +128,28 @@ export default {
       this.reload();
       this.getBookData(msg);
     }
+  },
+  created() {
+    wx.showLoading({
+      title: "加载中"
+    });
+
+    this.getBookData(this.pickItem);
+    let _this = this;
+    this.$nextTick(function() {
+      // ----------------------------------------  获取书籍类型
+      wx.request({
+        url: this.GLOBAL.serverSrc + "/book/bookType",
+        method: "GET",
+        success(res) {
+          _this.kindList = res.data.data;
+          console.log(_this.kindList);
+          //console.log(_this.booksData);
+          wx.hideLoading();
+        }
+      });
+    });
+    //this.getBookData(this.pickItem);
   }
 };
 </script>

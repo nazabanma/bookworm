@@ -43,11 +43,12 @@
         </view>
       </view>
     </view>
+    <!-- </view> -->
   </div>
 </template>
 
 <script>
-import checkbox from "@/components/lycomponents/checkbox";
+// import checkbox from "@/components/lycomponents/checkbox";
 // import count from "@/components/lycomponents/count";
 
 export default {
@@ -111,6 +112,7 @@ export default {
   margin: 0;
   position: relative;
   width: 100%;
+  padding: 0.9rem 0 0;
   background-color: #f5f5f5;
 }
 

@@ -28,7 +28,14 @@
               <!-- 评价图片 -->
               <view class="evaluationt_imgsPanel">
                 <view class="evaluationt_imgs" v-for="(i,k) in commentArr[index]" :key="k">
-                  <image class="evaluationt_imgs" :src="i" />
+                  <!-- <image class="evaluationt_imgs" :src="i" /> -->
+                  <image
+                  class="evaluationt_imgs"
+                  :src="i"
+                  @tap="previewImg"
+                  :data-list="commentArr[index]"
+                  :data-src="i"
+                />
                 </view>
               </view>
               <!-------------------------------------- 点赞、回复 -------------------->
@@ -136,6 +143,17 @@ export default {
     // })
   },
   methods: {
+     //================================================   图片预览
+      previewImg(event) {
+      var src = event.currentTarget.dataset.src; //获取data-src
+      var imgList = event.currentTarget.dataset.list; //获取data-list
+      //图片预览
+      wx.previewImage({
+        current: src, // 当前显示图片的http链接
+        urls: imgList // 需要预览的图片http链接列表
+      });
+    },
+
     //================================================   刷新当前页
     reload() {
       this.isRouterAlive = false;

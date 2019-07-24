@@ -1,10 +1,10 @@
 {
     "pages": [
-        "pages/mycollect1/main",
-        "pages/index1/main",
         "pages/cart1/main",
-        "pages/mine1/main",
+        "pages/index1/main",
         "pages/bookdetail1/main",
+        "pages/mycollect1/main",
+        "pages/mine1/main",
         "pages/test/main",
         "pages/test1/main"
     ],
@@ -20,8 +20,7 @@
         "backgroundColor": "#fafafa",
         "selectedColor": "#333",
         "borderStyle": "white",
-        "list": [
-            {
+        "list": [{
                 "text": "首页",
                 "pagePath": "pages/index1/main",
                 "iconPath": "static/images/index.png",
