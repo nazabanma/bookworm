@@ -1,7 +1,6 @@
 <template>
   <div class="searchPanel">
      <!-- ==================================================     组件：搜索框     ======================================================= -->
-   
     <view class="container">
       <view :style="{display:'table-cell',verticalAlign:'top',paddingRight:'0.25rem'}">
         <img class="logo" :src="logoSrc" />

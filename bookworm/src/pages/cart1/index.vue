@@ -132,7 +132,8 @@ export default {
       pickList: [], //选中的列表
       checkMsg: [], //添加样式的列表
       sumList: [], //存放单个的总价
-      sumCart: "0.00"
+      sumCart: "0.00",
+      dataList: [] //存放用于提交到确定订单页面的数据数组
     };
   },
 
@@ -146,17 +147,17 @@ export default {
     //   }
     // }
   },
-  filters: {
-    priceFilter: function(value) {
-      // value = value.toString();
-      if (!value) return "";
-      value = value.toString();
-      let result = parseFloat(value).toFixed(2);
-      console.log(result);
-      result = result.toString();
-      return result;
-    }
-  },
+  // filters: {
+  //   priceFilter: function(value) {
+  //     // value = value.toString();
+  //     if (!value) return "";
+  //     value = value.toString();
+  //     let result = parseFloat(value).toFixed(2);
+  //     console.log(result);
+  //     result = result.toString();
+  //     return result;
+  //   }
+  // },
   methods: {
     //================================================   刷新当前页
     reload() {
@@ -202,12 +203,30 @@ export default {
         }
       });
     },
+    //=========================================================    计算金额
+    cartSum() {
+      let _this = this;
+      this.sumCart = 0;
+      for (let i = 0; i < _this.checkMsg.length; i++) {
+        if (_this.checkMsg[i] == 1) {
+          _this.sumCart =
+            _this.sumCart +
+            _this.cartList[i].book_price * _this.cartList[i].count;
+        }
+      }
+      _this.sumCart = parseFloat(_this.sumCart).toFixed(2);
+      // console.log(_this.checkMsg);
+      // console.log(_this.checkMsg);
+      // console.log(_this.sumCart);
+      //  _this.sumCart=this.priceFilter|_this.sumCart;
+    },
     //=========================================================    数量
     decCount(i) {
       //this.cartList[i].count--;
       let _this = this;
       if (_this.cartList[i].count > 1) {
         _this.cartList[i].count -= 1;
+        _this.cartSum();
         wx.request({
           url: _this.GLOBAL.serverSrc + "/cart/cartUpdate",
           method: "POST",
@@ -219,12 +238,12 @@ export default {
             console.log("decCount");
           }
         });
-        _this.cartSum();
       }
     },
     incCount(i) {
       let _this = this;
       this.cartList[i].count++;
+      _this.cartSum();
       wx.request({
         url: _this.GLOBAL.serverSrc + "/cart/cartUpdate",
         method: "POST",
@@ -236,20 +255,8 @@ export default {
           console.log("incCount");
         }
       });
-      _this.cartSum();
     },
-    //=========================================================    计算金额
-    cartSum() {
-      let _this = this;
-      this.sumCart = 0;
-      for (let i = 0; i < _this.checkMsg.length; i++) {
-        if (_this.checkMsg[i] == 1) {
-          _this.sumCart +=
-            _this.cartList[i].book_price * _this.cartList[i].count;
-        }
-      }
-      //  _this.sumCart=this.priceFilter|_this.sumCart;
-    },
+
     //=========================================================    点击
     pickThis(i) {
       let _this = this;
@@ -267,9 +274,10 @@ export default {
       } else {
         _this.checkedAll = false;
       }
-      this.cartSum();
       this.checkMsg.push();
-      // console.log(this.checkMsg);
+      this.cartSum();
+      console.log(this.checkMsg);
+      //  console.log(this.checkMsg);
     },
     //=========================================================    全选
     checkAll() {
@@ -298,6 +306,7 @@ export default {
       globalBus.$emit("bookID", bookID);
     },
     //=========================================================    获取选中的列表,返回选中的id
+    //msg为判断是否全选，主要用于提交时，数据假删除以及数据提交url的区分
     getList(msg) {
       let _this = this;
       let tmpList = [];
@@ -317,11 +326,10 @@ export default {
         console.log("empty");
         return;
       }
-
       //console.log(_this.pickList);
       return _this.pickList;
     },
-
+    //=========================================================    多选
     cancelcartArr() {
       // 选中部分
       let _this = this;
@@ -344,6 +352,7 @@ export default {
         });
       }
     },
+    //=========================================================    全选
     cancelcartAll() {
       // 全选时
       let _this = this;
@@ -362,8 +371,8 @@ export default {
         }
       });
     },
+    //=========================================================    提交时根据checkedAll判断  选择类型 ，从而分类提交
     deleCart() {
-      //提交时根据checkedAll判断  选择类型 ，从而分类提交
       let _this = this;
       if (_this.checkedAll) {
         _this.cancelcartAll();
@@ -371,6 +380,7 @@ export default {
         _this.cancelcartArr();
       }
     },
+    //=========================================================   添加到收藏
     addToCollect() {
       let _this = this;
       let cartsList = this.getList(0);
@@ -389,6 +399,58 @@ export default {
           }
         });
       }
+    },
+    //=========================================================   结算，跳转到确认订单页
+    subCart() {
+      let _this = this;
+      _this.dataList = [];
+      let dataCreateList = [];
+      //let getIdList = this.getList();
+      //console.log(getIdList);
+      for (let i = 0; i < _this.checkMsg.length; i++) {
+        if (_this.checkMsg[i] == 1) {
+          let data = {
+            book_id: "",
+            book_name: "",
+            book_author: "",
+            book_img: "",
+            count: 0,
+            book_price: 0.0
+          };
+          let dataCreate = {
+            book_id: "",
+            count: 0,
+            price: 0.0
+          };
+          // 用于确认订单时传数据
+          data.book_id = _this.cartList[i].book_id;
+          data.book_name = _this.cartList[i].book_name;
+          data.book_author = _this.cartList[i].book_author;
+          data.book_img = _this.cartList[i].book_img;
+          data.count = _this.cartList[i].count;
+          data.book_price = _this.cartList[i].book_price;
+          _this.dataList.push(data);
+          //this.GLOBAL.globalConfirmOrder.orderList.push(data);
+
+          // 用于创建订单时传数据
+          dataCreate.book_id = _this.cartList[i].book_id;
+          dataCreate.count = _this.cartList[i].count;
+          dataCreate.price = _this.cartList[i].book_price;
+          dataCreateList.push(dataCreate);
+        }
+      }
+      console.log(_this.dataList);
+      //全局变量订单
+      this.GLOBAL.globalConfirmOrder.orderList = [];
+      this.GLOBAL.globalConfirmOrder.orderList = _this.dataList;
+      //全局变量数据
+      this.GLOBAL.globalConfirmOrder.createOrderList = [];
+      this.GLOBAL.globalConfirmOrder.createOrderList = dataCreateList;
+
+      console.log(this.GLOBAL.globalConfirmOrder.orderList);
+      wx.navigateTo({
+        url: "/pages/order_submit1/main"
+      });
     }
   },
   watch: {

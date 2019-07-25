@@ -1,8 +1,9 @@
 {
     "pages": [
-        "pages/order_submit/main",
-        "pages/index1/main",
         "pages/cart1/main",
+        "pages/order_submit1/main",
+        "pages/index1/main",
+        "pages/pickaddress1/main",
         "pages/mycollect1/main",
         "pages/bookdetail1/main",
         "pages/mine1/main",
@@ -13,14 +14,16 @@
         "navigationBarBackgroundColor": "#fff",
         "navigationBarTitleText": "WeChat",
         "navigationBarTextStyle": "black",
-        "navigationStyle": "custom"
+        "navigationStyle": "custom",
+        "enablePullDownRefresh": true
     },
     "tabBar": {
         "color": "#999",
         "backgroundColor": "#fafafa",
         "selectedColor": "#333",
         "borderStyle": "white",
-        "list": [{
+        "list": [
+            {
                 "text": "首页",
                 "pagePath": "pages/index1/main",
                 "iconPath": "static/images/index.png",
