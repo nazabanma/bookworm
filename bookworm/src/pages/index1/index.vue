@@ -20,11 +20,10 @@
     ></navigation-bar>-->
 
     <!-- logo和搜索框 -->
-    <!-- <search-bar :logoSrc="logoSrc" :searchSrc="searchSrc" :searchValue="searchValue"></search-bar> -->
-
+    <!-- ==================================================     组件：搜索框     ======================================================= -->
     <view class="searchPanel">
       <view class="container">
-        <view :style="{display:'table-cell',verticalAlign:'top',paddingRight:'0.25rem'}">
+        <view class="searchCell">
           <img class="logo" :src="logoSrc" />
         </view>&nbsp;
         <view :style="{display:'table-cell',verticalAlign:'top'}">
@@ -51,7 +50,7 @@
 
 <script>
 import navigationBar from "@/components/acomponents/navigation";
-import searchBar from "@/components/acomponents/searchBar";
+// import searchBar from "@/components/acomponents/searchBar";
 import kindTabbar from "@/components/acomponents/kindTabbar";
 import swiperBar from "@/components/acomponents/swiperBar";
 import bookList from "@/components/acomponents/bookList";
@@ -96,18 +95,66 @@ export default {
       swiperHeight: 150,
       showNow: false,
       swipFlag: true,
-      booksData: ""
+      booksData: "",
+      pageIndex: 1, //页码
+      pageSize: 10, //每页长度
+      pageCount: 0 //总页数
     };
   },
   components: {
     navigationBar,
-    searchBar,
+    // searchBar,
     kindTabbar,
     swiperBar,
     bookList
   },
 
+  onPullDownRefresh: function() {
+    this.pageIndex = 1;
+    this.getBookData(this.pickItem);
+  },
+
+  onReachBottom: function() {
+    if (this.pageIndex < this.pageCount) {
+      this.pageIndex++;
+      this.getBookData(this.pickItem);
+    } else {
+      console.log("加载完毕");
+    }
+  },
+
   methods: {
+    onChange(event) {
+      this.value = event.mp.detail;
+      console.log(this.value);
+      let name = event.mp.detail.value;
+      if (name) {
+        let _this = this;
+        this.$nextTick(function() {
+          // ----------------------------------------  获取书籍类型
+          wx.request({
+            url: this.GLOBAL.serverSrc + "/book/bookFind",
+            method: "POST",
+            data: { name: name },
+            success(res) {
+              console.log(res);
+              if (_this.pageIndex == 1) {
+                _this.booksData = res.data.data;
+                console.log(_this.booksData);
+                _this.pageIndex = 1;
+                wx.stopPullDownRefresh();
+              } else {
+                _this.booksData = _this.booksData.concat(res.data.data);
+                console.log(_this.booksData);
+              }
+              _this.pageCount = res.data.pageCount;
+              // console.log("获取到的书籍成功，数据");
+              //console.log(_this.booksData);
+            }
+          });
+        });
+      }
+    },
     //================================================   刷新当前页
     reload() {
       this.isRouterAlive = false;
@@ -121,10 +168,21 @@ export default {
       this.$nextTick(function() {
         // -----------------------------  获取书籍列表
         wx.request({
-          url: this.GLOBAL.serverSrc + "/book/bookList/" + pick,
-          method: "GET",
+          url: this.GLOBAL.serverSrc + "/book/bookListByPage",
+          method: "POST",
+          data: { page: _this.pageIndex, type_id: _this.pickItem },
           success(res) {
-            _this.booksData = res.data.data;
+            console.log(res);
+            if (_this.pageIndex == 1) {
+              _this.booksData = res.data.data;
+              console.log(_this.booksData);
+              _this.pageIndex = 1;
+              wx.stopPullDownRefresh();
+            } else {
+              _this.booksData = _this.booksData.concat(res.data.data);
+              console.log(_this.booksData);
+            }
+            _this.pageCount = res.data.pageCount;
             // console.log("获取到的书籍成功，数据");
             //console.log(_this.booksData);
           }
@@ -138,15 +196,11 @@ export default {
     getPick(msg) {
       console.log("点击的类别：" + msg);
       this.pickItem = msg;
-      this.reload();
+      this.pageIndex = 1;
       this.getBookData(msg);
     }
   },
   created() {
-    wx.showLoading({
-      title: "加载中"
-    });
-
     this.getBookData(this.pickItem);
     let _this = this;
     this.$nextTick(function() {
@@ -158,16 +212,10 @@ export default {
           _this.kindList = res.data.data;
           console.log(_this.kindList);
           //console.log(_this.booksData);
-          wx.hideLoading();
         }
       });
     });
     //this.getBookData(this.pickItem);
-  },
-  // 搜索框
-  onChange(event) {
-    this.value = event.mp.detail;
-    console.log(this.value);
   }
 };
 </script>
@@ -176,11 +224,13 @@ export default {
   /* height: 600px; */
   background-color: #f5f5f5;
 }
-/* --------------------------------------------------------------   搜索框*/
+/* -------------------------------------------------------------------- search  */
 .searchPanel {
   display: block;
+  height: 0.8rem;
   position: relative;
   z-index: 99999;
+  /* background-color: red; */
 }
 .container {
   display: table;
@@ -188,6 +238,11 @@ export default {
   height: 0.8rem;
   padding: 0.15rem 0.25rem;
   vertical-align: middle;
+}
+.searchCell {
+  display: table-cell;
+  vertical-align: top;
+  padding-right: 0.25rem;
 }
 .logo {
   width: 0.5rem;
@@ -199,9 +254,10 @@ export default {
 }
 .search_input {
   width: 5.4rem;
-  height: 0.58rem;
+  height: 0.56rem;
+  /* height: 0.6rem; */
   border-radius: 0.25rem;
-  padding: 0.02rem 0.2rem 0.02rem 0.6rem;
+  padding: 0 0.2rem 0 0.6rem;
   margin: 0;
   font-size: 14px;
   background-color: #ffffff;

@@ -15,7 +15,7 @@
       <view class="collectList" v-for="(item,index) in collectList" :key="index">
         <!-- 某个收藏 -->
         <view class="collectItem">
-          <view class="collect_left">
+          <view class="collect_left" @click="pickThis(index)">
             <view class="collect_area">
               <!-- <view
                 @click="pickThis(index)"
@@ -24,7 +24,7 @@
                 :value="index"
                 v-model="checkMsg[index]"
               ></view>-->
-              <view @click="pickThis(index)" class="circle" :class="{' active':checkMsg[index]}"></view>
+              <view class="circle" :class="{' active':checkMsg[index]}"></view>
             </view>
           </view>
           <view class="collect_right">

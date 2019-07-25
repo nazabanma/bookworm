@@ -26,7 +26,7 @@
         </view>
       </block>
     </view>
-    <button ref="button">按钮</button>
+    
   </div>
 </template>
 
@@ -46,14 +46,19 @@ export default {
     };
   },
   mounted() {
-    this.cutApart(26); //对数据进行分割，这里是4个为一组
+    this.cutApart(10); //对数据进行分割，这里是4个为一组
     this.waterfall(this.bookshowList); //瀑布流布局
   },
-  watch: {
-    bookList(val) {
-      // this.bookList = val;
-      // console.log("数据监控:" + val);
-    }
+ watch: {
+    bookList: {
+      handler: function(newVal, oldVal) 
+      { 
+      this.bookshowList=[];
+    this.cutApart(10); //对数据进行分割，这里是4个为一组
+    this.waterfall(this.bookshowList); //瀑布流布局
+      }
+    },
+   
   },
 
   methods: {

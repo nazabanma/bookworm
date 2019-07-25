@@ -1,7 +1,6 @@
 <template>
   <div>
     <!-- ==================================================     组件：首页分类点击切换     ======================================================= -->
-
     <view v-if="show" class="container">
       <view
         class="kindItems"
@@ -11,7 +10,7 @@
       >
         <a class="kindItem" :class="{ 'active': (pick_item==item.id) }">{{item.name}}</a>
       </view>
-      <view class="btn" @click="moreKind">
+      <view class="btn" @click="mSoreKind">
         <img class="btnImg" :src="btnSrc" />
       </view>
     </view>
@@ -43,7 +42,7 @@ export default {
     return {
       btnSrc: "/static/images/down.png",
       showItem: true,
-      pick_item:'',
+      pick_item: "",
       showList: [],
       btnSrc2: "/static/images/up.png",
       BtnList: [],
@@ -51,23 +50,51 @@ export default {
       // kindList: [],
     };
   },
+
+  watch: {
+    kindList: {
+      handler: function(newVal, oldVal) 
+      { 
+      let length = this.kindList.length;
+      for (let i = 0; i < 6; i++) {
+        // this.showList.splice(i, 0);
+        let item = this.kindList[i];
+        this.showList.push(item);
+      }
+      //console.log("类别显示数组[0]的typename："+this.showList[0].typename);
+      // 数组分割
+      for (let i = 0; i < length; i += 4) {
+        this.BtnList.push(this.kindList.slice(i, i + 4));
+      }
+      //console.log("按钮数组："+this.BtnList);
+      wx.hideLoading();
+      }
+    },
+   
+  },
   mounted() {
-    let length = this.kindList.length;
-    for (let i = 0; i < 6; i++) {
-      // this.showList.splice(i, 0);
-      let item = this.kindList[i];
-      this.showList.push(item);
-    }
-    //console.log("类别显示数组[0]的typename："+this.showList[0].typename);
-    // 数组分割
-    for (let i = 0; i < length; i += 4) {
-      this.BtnList.push(this.kindList.slice(i, i + 4));
+    if (this.kindList.length == 0) {
+      wx.showLoading({
+        title: "加载中"
+      });
+    } else {
+      let length = this.kindList.length;
+      for (let i = 0; i < 6; i++) {
+        // this.showList.splice(i, 0);
+        let item = this.kindList[i];
+        this.showList.push(item);
+      }
+      //console.log("类别显示数组[0]的typename："+this.showList[0].typename);
+      // 数组分割
+      for (let i = 0; i < length; i += 4) {
+        this.BtnList.push(this.kindList.slice(i, i + 4));
+      }
     }
     //console.log("按钮数组："+this.BtnList);
   },
   methods: {
     linkType(item) {
-      this.pick_item=item.id;
+      this.pick_item = item.id;
       //console.log(item.book_type_id);
       this.$emit("pickItem", item.id);
     },
@@ -90,7 +117,10 @@ export default {
   width: 100%;
   height: 0.6rem;
   padding: 0 0 0 0.3rem;
+  /* margin-top:0.1rem; */
   vertical-align: middle;
+  overflow: hidden;
+  /* background-color: blue; */
 }
 /* 类型列表 */
 .kindItems {
