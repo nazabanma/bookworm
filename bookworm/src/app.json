@@ -1,8 +1,8 @@
 {
     "pages": [
+        "pages/order_submit1/main",
         "pages/cart1/main",
         "pages/mycollect1/main",
-        "pages/order_submit1/main",
         "pages/pickaddress1/main",
         "pages/index1/main",
         "pages/bookdetail1/main",

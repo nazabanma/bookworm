@@ -404,20 +404,28 @@ export default {
       //console.log(getIdList);
       for (let i = 0; i < _this.checkMsg.length; i++) {
         if (_this.checkMsg[i] == 1) {
-          let data = {book_id:'',book_name:'',book_author:'',book_img:'',count:0,book_price:0.00};
+          let data = {
+            book_id: "",
+            book_name: "",
+            book_author: "",
+            book_img: "",
+            count: 0,
+            book_price: 0.0
+          };
           data.book_id = _this.cartList[i].book_id;
           data.book_name = _this.cartList[i].book_name;
           data.book_author = _this.cartList[i].book_author;
           data.book_img = _this.cartList[i].book_img;
           data.count = _this.cartList[i].count;
           data.book_price = _this.cartList[i].book_price;
-          _this.dataList.push(data);
+          // _this.dataList.push(data);
+          this.GLOBAL.globalConfirmOrder.orderList.push(data);
         }
       }
       console.log(_this.dataList);
       //全局变量订单
-      this.GLOBAL.globalConfirmOrder.orderList = [];
-      this.GLOBAL.globalConfirmOrder.orderList = _this.dataList;
+      //this.GLOBAL.globalConfirmOrder.orderList = [];
+      //this.GLOBAL.globalConfirmOrder.orderList = _this.dataList;
       console.log(this.GLOBAL.globalConfirmOrder.orderList);
       wx.navigateTo({
         url: "/pages/order_submit1/main"

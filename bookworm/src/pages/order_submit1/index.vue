@@ -36,59 +36,62 @@
       <!---------------------------------------------- 订单列表 --------------------------------------->
       <view class="orderPanel">
         <view class="orderHead">
-          <view class="orderTitle"></view>
+          <view class="logo">
+            <image class="logo_img" :src="logoSrc" />
+            <image class="logoTitle_img" :src="logotitleSrc" />
+          </view>
+        </view>
+
+        <view class="orderList" v-for="(item,index) in orderTest" :key="index">
+          <view class="orderItem">
+            <view class="item_left">
+              <image class="item__img" :src="item.book_img" />
+            </view>
+            <view class="item_right">
+              <view class="orderShow">
+                <view class="item__info">
+                  <view class="item_bookname">《{{item.book_name}}》</view>
+                  <view class="item_author">{{item.book_author}}</view>
+                </view>
+                <view class="item__num">
+                  <view class="item_price">&yen;{{item.book_price}}</view>
+                  <view class="item_num">&times;{{item.count}}</view>
+                </view>
+              </view>
+              <view class="orderCount">
+                <view class="orderCount_num">共{{item.count}}件</view>
+                <view class="orderCount_sum">
+                  小计：
+                  <view class="sum_Num">&yen;{{item.count*item.book_price|priceFilter}}</view>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class="orderFoot">
+          <view class="orderDeliver">
+            <view class="orderFoot_left">配送方式</view>
+            <view class="orderFoot_content">普通配送</view>
+            <view class="orderFoot_right">
+              <view class="jump_area">
+                <image class="jumpImg" mode="widthFix" :src="jumpSrc" />
+              </view>
+            </view>
+          </view>
+          <view class="orderRemarks">
+            <view class="orderFoot_left">订单备注</view>
+            <view class="orderFoot_content">
+              <input class="remarks" placeholder="选填，请先和商家协商一致" />
+            </view>
+          </view>
         </view>
       </view>
-      <view class="orderList" v-for="(item,index) in orderList" :key="index">
-        <view class="orderItem">
-          <view class="item_left">
-            <image class="item__img" :src="item.book_img" />
-          </view>
-          <view class="item_right">
-            <view class="item__info">
-              <view class="item_bookname">{{item.book_name}}</view>
-              <view class="item_author">{{item.book_author}}</view>
-            </view>
-            <view class="item__num">
-              <view class="item_price">&yen;{{item.book_price}}</view>
-              <view class="item_num">&times;{{item.count}}</view>
-            </view>
-          </view>
-          <view class="orderCount">
-            <view class="orderCount_num">共{{item.count}}件</view>
-            <view class="orderCount_sum">
-              小计：
-              <view class="sum_Num">{{item.count}}*{{item.book_price}}</view>
-            </view>
-          </view>
+      <!-- <view class="checkView">
+        <view class="check_area" @click="pickThis(item.address_id)">
+          <view class="circle" :class="{' active':pickFlag}"></view>
         </view>
-      </view>
-      <view class="orderFoot">
-        <view class="orderDeliver">
-          <view class="orderFoot_left">配送方式</view>
-          <view class="orderFoot_content">普通配送</view>
-          <view class="orderFoot_right">
-            <view class="jump_area">
-              <image class="jumpImg" mode="widthFix" :src="jumpSrc" />
-            </view>
-          </view>
-        </view>
-        <view class="orderRemarks">
-          <view class="orderFoot_left">订单备注</view>
-          <view class="orderFoot_content">
-            <input class="remarks" />
-          </view>
-        </view>
-      </view>
-    </view>
-    <view class="checkView">
-      <view class="check_area">
-        <!-- <view
-          @click="pickThis(item.address_id)"
-          class="circle"
-          :class="{' active':pickAddress==item.address_id}"
-        ></view>-->
-      </view>匿名购买
+        <view class="check_lable">匿名购买</view>
+      </view>-->
     </view>
 
     <view v-if="emptyFlag!=1" class="empty"></view>
@@ -125,15 +128,58 @@ export default {
       naviImgsrc: "/static/images/left.png",
       addSrc: "/static/images/address.png",
       jumpSrc: "/static/images/right.png",
+      logoSrc: "/static/images/store.png",
+      logotitleSrc: "/static/images/logoTitle.png",
       address_getId: "",
       addressItem: "",
       emptyFlag: -1,
-      orderList: []
+      pickFlag: 0,
+      orderList: [],
+      orderTest: [
+        {
+          book_id: "1",
+          book_name: "PHP",
+          book_author: "一哥",
+          book_img:
+            "//g-search2.alicdn.com/img/bao/uploaded/i4/i2/288902762/O1CN01zhpNgo1WH2Q2lVDh9_!!0-item_pic.jpg",
+          count: 7,
+          book_price: "49.80"
+        },
+        {
+          book_id: "2",
+          book_name: "PHP",
+          book_author: "晖哥",
+          book_img:
+            "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1563335497282&di=e5cd11df01d63c7da949f06aaf768ace&imgtype=0&src=http%3A%2F%2Fimg3m7.ddimg.cn%2F17%2F14%2F1426983047-1_u_1.jpg",
+          count: 7,
+          book_price: "49.80"
+        },
+        {
+          book_id: "1",
+          book_name: "很好的书",
+          book_author: "一哥",
+          book_img:
+            "//g-search2.alicdn.com/img/bao/uploaded/i4/i2/288902762/O1CN01zhpNgo1WH2Q2lVDh9_!!0-item_pic.jpg",
+          count: 7,
+          book_price: "49.80"
+        }
+      ]
     };
   },
 
   components: {
     navigationBar
+  },
+  filters: {
+    priceFilter: function(value) {
+      // value = value.toString();
+      if (!value) return "";
+      value = value.toString();
+      let result = parseFloat(value).toFixed(2);
+      console.log(result);
+      result = result.toString();
+      return result;
+    }
   },
   created: function() {
     this.orderList = this.GLOBAL.globalConfirmOrder.orderList;
@@ -302,5 +348,309 @@ export default {
   margin-right: 1em;
   font-size: 12px;
   color: #36282b;
+}
+/* -------------------------------------------------------------------------------------
+                                      卡片
+---------------------------------------------------------------------------------------*/
+.orderPanel {
+  display: block;
+  /* width: 100%; */
+  height: auto;
+  margin-top: 0.3rem;
+  padding: 0.2rem 0.2rem;
+  border-radius: 20rpx;
+  background-color: white;
+  overflow: hidden;
+  /* padding: 0 0.3rem 0.1rem; */
+}
+.orderHead {
+  display: -webkit-flex;
+  display: flex;
+  padding: 0rem 0 0.2rem 0;
+}
+.logo {
+  height: 46rpx;
+  flex-basis: 160rpx;
+}
+/* 图片 */
+.logo_img,
+.logoTitle_img {
+  display: inline-block;
+  height: 46rpx;
+}
+.logo_img {
+  width: 50rpx;
+}
+.logoTitle_img {
+  width: 110rpx;
+}
+/* .orderList {
+  padding: 0rem 0 0.2rem 0;
+} */
+.orderItem {
+  display: -webkit-flex;
+  display: flex;
+  height: 2.5rem;
+  width: 100%;
+  /* border-radius: 20rpx; */
+  margin-bottom: 20rpx;
+  background-color: white;
+}
+.item_left {
+  flex: 2;
+  display: block;
+  /* display: table-cell; */
+  /* border: 1px solid gold; */
+  /* line-height: 2rem; */
+  /* vertical-align: middle; */
+  text-align: center;
+  width: 2rem;
+  max-width: 2.2rem;
+  height: 2.5rem;
+  /* vertical-align: middle; */
+  text-align: center;
+  /* line-height: 60rpx; */
+  display: flex;
+  flex-direction: row;
+  align-items: center; /*垂直居中*/
+  justify-content: center; /*水平居中*/
+}
+.item_right {
+  flex: 3;
+  display: block;
+  padding: 0.2rem;
+  overflow: hidden;
+}
+.item__img {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  margin: 0 auto;
+  max-width: 2rem;
+  max-height: 2rem;
+}
+.orderShow {
+  padding-top: 10rpx;
+  /* background-color: #f5f5f5; */
+  display: -webkit-flex;
+  display: flex;
+}
+/* 左侧信息 */
+.item__info {
+  display: inline-block;
+  width: 100%;
+}
+.item_bookname {
+  font-size: 14px;
+  color: #36282b;
+}
+.item_author {
+  font-size: 10px;
+  color: #787172;
+  margin-top: 20rpx;
+  text-indent: 0.5em;
+}
+/* 右侧数据 */
+.item__num {
+  display: inline-block;
+}
+.item_price {
+  font-size: 14px;
+  color: #36282b;
+}
+.item_num {
+  margin-top: 18rpx;
+  font-size: 12px;
+  color: #36282b;
+  text-align: right;
+}
+/* 底部小计 */
+.orderCount {
+  display: table-row;
+  /* background-color: #f5f5f5; */
+  display: block;
+  height: 0.5rem;
+  margin-top: 0.8rem;
+  margin-bottom: 15rpx;
+  text-align: right;
+}
+.orderCount_num,
+.orderCount_sum,
+.sum_Num {
+  display: inline-block;
+  font-size: 12px;
+}
+.orderCount_num {
+  color: #787172;
+  margin-right: 0.3rem;
+}
+.orderCount_sum {
+  color: #36282b;
+}
+.sum_Num {
+  color: #bc2b37;
+}
+
+/* .orderFoot {
+  background-color: #f5f5f5;
+} */
+.orderDeliver,
+.orderRemarks {
+  display: block;
+  font-size: 12px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+.orderFoot_left,
+.orderFoot_content {
+  display: inline-block;
+  height: 0.5rem;
+  margin-bottom: 0.3rem;
+  /* background-color: bisque; */
+  line-height: 0.36rem;
+}
+.orderFoot_left {
+  flex: 1;
+  width: 1.4rem;
+  max-width: 1.4rem;
+  color: #36282b;
+}
+.orderFoot_content {
+  flex: 3;
+  color: #787172;
+}
+/* .orderFoot_right {
+}
+
+.jump_area {
+}
+.jumpImg {
+} */
+
+/* 输入框 */
+.remarks {
+  display: inline-block;
+  /* background-color: red; */
+  width: 94%;
+  height: 0.36rem;
+  /* padding: 0rpx 20rpx 0 0; */
+}
+/* 选择匿名 */
+.checkView {
+  display: block;
+  /* background-color: red; */
+  height: 60rpx;
+  color: #787172;
+  /* vertical-align: top; */
+  margin-top: 0.2rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center; /*垂直居中*/
+  text-align: left;
+}
+.check_area {
+  flex: 1;
+  /* background-color: blue; */
+  display: inline-block;
+  width: 60rpx;
+  height: 60rpx;
+  margin: 0 20rpx auto 0;
+  max-width: 60rpx;
+  /* vertical-align: top; */
+  /* background-color: #f5f5f5; */
+  text-align: left;
+}
+.check_lable {
+  flex: 4;
+  /* background-color: blue; */
+  display: inline-block;
+  /* width: 60rpx; */
+  /* height: 60rpx; */
+  margin: 0 auto;
+  font-size: 10px;
+  line-height: 10px;
+  /* vertical-align: top; */
+  text-align: left;
+}
+.circle {
+  display: block;
+  position: relative;
+  width: 30rpx;
+  height: 30rpx;
+  margin: 13rpx auto;
+  /* left: 0;
+  right: 0; */
+  border-radius: 20rpx;
+  border: 1px solid #b9abaa;
+}
+
+.circle.active:after {
+  position: relative;
+  display: block;
+  content: "";
+  width: 14rpx;
+  height: 14rpx;
+  margin: 0 auto;
+  left: 0rpx;
+  top: 6rpx;
+  /* bottom: 0.3rem; */
+  background: #521d23;
+  border: 1px solid #521d23;
+  border-radius: 50%;
+  color: #521d23;
+  /* transform: translate(-50%, -50%) scale(1);
+  -webkit-transform: translate(-50%, -50%) scale(1); */
+}
+.foot_tabbar {
+  height: 1rem;
+  width: 100%;
+  transform: none;
+  position: fixed;
+  bottom: 0;
+  z-index: 999;
+  background-color: white;
+  display: -webkit-flex;
+  display: flex;
+}
+.foot_tabbar .orderCount {
+  margin: 0;
+  flex: 4;
+  display: inline-block;
+}
+.orderCount_num,
+.orderCount_sum,
+.sum_Num {
+  display: inline-block;
+}
+
+.orderCount_num {
+  font-size: 12px;
+  color: #787172;
+}
+.orderCount_sum {
+  font-size: 12px;
+  color: #36282b;
+}
+.sum_Num {
+  font-size: 14px;
+  color: #bc2b37;
+}
+.addBtn {
+  flex: 1;
+  display: inline-block;
+  height: 0.5rem;
+  max-height: 0.5rem;
+  font-size: 15px;
+  border: 1px solid #521d23;
+  border-radius: 35rpx;
+  background-color: #521d23;
+  margin-top: 0.15rem;
+  margin-right: 36rpx;
+  color: white;
+  padding: 15rpx 40rpx 0;
+  vertical-align: middle;
+  line-height: 15px;
 }
 </style>
