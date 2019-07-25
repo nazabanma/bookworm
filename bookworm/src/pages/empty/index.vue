@@ -34,7 +34,12 @@ export default {
 
 <style scoped>
 .index1 {
-  /* height: 600px; */
+  /*Firefox*/
+  min-height: -moz-calc(94vh);
+  /*chrome safari*/
+  min-height: -webkit-calc(94vh);
+  /*Standard */
+  min-height: calc(94vh);
   background-color: #f5f5f5;
 }
 </style>

@@ -5,6 +5,8 @@
         "pages/index1/main",
         "pages/pickaddress1/main",
         "pages/mycollect1/main",
+        "pages/pickaddress1/main",
+        "pages/index1/main",
         "pages/bookdetail1/main",
         "pages/mine1/main",
         "pages/test1/main"
