@@ -109,11 +109,7 @@
           <image class="addAddress" mode="widthFix" :src="addSrc" @click="jumpToAdd" />
         </view>
       </view>
-<<<<<<< HEAD
     </view>-->
-=======
-    </view> -->
->>>>>>> 3e2543b14c6349a47ab93aec4bfd61232dc3e169
     <!-- ==================================================     组件：商品详情页面底部的按钮组合     ======================================================= -->
     <view v-if="emptyFlag==0" class="foot_tabbar">
       <view class="orderCount">
@@ -139,7 +135,6 @@ export default {
       logoSrc: "/static/images/store.png",
       logotitleSrc: "/static/images/logoTitle.png",
       // emptyImg: this.GLOBAL.serverSrc + "/static/images/msg_empty_address.png",
-<<<<<<< HEAD
       address_getId: "", //存放地址列表获取的id
       address_Id: "", //z最终的地址id
       addressItem: {
@@ -150,10 +145,6 @@ export default {
         area: "",
         concrete_address: ""
       },
-=======
-      address_getId: "",
-      addressItem: "",
->>>>>>> 3e2543b14c6349a47ab93aec4bfd61232dc3e169
       emptyFlag: -1,
       pickFlag: 0,
       remarkValue: "", //备注
@@ -213,11 +204,7 @@ export default {
   mounted() {
     //this.getParams();
     this.orderList = this.GLOBAL.globalConfirmOrder.orderList;
-<<<<<<< HEAD
     this.getAddressData();
-=======
-    this.getData();
->>>>>>> 3e2543b14c6349a47ab93aec4bfd61232dc3e169
     this.sumCount();
   },
   watch: {
