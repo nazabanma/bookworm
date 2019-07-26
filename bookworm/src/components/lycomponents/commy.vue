@@ -38,7 +38,6 @@
           <view v-if="run == 0">
             <button class="btn4" @click="pay">付款</button>
             <button class="btn1" @click="cancel">取消订单</button>
-            <view class="btn3" @click="clickToComment">去评价</view>
           </view>
           <view v-if="run == 1">
             <button class="btn2" @click="cancel">取消订单</button>
@@ -49,9 +48,7 @@
             <button class="btn1" @click="check">查看物流</button>
           </view>
           <view v-if="run == 3">
-            <view class="btn3" @click="clickToComment">去评价</view>
-            <!-- <a href="/pages/comment2/main" class="btn3">去评价</a> -->
-            <!-- <a >测试</a> -->
+            <button class="btn3" @click="clickToComment(items)">去评价</button>
           </view>
           <!-- <view  v-else-if="run === '评价后'">
                     <button class="btn1" @click="del">删除订单</button>
@@ -59,7 +56,6 @@
         </view>
       </view>
     </view>
-    <view class="btn3" @click="clickToComment">测试</view>
 
     <!-- </view> -->
 
@@ -183,7 +179,6 @@ export default {
               _this.bookList[i].item[j].price * _this.bookList[i].item[j].count;
             // console.log(_this.bookList[i].item[j].price * _this.bookList[i].item[j].count, j);
             // console.log(rowprice);
-
             // _this.totalprice[i] = parseFloat(data).toFixed(2);
           }
           rowprice = parseFloat(rowprice).toFixed(2);
@@ -244,44 +239,25 @@ export default {
     check() {},
 
     //==============  去评价   ===========
-    clickToComment() {
-      console.log(111);
-      //   console.log(index);
-      //   console.log(222);
-      //   for (let i = 0; i < this.bookList[index].length; i++) {
-      //     console.log(this.bookList[index]);
-      //   }
-      //   console.log("item");
-      //   let _this = this;
-      //   let dataList = [];
-      //   //let getIdList = this.getList();
-      //   //console.log(getIdList);
-      //   for (let i = 0; i < _this.checkMsg.length; i++) {
-      //     if (_this.checkMsg[i] == 1) {
-      //       let data = {
-      //         book_id: "",
-      //         book_name: "",
-      //         book_author: "",
-      //         book_img: "",
-      //         count: 0,
-      //         book_price: 0.0
-      //       };
-      //       data.book_id = _this.cartList[i].book_id;
-      //       data.book_name = _this.cartList[i].book_name;
-      //       data.book_author = _this.cartList[i].book_author;
-      //       data.book_img = _this.cartList[i].book_img;
-      //       data.count = _this.cartList[i].count;
-      //       data.book_price = _this.cartList[i].book_price;
-      //       _this.dataList.push(data);
-      //     }
-      //   }
-      //   //全局变量订单
-      //   this.GLOBAL.globalConfirmOrder.orderList = [];
-      //   this.GLOBAL.globalConfirmOrder.orderList = _this.dataList;
-      //   console.log(this.GLOBAL.globalConfirmOrder.orderList);
-      //   wx.navigateTo({
-      //     url: "/pages/comment2/main"
-      //   });
+    clickToComment(items) {
+      console.log(items);
+      console.log(items.item);
+      let order_item = { order_item_id: 0, bookname: "", content: "", img: "" };
+      let commentList = [];
+      if (items.item.length) {
+        for (let i = 0; i < items.item.length; i++) {
+          order_item.order_item_id = items.item[i].order_item_id;
+          order_item.bookname = items.item[i].book_name;
+          commentList.push(order_item);
+          order_item={ order_item_id: 0, bookname: "", content: "", img: "" };
+        }
+      }
+      this.GLOBAL.globalConfirmOrder.commentList = [];
+      this.GLOBAL.globalConfirmOrder.commentList = commentList;
+      console.log(this.GLOBAL.globalConfirmOrder.commentList);
+      wx.navigateTo({
+        url: "/pages/delivercomment1/main"
+      });
     },
     //==============  去评价   ===========
 

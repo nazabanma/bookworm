@@ -25,65 +25,70 @@
     </view>
 
     <!--全部-->
-    <view v-if="pick_item=='all'">
-      <view v-if="show">
-        <commy-bar :run="pick_item" :bookList="bookList" :res="''" :display="display">
-          <!-- <commy-bar :bookList="bookListb" :display="display">                     -->
-        </commy-bar>
-      </view>
-      <view v-if="!show" style="text-align: center;">
+
+    <view v-if="show">
+      <commy-bar :run="pick_item" :bookList="bookList" :res="''" :display="display">
+        <!-- <commy-bar :bookList="bookListb" :display="display">                     -->
+      </commy-bar>
+    </view>
+    <view v-if="!show" style="text-align: center;">
+      <view v-if="pick_item=='all'">
         <img :src="imgArr[0]" />
         <view class="txt">客官，您还没有订单呢~</view>
       </view>
     </view>
 
     <!--待付款-->
-    <view v-if="pick_item == 0">
-      <view v-if="show">
-        <commy-bar :run="pick_item" :bookList="bookList" :res="0" :display="display">
-          <!-- <commy-bar :bookList="bookList" :display="display">                     -->
-        </commy-bar>
-      </view>
-      <view v-if="!show" style="text-align: center;">
+
+    <view v-if="show">
+      <commy-bar :run="pick_item" :bookList="bookList" :res="0" :display="display">
+        <!-- <commy-bar :bookList="bookList" :display="display">                     -->
+      </commy-bar>
+    </view>
+    <view v-if="!show" style="text-align: center;">
+      <view v-if="pick_item == 0">
         <img :src="imgArr[1]" />
         <view class="txt">谈钱伤感情，该付还是要付的~</view>
       </view>
     </view>
 
     <!--待发货-->
-    <view v-if="pick_item == 1">
-      <view v-if="show">
-        <commy-bar :run="pick_item" :bookList="bookList" :res="1" :display="display">
-          <!-- <commy-bar :bookList="bookList" :display="display">                     -->
-        </commy-bar>
-      </view>
-      <view v-if="!show" style="text-align: center;">
+
+    <view v-if="show">
+      <commy-bar :run="pick_item" :bookList="bookList" :res="1" :display="display">
+        <!-- <commy-bar :bookList="bookList" :display="display">                     -->
+      </commy-bar>
+    </view>
+    <view v-if="!show" style="text-align: center;">
+      <view v-if="pick_item == 1">
         <img :src="imgArr[2]" />
         <view class="txt">客官，您还没有订单呢~</view>
       </view>
     </view>
 
     <!--待收货-->
-    <view v-if="pick_item == 2">
-      <view v-if="show">
-        <commy-bar :run="pick_item" :bookList="bookList" :res="1" :display="display">
-          <!-- <commy-bar :bookList="bookList" :display="display">                     -->
-        </commy-bar>
-      </view>
-      <view v-if="!show" style="text-align: center;">
+
+    <view v-if="show">
+      <commy-bar :run="pick_item" :bookList="bookList" :res="1" :display="display">
+        <!-- <commy-bar :bookList="bookList" :display="display">                     -->
+      </commy-bar>
+    </view>
+    <view v-if="!show" style="text-align: center;">
+      <view v-if="pick_item == 2">
         <img :src="imgArr[3]" />
         <view class="txt">客官，您还没有订单呢~</view>
       </view>
     </view>
 
     <!--待评价-->
-    <view v-if="pick_item == 3">
-      <view v-if="show">
-        <commy-bar :run="pick_item" :bookList="bookList" :res="1" :display="display">
-          <!-- <commy-bar :bookList="bookList" :display="display">                     -->
-        </commy-bar>
-      </view>
-      <view v-if="!show" style="text-align: center;">
+
+    <view v-if="show">
+      <commy-bar :run="pick_item" :bookList="bookList" :res="1" :display="display">
+        <!-- <commy-bar :bookList="bookList" :display="display">                     -->
+      </commy-bar>
+    </view>
+    <view v-if="!show" style="text-align: center;">
+      <view v-if="pick_item == 3">
         <img :src="imgArr[4]" />
         <view class="txt">客官，您还没有订单呢~</view>
       </view>
@@ -133,7 +138,8 @@ export default {
           typename: "待评价"
         }
       ],
-      pick_item: "all",
+      //   pick_item: "all",
+      pick_item: 3,
       bookList: [],
       res: "",
       run: "",
@@ -199,7 +205,7 @@ export default {
     },
     linkType(item) {
       this.pick_item = item.id;
-    //   this.$emit("pickItem", item.id);
+      //   this.$emit("pickItem", item.id);
     },
     getList() {
       let _this = this;

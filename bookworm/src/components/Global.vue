@@ -35,7 +35,8 @@ let globalConfirmOrder = new Vue({
   data: function() {
     return {
       orderList: [],
-      createOrderList: []
+      createOrderList: [],
+      commentList: []
     };
   }
 });
@@ -50,6 +51,7 @@ export default {
 Vue.prototype.globalData = globalData;
 
 Vue.prototype.globalConfirmOrder = globalConfirmOrder;
+
 
 // 调取id ：this.GLOBAL.userId
 // 调取用户名 ： this.GLOBAL.globalData.userName;
