@@ -27,13 +27,9 @@
               <view class="address__concrete">{{item.concrete_address}}</view>
             </view>
           </view>
-          <view class="address_right">
+          <view class="address_right" @click="pickThis(item.address_id)">
             <view class="check_area">
-              <view
-                @click="pickThis(item.address_id)"
-                class="circle"
-                :class="{' active':pickAddress==item.address_id}"
-              ></view>
+              <view class="circle" :class="{' active':pickAddress==item.address_id}"></view>
             </view>
           </view>
         </view>
@@ -64,7 +60,7 @@
       </view>
     </view>
     <!-- <view></view>
-    <view></view> -->
+    <view></view>-->
   </div>
 </template>
 
@@ -227,7 +223,7 @@ export default {
   /* bottom: 0.3rem; */
   background: #521d23;
   border: 1px solid #521d23;
-  border-radius: 50%;
+  border-radius: 14rpx;
   color: #521d23;
   /* transform: translate(-50%, -50%) scale(1);
   -webkit-transform: translate(-50%, -50%) scale(1); */

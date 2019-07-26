@@ -203,12 +203,30 @@ export default {
         }
       });
     },
+    //=========================================================    计算金额
+    cartSum() {
+      let _this = this;
+      this.sumCart = 0;
+      for (let i = 0; i < _this.checkMsg.length; i++) {
+        if (_this.checkMsg[i] == 1) {
+          _this.sumCart =
+            _this.sumCart +
+            _this.cartList[i].book_price * _this.cartList[i].count;
+        }
+      }
+      _this.sumCart = parseFloat(_this.sumCart).toFixed(2);
+      // console.log(_this.checkMsg);
+      // console.log(_this.checkMsg);
+      // console.log(_this.sumCart);
+      //  _this.sumCart=this.priceFilter|_this.sumCart;
+    },
     //=========================================================    数量
     decCount(i) {
       //this.cartList[i].count--;
       let _this = this;
       if (_this.cartList[i].count > 1) {
         _this.cartList[i].count -= 1;
+        _this.cartSum();
         wx.request({
           url: _this.GLOBAL.serverSrc + "/cart/cartUpdate",
           method: "POST",
@@ -220,12 +238,12 @@ export default {
             console.log("decCount");
           }
         });
-        _this.cartSum();
       }
     },
     incCount(i) {
       let _this = this;
       this.cartList[i].count++;
+      _this.cartSum();
       wx.request({
         url: _this.GLOBAL.serverSrc + "/cart/cartUpdate",
         method: "POST",
@@ -237,23 +255,8 @@ export default {
           console.log("incCount");
         }
       });
-      _this.cartSum();
     },
-    //=========================================================    计算金额
-    cartSum() {
-      let _this = this;
-      this.sumCart = 0;
-      for (let i = 0; i < _this.checkMsg.length; i++) {
-        if (_this.checkMsg[i] == 1) {
-          _this.sumCart =
-            _this.sumCart +
-            _this.cartList[i].book_price * _this.cartList[i].count;
-          _this.sumCart = parseFloat(_this.sumCart).toFixed(2);
-          console.log(_this.sumCart);
-        }
-      }
-      //  _this.sumCart=this.priceFilter|_this.sumCart;
-    },
+
     //=========================================================    点击
     pickThis(i) {
       let _this = this;
@@ -271,9 +274,10 @@ export default {
       } else {
         _this.checkedAll = false;
       }
-      this.cartSum();
       this.checkMsg.push();
-      // console.log(this.checkMsg);
+      this.cartSum();
+      console.log(this.checkMsg);
+      //  console.log(this.checkMsg);
     },
     //=========================================================    全选
     checkAll() {
@@ -400,6 +404,7 @@ export default {
     subCart() {
       let _this = this;
       _this.dataList = [];
+      let dataCreateList = [];
       //let getIdList = this.getList();
       //console.log(getIdList);
       for (let i = 0; i < _this.checkMsg.length; i++) {
@@ -412,20 +417,36 @@ export default {
             count: 0,
             book_price: 0.0
           };
+          let dataCreate = {
+            book_id: "",
+            count: 0,
+            price: 0.0
+          };
+          // 用于确认订单时传数据
           data.book_id = _this.cartList[i].book_id;
           data.book_name = _this.cartList[i].book_name;
           data.book_author = _this.cartList[i].book_author;
           data.book_img = _this.cartList[i].book_img;
           data.count = _this.cartList[i].count;
           data.book_price = _this.cartList[i].book_price;
-          // _this.dataList.push(data);
-          this.GLOBAL.globalConfirmOrder.orderList.push(data);
+          _this.dataList.push(data);
+          //this.GLOBAL.globalConfirmOrder.orderList.push(data);
+
+          // 用于创建订单时传数据
+          dataCreate.book_id = _this.cartList[i].book_id;
+          dataCreate.count = _this.cartList[i].count;
+          dataCreate.price = _this.cartList[i].book_price;
+          dataCreateList.push(dataCreate);
         }
       }
       console.log(_this.dataList);
       //全局变量订单
-      //this.GLOBAL.globalConfirmOrder.orderList = [];
-      //this.GLOBAL.globalConfirmOrder.orderList = _this.dataList;
+      this.GLOBAL.globalConfirmOrder.orderList = [];
+      this.GLOBAL.globalConfirmOrder.orderList = _this.dataList;
+      //全局变量数据
+      this.GLOBAL.globalConfirmOrder.createOrderList = [];
+      this.GLOBAL.globalConfirmOrder.createOrderList = dataCreateList;
+
       console.log(this.GLOBAL.globalConfirmOrder.orderList);
       wx.navigateTo({
         url: "/pages/order_submit1/main"

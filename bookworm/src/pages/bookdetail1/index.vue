@@ -56,7 +56,7 @@
     <!-- 底部按钮 -->
     <!-- 补空位 -->
     <view class="empty"></view>
-    <bottom-tabbar :collectType="ifCollect" :bookId="bookId"></bottom-tabbar>
+    <bottom-tabbar :collectType="ifCollect" :bookId="bookId" :bookInfo="bookData" :bookImg="imgUrls[0]"></bottom-tabbar>
   </div>
 </template>
 

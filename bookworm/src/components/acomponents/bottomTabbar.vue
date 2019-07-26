@@ -31,7 +31,7 @@
 
 <script>
 export default {
-  props: ["collectType", "bookId"],
+  props: ["collectType", "bookId", "bookInfo", "bookImg"],
   data() {
     return {
       // imgsrc1: "/static/images/收藏——未选中@3x.png",
@@ -67,7 +67,7 @@ export default {
     },
     //=========================================================    添加到购物车
     addToCart() {
-      let _this=this;
+      let _this = this;
       wx.request({
         url: _this.GLOBAL.serverSrc + "/cart/cartAdd",
         method: "POST",
@@ -79,6 +79,51 @@ export default {
     },
     BuyNow() {
       console.log("BuyNow");
+      let _this = this;
+      _this.dataList = [];
+      let dataCreateList = [];
+
+      let data = {
+        book_id: this.bookId,
+        book_name: this.bookInfo.book_name,
+        book_author: this.bookInfo.book_detail,
+        book_img: this.bookImg,
+        count: 1,
+        book_price: this.bookInfo.book_price
+      };
+      let dataCreate = {
+        book_id: this.bookId,
+        count: 1,
+        price: this.bookInfo.book_price
+      };
+      // 用于确认订单时传数据
+      // data.book_id = _this.cartList[i].book_id;
+      // data.book_name = _this.cartList[i].book_name;
+      // data.book_author = _this.cartList[i].book_author;
+      // data.book_img = _this.cartList[i].book_img;
+      // data.count = _this.cartList[i].count;
+      // data.book_price = _this.cartList[i].book_price;
+      _this.dataList.push(data);
+      //this.GLOBAL.globalConfirmOrder.orderList.push(data);
+
+      // 用于创建订单时传数据
+      // dataCreate.book_id = _this.cartList[i].book_id;
+      // dataCreate.count = _this.cartList[i].count;
+      // dataCreate.price = _this.cartList[i].book_price;
+      dataCreateList.push(dataCreate);
+
+      console.log(_this.dataList);
+      //全局变量订单
+      this.GLOBAL.globalConfirmOrder.orderList = [];
+      this.GLOBAL.globalConfirmOrder.orderList = _this.dataList;
+      //全局变量数据
+      this.GLOBAL.globalConfirmOrder.createOrderList = [];
+      this.GLOBAL.globalConfirmOrder.createOrderList = dataCreateList;
+
+      console.log(this.GLOBAL.globalConfirmOrder.orderList);
+      wx.navigateTo({
+        url: "/pages/order_submit1/main"
+      });
     }
   }
 };

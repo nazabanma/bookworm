@@ -20,6 +20,9 @@
     ></navigation-bar>-->
 
     <!-- logo和搜索框 -->
+
+    <!-- <search-bar></search-bar> -->
+
     <!-- ==================================================     组件：搜索框     ======================================================= -->
     <view class="searchPanel">
       <view class="container">
@@ -50,7 +53,7 @@
 
 <script>
 import navigationBar from "@/components/acomponents/navigation";
-// import searchBar from "@/components/acomponents/searchBar";
+//import searchBar from "@/components/acomponents/searchBar";
 import kindTabbar from "@/components/acomponents/kindTabbar";
 import swiperBar from "@/components/acomponents/swiperBar";
 import bookList from "@/components/acomponents/bookList";
@@ -103,7 +106,7 @@ export default {
   },
   components: {
     navigationBar,
-    // searchBar,
+    //searchBar,
     kindTabbar,
     swiperBar,
     bookList

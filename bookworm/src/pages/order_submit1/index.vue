@@ -41,8 +41,7 @@
             <image class="logoTitle_img" :src="logotitleSrc" />
           </view>
         </view>
-
-        <view class="orderList" v-for="(item,index) in orderTest" :key="index">
+        <view class="orderList" v-for="(item,index) in orderList" :key="index">
           <view class="orderItem">
             <view class="item_left">
               <image class="item__img" :src="item.book_img" />
@@ -62,7 +61,7 @@
                 <view class="orderCount_num">共{{item.count}}件</view>
                 <view class="orderCount_sum">
                   小计：
-                  <view class="sum_Num">&yen;{{item.count*item.book_price|priceFilter}}</view>
+                  <view class="sum_Num">&yen;{{totalCount[index]}}</view>
                 </view>
               </view>
             </view>
@@ -72,16 +71,21 @@
           <view class="orderDeliver">
             <view class="orderFoot_left">配送方式</view>
             <view class="orderFoot_content">普通配送</view>
-            <view class="orderFoot_right">
+            <!-- <view class="orderFoot_right">
               <view class="jump_area">
                 <image class="jumpImg" mode="widthFix" :src="jumpSrc" />
               </view>
-            </view>
+            </view>-->
           </view>
           <view class="orderRemarks">
             <view class="orderFoot_left">订单备注</view>
             <view class="orderFoot_content">
-              <input class="remarks" placeholder="选填，请先和商家协商一致" />
+              <input
+                class="remarks"
+                placeholder="选填，请先和商家协商一致"
+                :value="remarkValue"
+                @change="getRemarks"
+              />
             </view>
           </view>
         </view>
@@ -96,7 +100,7 @@
 
     <view v-if="emptyFlag!=1" class="empty"></view>
     <!-- =======================================  缺省页 ======================================= -->
-    <view v-if="emptyFlag!=0" class="emptyPanel">
+    <!-- <view v-if="emptyFlag!=0" class="emptyPanel">
       <image class="empty_img" mode="widthFix" :src="emptyImg" />
       <view v-if="emptyFlag==-1">正在加载，请稍后~</view>
       <view v-if="emptyFlag==1">
@@ -105,14 +109,14 @@
           <image class="addAddress" mode="widthFix" :src="addSrc" @click="jumpToAdd" />
         </view>
       </view>
-    </view>
+    </view>-->
     <!-- ==================================================     组件：商品详情页面底部的按钮组合     ======================================================= -->
     <view v-if="emptyFlag==0" class="foot_tabbar">
       <view class="orderCount">
-        <view class="orderCount_num">共{{}}件</view>
+        <view class="orderCount_num">共{{numCount}}件</view>
         <view class="orderCount_sum">
-          小计：
-          <view class="sum_Num">{{}}</view>
+          合计：
+          <view class="sum_Num">&yen;{{totalPrice}}</view>
         </view>
       </view>
       <view class="addBtn" @click="subOrder">提交订单</view>
@@ -130,70 +134,82 @@ export default {
       jumpSrc: "/static/images/right.png",
       logoSrc: "/static/images/store.png",
       logotitleSrc: "/static/images/logoTitle.png",
-      address_getId: "",
-      addressItem: "",
+      // emptyImg: this.GLOBAL.serverSrc + "/static/images/msg_empty_address.png",
+      address_getId: "", //存放地址列表获取的id
+      address_Id: "", //z最终的地址id
+      addressItem: {
+        receiver_name: "",
+        receiver_phone: "",
+        province: "",
+        city: "",
+        area: "",
+        concrete_address: ""
+      },
       emptyFlag: -1,
       pickFlag: 0,
+      remarkValue: "", //备注
       orderList: [],
-      orderTest: [
-        {
-          book_id: "1",
-          book_name: "PHP",
-          book_author: "一哥",
-          book_img:
-            "//g-search2.alicdn.com/img/bao/uploaded/i4/i2/288902762/O1CN01zhpNgo1WH2Q2lVDh9_!!0-item_pic.jpg",
-          count: 7,
-          book_price: "49.80"
-        },
-        {
-          book_id: "2",
-          book_name: "PHP",
-          book_author: "晖哥",
-          book_img:
-            "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1563335497282&di=e5cd11df01d63c7da949f06aaf768ace&imgtype=0&src=http%3A%2F%2Fimg3m7.ddimg.cn%2F17%2F14%2F1426983047-1_u_1.jpg",
-          count: 7,
-          book_price: "49.80"
-        },
-        {
-          book_id: "1",
-          book_name: "很好的书",
-          book_author: "一哥",
-          book_img:
-            "//g-search2.alicdn.com/img/bao/uploaded/i4/i2/288902762/O1CN01zhpNgo1WH2Q2lVDh9_!!0-item_pic.jpg",
-          count: 7,
-          book_price: "49.80"
-        }
-      ]
+      totalCount: [],
+      numCount: 0,
+      totalPrice: 0
+      // orderTest: [
+      //   {
+      //     book_id: "1",
+      //     book_name: "PHP",
+      //     book_author: "一哥",
+      //     book_img:
+      //       "//g-search2.alicdn.com/img/bao/uploaded/i4/i2/288902762/O1CN01zhpNgo1WH2Q2lVDh9_!!0-item_pic.jpg",
+      //     count: 7,
+      //     book_price: "49.80"
+      //   },
+      //   {
+      //     book_id: "2",
+      //     book_name: "PHP",
+      //     book_author: "晖哥",
+      //     book_img:
+      //       "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1563335497282&di=e5cd11df01d63c7da949f06aaf768ace&imgtype=0&src=http%3A%2F%2Fimg3m7.ddimg.cn%2F17%2F14%2F1426983047-1_u_1.jpg",
+      //     count: 7,
+      //     book_price: "49.80"
+      //   },
+      //   {
+      //     book_id: "1",
+      //     book_name: "很好的书",
+      //     book_author: "一哥",
+      //     book_img:
+      //       "//g-search2.alicdn.com/img/bao/uploaded/i4/i2/288902762/O1CN01zhpNgo1WH2Q2lVDh9_!!0-item_pic.jpg",
+      //     count: 7,
+      //     book_price: "49.80"
+      //   }
+      // ]
     };
   },
 
   components: {
     navigationBar
   },
-  filters: {
-    priceFilter: function(value) {
-      // value = value.toString();
-      if (!value) return "";
-      value = value.toString();
-      let result = parseFloat(value).toFixed(2);
-      console.log(result);
-      result = result.toString();
-      return result;
-    }
-  },
+  //filters: {
+  //   priceFilter: function(value) {
+  //     // value = value.toString();
+  //     if (!value) return "";
+  //     value = value.toString();
+  //     let result = parseFloat(value).toFixed(2);
+  //     console.log(result);
+  //     result = result.toString();
+  //     return result;
+  //   }
+  // },
   created: function() {
     this.orderList = this.GLOBAL.globalConfirmOrder.orderList;
   },
   mounted() {
     //this.getParams();
-    this.getData();
     this.orderList = this.GLOBAL.globalConfirmOrder.orderList;
-    console.log(this.orderList);
+    this.getAddressData();
+    this.sumCount();
   },
   watch: {
     // 监测路由变化,只要变化了就调用获取路由参数方法将数据存储本组件即可
     // $route: "getParams"
-
     address_Id: {
       handler: function() {}
     },
@@ -203,7 +219,7 @@ export default {
   },
   methods: {
     //=========================================================    获取地址列表
-    getData() {
+    getAddressData() {
       let _this = this;
       wx.request({
         url: _this.GLOBAL.serverSrc + "/address/address/" + _this.GLOBAL.userId,
@@ -216,7 +232,22 @@ export default {
           console.log("数据长度" + code_msg);
           //获取数据，不为空
           if (code_msg) {
-            _this.addressItem = data[0];
+            if (_this.address_getId) {
+              for (let i = 0; i < code_msg; i++) {
+                if (data[i].address_id == _this.address_getId) {
+                  _this.addressItem.receiver_name = data[i].receiver_name;
+                  _this.addressItem.receiver_phone = data[i].receiver_phone;
+                  _this.addressItem.province = data[i].province;
+                  _this.addressItem.city = data[i].city;
+                  _this.addressItem.area = data[i].area;
+                  _this.addressItem.concrete_address = data[i].concrete_address;
+                  _this.address_Id = _this.address_getId;
+                }
+              }
+            } else {
+              _this.addressItem = data[0];
+              _this.address_Id = data[0].address_id;
+            }
             _this.emptyFlag = 0;
           } else {
             _this.emptyFlag = 1;
@@ -225,11 +256,75 @@ export default {
       });
     },
     //=========================================================   跳转到选择地址页
+    sumCount() {
+      let _this = this;
+      let length = this.orderList.length;
+      let total = 0;
+      //console.log("length" + length);
+      if (length) {
+        _this.totalPrice = 0;
+        for (let i = 0; i < length; i++) {
+          //单个总价
+          this.totalCount[i] =
+            this.orderList[i].count * this.orderList[i].book_price;
+          //多个总价
+          total += this.totalCount[i];
+          this.totalCount[i] = parseFloat(this.totalCount[i]).toFixed(2);
+          //总件数
+          this.numCount += this.orderList[i].count;
+          // console.log("this.total" + total);
+        }
+        console.log("this.totalPrice" + this.totalPrice);
+        this.totalPrice = parseFloat(total).toFixed(2);
+        console.log("this.totalPrice" + this.totalPrice);
+      }
+    },
+    //=========================================================   跳转到选择地址页
     jumpToSele() {
       let _this = this;
       wx.navigateTo({
         url: "/pages/pickaddress1/main"
       });
+    },
+    //=========================================================   获取备注
+    getRemarks(event) {
+      this.remarkValue = event.mp.detail.value;
+    },
+    //=========================================================   提交数据
+    subOrder() {
+      let _this = this;
+      let addressId = _this.address_Id;
+      let remarks = this.remarkValue;
+      let orderList = this.GLOBAL.globalConfirmOrder.createOrderList;
+      // console.log("addressId" + addressId);
+      // console.log("remarks" + remarks);
+      // console.log(orderList);
+      let jsonArr = JSON.stringify(orderList);
+      if (orderList.length) {
+        //数组中有数据再进行提交
+        wx.request({
+          url: _this.GLOBAL.serverSrc + "/order/orderCreate",
+          method: "POST",
+          data: {
+            user_id: _this.GLOBAL.userId,
+            address_id: addressId,
+            remark: remarks,
+            order_list: jsonArr
+          },
+          success(res) {
+            if (res.data.statusCode == 200) {
+              console.log(res);
+              console.log(addressId);
+              console.log(remarks);
+              console.log(orderList);
+              //_this.reload();
+              console.log("subOrder");
+            } else {
+              console.log("提交失败");
+            }
+          }
+        });
+      }
     }
 
     // getParams: function() {
@@ -261,6 +356,31 @@ export default {
   /*Standard */
   min-height: calc(100vh);
   background-color: #f5f5f5;
+}
+.empty {
+  height: 1rem;
+  display: block;
+  width: 100%;
+  position: relative;
+  background: #f5f5f5;
+}
+.emptyPanel {
+  display: block;
+  width: 100%;
+  height: 100%;
+  font-size: 12px;
+  color: #787172;
+  text-align: center;
+  /*Firefox*/
+  height: -moz-calc(83vh);
+  /*chrome safari*/
+  height: -webkit-calc(83vh);
+  /*Standard */
+  height: calc(83vh);
+}
+.empty_img {
+  display: inline-block;
+  margin-bottom: 1rem;
 }
 .content {
   padding: 0.2rem 0.25rem;
@@ -603,6 +723,9 @@ export default {
   /* transform: translate(-50%, -50%) scale(1);
   -webkit-transform: translate(-50%, -50%) scale(1); */
 }
+/* -------------------------------------------------------------------------------------
+                                      底部
+---------------------------------------------------------------------------------------*/
 .foot_tabbar {
   height: 1rem;
   width: 100%;
@@ -617,29 +740,40 @@ export default {
 .foot_tabbar .orderCount {
   margin: 0;
   flex: 4;
+  height: 100%;
   display: inline-block;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  margin-right: 0.4rem;
+  /* background-color: yellow; */
 }
-.orderCount_num,
-.orderCount_sum,
-.sum_Num {
+.foot_tabbar .orderCount_num,
+.foot_tabbar .orderCount_sum,
+.foot_tabbar .sum_Num {
   display: inline-block;
+  /* background-color: red; */
+  /* height: 0.3rem; */
 }
 
-.orderCount_num {
+.foot_tabbar .orderCount_num {
   font-size: 12px;
   color: #787172;
 }
-.orderCount_sum {
+.foot_tabbar .orderCount_sum {
   font-size: 12px;
   color: #36282b;
 }
-.sum_Num {
+.foot_tabbar .sum_Num {
   font-size: 14px;
   color: #bc2b37;
 }
 .addBtn {
   flex: 1;
   display: inline-block;
+  width: 1.2rem;
+  min-width: 1.2rem;
   height: 0.5rem;
   max-height: 0.5rem;
   font-size: 15px;

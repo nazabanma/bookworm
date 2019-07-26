@@ -34,7 +34,8 @@ let globalData = new Vue({
 let globalConfirmOrder = new Vue({
   data: function() {
     return {
-      orderList: []
+      orderList: [],
+      createOrderList: []
     };
   }
 });
