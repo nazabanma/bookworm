@@ -7,11 +7,11 @@
           <img src="/static/images/mime2.png" />
           <view class="shopname">淘書斋</view>
           <view class="result">
-            <view class="res" v-if="res ==1">交易成功</view>
-            <view class="res" v-else>等待买家付款</view>
+            <view class="res" v-if="items.order_state_id ==0">等待买家付款</view>
+            <view class="res" v-else>交易成功</view>
           </view>
         </view>
-        <view @click="clickToComment">
+        
           <view v-for="(item,k) in items.item" :key="k" class="middlePanel">
             <view class="middle">
               <view class="imgs">
@@ -25,7 +25,7 @@
               </view>
             </view>
           </view>
-        </view>
+         
 
         <view class="allcount">
           <view class="allprice">&yen;{{totalprice[index]}}</view>
@@ -35,19 +35,19 @@
         <!-- 按钮 操作 -->
         <!-- <view class="run" v-if="run != 3"> -->
         <view class="run">
-          <view v-if="run == 0">
+          <view v-if="items.order_state_id == 0">
             <button class="btn4" @click="pay">付款</button>
             <button class="btn1" @click="cancel">取消订单</button>
           </view>
-          <view v-if="run == 1">
+          <view v-else-if="items.order_state_id == 1">
             <button class="btn2" @click="cancel">取消订单</button>
             <button class="btn1" @click="revise">修改地址</button>
           </view>
-          <view v-if="run == 2">
+          <view v-else-if="items.order_state_id == 2">
             <button class="btn2" @click="confirm">确认收货</button>
             <button class="btn1" @click="check">查看物流</button>
           </view>
-          <view v-if="run == 3">
+          <view v-else-if="items.order_state_id == 3">
             <button class="btn3" @click="clickToComment(items)">去评价</button>
           </view>
           <!-- <view  v-else-if="run === '评价后'">
@@ -146,16 +146,8 @@ export default {
         this.getTotalprice();
         this.getCount();
       }
-    },
-    run: {
-      handler: function(newValue, oldValue) {
-        this.run = newValue;
-        console.log("newValue" + this.run);
-        if (this.run == 3) {
-          this.clickToComment();
-        }
-      }
     }
+     
     // totalprice: {
     //   handler: function() {
     //   }

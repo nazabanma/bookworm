@@ -1,5 +1,6 @@
 {
     "pages": [
+        "pages/lead/main",
         "pages/myorder3/main",
         "pages/delivercomment1/main",
         "pages/index1/main",
