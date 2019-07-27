@@ -49,7 +49,7 @@
   </div>
 </template>
 
-
+console.log(_this.downCount2);
 
 <script>
 import navigationBar from "@/components/acomponents/navigation";
