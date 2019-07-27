@@ -1,29 +1,31 @@
 <template>
     <div class="container">
         <!-- 顶部导航栏 -->
-        <navigation-bar :title="'编辑收货地址'" :backVisible="true" :fontSize="15" :imgsrc="naviImgsrc"
+        <navigation-bar :title="'添加收货地址'" :backVisible="true" :fontSize="15" :imgsrc="naviImgsrc"
             :linkBack="'/pages/myaddress2/main'" :linkKind="false" :titleColor="'#36282B'">
         </navigation-bar>
         <view class="userinfo">
-            <view class="edited">
-                <input name="input" placeholder="彭冰婷" confirm-type="done" />
+            <view class="edited_1">
+                <input name="input"   type="text" v-model="address.receiver_name" />
                 <!-- <view class="edited_1">彭冰婷</view> -->
             </view>
-            <view class="edited">
-                <input maxlength="11" placeholder="18723783492" confirm-type="done" />
+            <view class="edited_2">
+                <input maxlength="11" v-model="address.receiver_phone" />
                 <!-- <view edited_1>18723783492</view> -->
             </view>
-            <view class="picker1">
-                <picker mode="region" @change="bindRegionChange" :value="region" :custom-item="customItem">
+            <view class="picker_1">
+                <!-- <picker mode="region" @change="bindRegionChange" :value="region" :custom-item="customItem">
                     <view class="picker">
                         {{region[0]}}
                         {{region[1]}}
                         {{region[2]}}
                     </view>
-                </picker>
+                </picker> -->
+                <view >{{region[0]}} {{region[1]}} {{region[2]}}</view>
             </view>
             <view class="editing">
-                <input name="input" placeholder="请输入详细地址" confirm-type="done" />
+                <input  name="input"   type="text" v-model="address.concrete_address" placeholder="请输入详细地址" />
+                <!-- <view class="editing_1">请输入详细地址</view> -->
             </view>
         </view>
 
@@ -38,10 +40,10 @@
             <view class="edited2">
                 <view class="del">删除收货地址</view>
             </view>
-
         </view>
+        
         <view class="comfirm">
-            <view class="opration">保存</view>
+            <view class="opration">添加</view>
         </view>
 
 
@@ -61,7 +63,16 @@
                 naviImgsrc: "/static/images/left.png",
                 region: ['福建省', '厦门市', '集美区'],
                 customItem: '全部',
-                address_id: ''
+                address: {
+                    receiver_name: '',
+                    receiver_phone: '',
+                    concrete_address: '',
+                    province: '',
+                    city: '',
+                    area: '',
+                    if_default: '',
+                    user_id: this.GLOBAL.userId
+                }
             };
         },
         components: {
@@ -80,15 +91,20 @@
         },
         methods: {
             //-----------------------------------------------------   获取navigation的高度，作为轮播图片的margin-top
-
+            add() {
+                let _this = this;
+                wx.request({
+                    url: _this.GLOBAL.serverSrc + "/address/addAddress",
+                    method: "POST",
+                    data: _this.address,
+                    success(res) {
+                        // console.log(res.data.data);
+                        console.log(res.data.code);
+                    }
+                });
+            }
         },
-        onLoad: function(options) {
-            // console.log(options);
-            // console.log(options.adr);
-            this.address_id = options.id;
-            // console.log(this.address_getId);
 
-        },
         seted: function(e) {
             console.log('switch1 发生 change 事件，携带值为', e.detail.value)
         },
@@ -99,7 +115,7 @@
 
         bindRegionChange: function(e) {
             console.log('picker发送选择改变，携带值为', e.detail.value)
-
+            this.region = e.detail.value
         },
 
         created() {
@@ -134,50 +150,90 @@
     
     .userinfo {
         width: 100%;
-        height: 450rpx;
+        /* height: 450rpx; */
+        height: auto;
         float: left;
     }
     
-    .edited {
+    .edited_1 {
         width: 100%;
-        height: 100rpx;
+        height: 99rpx;
         /* margin-left: 36rpx; */
         font-size: 30rpx;
         color: #36282B;
         background: white;
         border-top: 1rpx solid rgb(184, 181, 182);
-        line-height: 100rpx;
+        line-height: 99rpx;
         float: left;
         vertical-align: middle;
         /* border-bottom: 1rpx solid #36282B; */
     }
     
-    .edited input {
+    .edited_2 {
+        width: 100%;
+        height: 99rpx;
+        /* margin-left: 36rpx; */
+        font-size: 30rpx;
+        color: #36282B;
+        background: white;
+        border-top: 1rpx solid rgb(184, 181, 182);
+        line-height: 99rpx;
+        float: left;
+        vertical-align: middle;
+        /* border-bottom: 1rpx solid #36282B; */
+    }
+    
+    .edited_1 input .edited_2 input {
         margin-left: 36rpx;
         color: #36282B;
+        float: left;
         /* line-height: 80rpx; */
     }
     
-    .picker1 {
+    .picker_1 {
+        float: left;
+        position: relative;
         width: 100%;
-        height: 100rpx;
+        height: 98rpx;
         /* margin-left: 36rpx; */
         font-size: 30rpx;
         color: #36282B;
         background: white;
         border-top: 1rpx solid rgb(184, 181, 182);
         border-bottom: 1rpx solid rgb(184, 181, 182);
-        line-height: 100rpx;
-        float: left;
+        /* line-height: 98rpx; */
+        /* float: left; */
     }
-    
-    .editing {
+    /* .picker_1 picker {
+        float: left;
         width: 100%;
-        height: 150rpx;
+        height: 98rpx;
+        /* margin-left: 36rpx; */
+    /* line-height: 98rpx; */
+    /* float: left; */
+    /* }
+*/
+    
+    */ .editing {
+        position: relative;
+        width: 100%;
+        height: 149rpx;
+        margin-top: 100rpx;
         /* margin-left: 36rpx; */
         font-size: 24rpx;
         color: #BBACAB;
+        border-bottom: 1rpx solid rgb(184, 181, 182);
         background: pink;
+    }
+    /* .editing_1 {
+        margin-left: 36rpx;
+        color: #36282B;
+    } */
+    
+    .editing input {
+        margin-left: 36rpx;
+        color: #36282B;
+        /* line-height: 80rpx; */
     }
     /* ========================  中 */
     
@@ -185,7 +241,8 @@
         float: left;
         margin-top: 20rpx;
         width: 100%;
-        height: 202rpx;
+        height: 200rpx;
+        background: #BBACAB;
     }
     
     .edited1 {
@@ -200,6 +257,24 @@
         float: left;
     }
     
+    .set {
+        width: 80%;
+        float: left;
+        margin-left: 36rpx;
+    }
+    
+    .icon {
+        width: 20%;
+        height: 40rpx;
+        float: left;
+        margin-left: 560rpx;
+    }
+    /* switch {
+        width: 80rpx;
+        height: 40rpx;
+        color: #D2AC6E;
+    } */
+    
     .edited2 {
         width: 100%;
         height: 100rpx;
@@ -213,26 +288,9 @@
         float: left;
     }
     
-    .set {
-        float: left;
-        margin-left: 36rpx;
-    }
-    
     .del {
         margin-left: 36rpx;
     }
-    
-    .icon {
-        width: 80rpx;
-        height: 40rpx;
-        float: left;
-        margin-left: 560rpx;
-    }
-    /* switch {
-        width: 80rpx;
-        height: 40rpx;
-        color: #D2AC6E;
-    } */
     /* ========================  下 */
     
     .comfirm {
