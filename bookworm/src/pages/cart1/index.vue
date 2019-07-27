@@ -31,7 +31,7 @@
           </view>
           <view class="cart_right">
             <view class="cart_content__left" @click="linkTo(item.book_id)">
-              <image class="cart_img" :src="item.book_img" />
+              <image class="cart_img" :src="item.book_cover" />
             </view>
             <view class="cart_content__right">
               <view class="cart_content__right_top" @click="linkTo(item.book_id)">

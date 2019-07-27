@@ -42,7 +42,7 @@ export default {
     return {
       btnSrc: "/static/images/down.png",
       showItem: true,
-      pick_item: "",
+      pick_item: 0,
       showList: [],
       btnSrc2: "/static/images/up.png",
       BtnList: [],

@@ -27,7 +27,7 @@
     <!--全部-->
 
     <view v-if="show">
-      <commy-bar :run="pick_item" :bookList="bookList" :display="display">
+      <commy-bar :run="pick_item" :bookList="bookList" :isDisplay="isdisplay">
         <!-- <commy-bar :bookList="bookListb" :display="display">                     -->
       </commy-bar>
     </view>
@@ -103,11 +103,11 @@ export default {
         }
       ],
       //   pick_item: "all",
-      pick_item: 'all',
+      pick_item: "all",
       bookList: [],
       res: "",
       run: "",
-      isdiaplay: false,
+      isdisplay: false,
       show: false,
       imgArr: [
         this.GLOBAL.serverSrc + "/static/images/msg_empty_orders.png",
@@ -117,6 +117,10 @@ export default {
         this.GLOBAL.serverSrc + "/static/images/msg_empty_orders.png"
       ]
     };
+  },
+
+  onShow() {
+    this.getList();
   },
 
   watch: {
@@ -164,7 +168,7 @@ export default {
         success(res) {
           // console.log(res);
           // console.log(_this.pick_item)
-          if (res.data.data==null) {
+          if (res.data.data == null) {
             _this.show = false;
           } else {
             _this.show = true;

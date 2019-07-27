@@ -1,18 +1,24 @@
 <template>
   <div>
-    <!-- <view v-if="isshow"> -->
-    <view>
-      <view class="cart" v-for="(items,index) in bookList" :key="index">
-        <view class="top">
-          <img src="/static/images/mime2.png" />
-          <view class="shopname">淘書斋</view>
-          <view class="result">
-            <view class="res" v-if="items.order_state_id ==0">等待买家付款</view>
-            <view class="res" v-else>交易成功</view>
+    <router-view v-if="isRouterAlive">
+      <!-- <view v-if="isshow"> -->
+      <view>
+        <view class="cart" v-for="(items,index) in bookList" :key="index">
+          <view class="top">
+            <img src="/static/images/mime2.png" />
+            <view class="shopname">淘書斋</view>
+            <view class="result">
+              <view class="res" v-if="items.order_state_id ==0">等待买家付款</view>
+              <view class="res" v-else>交易成功</view>
+            </view>
           </view>
-        </view>
-        
-          <view v-for="(item,k) in items.item" :key="k" class="middlePanel">
+
+          <view
+            v-for="(item,k) in items.item"
+            :key="k"
+            class="middlePanel"
+            @click="linkTo(item.book_id)"
+          >
             <view class="middle">
               <view class="imgs">
                 <img :src="item.book_img" alt />
@@ -25,83 +31,65 @@
               </view>
             </view>
           </view>
-         
 
-        <view class="allcount">
-          <view class="allprice">&yen;{{totalprice[index]}}</view>
-          <view class="allnum">共{{count[index]}}件商品 总计：</view>
-        </view>
+          <view class="allcount">
+            <view class="allprice">&yen;{{totalprice[index]}}</view>
+            <view class="allnum">共{{count[index]}}件商品 总计：</view>
+          </view>
 
-        <!-- 按钮 操作 -->
-        <!-- <view class="run" v-if="run != 3"> -->
-        <view class="run">
-          <view v-if="items.order_state_id == 0">
-            <button class="btn4" @click="pay">付款</button>
-            <button class="btn1" @click="cancel">取消订单</button>
+          <!-- 按钮 操作 -->
+          <!-- <view class="run" v-if="run != 3"> -->
+          <view class="run">
+            <view v-if="items.order_state_id == 0">
+              <button class="btn4" @click="pay">付款</button>
+              <button class="btn1" @click="cancel(items,index)">取消订单</button>
+            </view>
+            <view v-else-if="items.order_state_id == 1">
+              <button class="btn2" @click="cancel(items,index)">取消订单</button>
+              <button class="btn1" @click="reviseAdd(items.order_id,items.address_id)">修改地址</button>
+            </view>
+            <view v-else-if="items.order_state_id == 2">
+              <button class="btn2" @click="confirm">确认收货</button>
+              <button class="btn1" @click="checkWuliu">查看物流</button>
+            </view>
+            <view v-else-if="items.order_state_id == 3">
+              <button class="btn3" @click="clickToComment(items)">去评价</button>
+            </view>
+            <view v-else-if="items.order_state_id == 4||items.order_state_id == 5">
+              <button class="btn1" @click="del(items.order_id,index)">删除订单</button>
+            </view>
           </view>
-          <view v-else-if="items.order_state_id == 1">
-            <button class="btn2" @click="cancel">取消订单</button>
-            <button class="btn1" @click="revise">修改地址</button>
-          </view>
-          <view v-else-if="items.order_state_id == 2">
-            <button class="btn2" @click="confirm">确认收货</button>
-            <button class="btn1" @click="check">查看物流</button>
-          </view>
-          <view v-else-if="items.order_state_id == 3">
-            <button class="btn3" @click="clickToComment(items)">去评价</button>
-          </view>
-          <!-- <view  v-else-if="run === '评价后'">
-                    <button class="btn1" @click="del">删除订单</button>
-          </view>-->
         </view>
       </view>
-    </view>
-
+    </router-view>
     <!-- </view> -->
 
     <!-- 弹窗 -->
     <!-- 遮盖层 -->
-    <view class="mask" v-if="isdisplay">
-      <!-- 弹窗内容 -->
-      <view class="modal">
-        <view class="title">取消订单</view>
-        <view class="choose">请选择取消订单的原因</view>
-        <view class="options">
-          <view class="row">
-            <view class="text">我不想买了</view>
+    <view class="mask" v-if="isDisplay"></view>
+    <!-- 弹窗内容 -->
+    <view class="modal" v-if="isDisplay">
+      <view class="title">取消订单</view>
+      <view class="choose">请选择取消订单的原因</view>
+      <view class="options">
+        <view
+          class="row"
+          v-for="(cItem,cIndex) in cancelReason"
+          :key="cIndex"
+          @click="pickThis(cIndex)"
+        >
+          <view class="text">{{cItem}}</view>
+          <view class="address_right">
             <view class="check_area">
-              <view class="circle" :class="{' active':pickAddress==item.address_id}"></view>
-            </view>
-          </view>
-          <view class="row">
-            <view class="text">信息填写错误，重新拍</view>
-            <view class="check_area">
-              <view class="circle" :class="{' active':pickAddress==item.address_id}"></view>
-            </view>
-          </view>
-          <view class="row">
-            <view class="text">卖家缺货</view>
-            <view class="check_area">
-              <view class="circle" :class="{' active':pickAddress==item.address_id}"></view>
-            </view>
-          </view>
-          <view class="row">
-            <view class="text">同城见面交易</view>
-            <view class="check_area">
-              <view class="circle" :class="{' active':pickAddress==item.address_id}"></view>
-            </view>
-          </view>
-          <view class="row">
-            <view class="text">其他原因</view>
-            <view class="check_area">
-              <view class="circle" :class="{' active':pickAddress==item.address_id}"></view>
+              <view class="circle" :class="{' active':pickCancel==cIndex}"></view>
             </view>
           </view>
         </view>
-        <view class="footer">
-          <view class="tem">暂不取消</view>
-          <view class="ensure" @click="close">确定取消</view>
-        </view>
+      </view>
+      <view class="footer">
+        <view></view>
+        <view class="tem" @click="clickCancel(0)">暂不取消</view>
+        <view class="ensure" @click="clickCancel(1)">确定取消</view>
       </view>
     </view>
   </div>
@@ -111,31 +99,37 @@
 import { globalBus } from "@/components/globalBus";
 
 export default {
+  props: ["run", "bookList", "res", "isDisplay"],
   provide() {
     return {
       reload: this.reload
     };
   },
   inject: ["reload"],
-
-  props: ["run", "bookList", "res", "dispaly"],
-  // props: ["bookList", "dispaly"],
-
   data() {
     return {
+      isRouterAlive: true, //刷新当前页
       // isdiaplay: false,
       isshow: true,
-      totalprice: [],
-      count: []
-      //   run: -1,
-      //   res: ""
-      // dataList: [] //存放用于提交到评论页面的数据数组
+      totalprice: [], //用于计算总价
+      count: [], //用于计算总数量
+      cancelReason: [
+        "我不想买了",
+        "信息填写错误，重新拍",
+        "卖家缺货",
+        "同城见面交易",
+        "其他原因"
+      ], //取消订单的原因
+      pickCancel: -1, //用来标记取消订单原因的id
+      detail: "", //用来存放取消订单的文本内容
+      pickOrderId: "", //用来标记点击按钮对应的order_id
+      pickOrderIndex: "" //用来标记点击按钮对应的下标
     };
   },
-  computed: {},
+
   created() {
     // let _this = this;
-    this.getTotalprice();
+    this.getTotalPrice();
     this.getCount();
   },
   mounted() {},
@@ -143,11 +137,16 @@ export default {
   watch: {
     bookList: {
       handler: function() {
-        this.getTotalprice();
+        this.getTotalPrice();
         this.getCount();
       }
+    },
+    isDisplay: {
+      handler: function() {
+        // this.close();
+      }
     }
-     
+
     // totalprice: {
     //   handler: function() {
     //   }
@@ -159,10 +158,30 @@ export default {
     // }
   },
   methods: {
-    getTotalprice() {
+    //------------------------------------------------  跳转到商品详情页面,传值
+    linkTo(bookID) {
+      wx.redirectTo({
+        url: "/pages/bookdetail1/main"
+      });
+      globalBus.$emit("bookID", bookID);
+    },
+    //====================================================================   刷新当前页
+    reload() {
+      this.isRouterAlive = false;
+      console.log("刷新");
+      this.$nextTick(function() {
+        this.isRouterAlive = true;
+      });
+    },
+    //====================================================================   刷新当前页
+    pickThis(i) {
+      this.pickCancel = "";
+      this.pickCancel = i;
+    },
+    //====================================================================   计算总价和总数量
+    getTotalPrice() {
       this.totalprice = [];
       let _this = this;
-
       let rowprice = 0;
       if (_this.bookList.length) {
         for (let i = 0; i < _this.bookList.length; i++) {
@@ -194,54 +213,79 @@ export default {
         }
       }
     },
-    //================================================   刷新当前页
-    reload() {
-      this.isRouterAlive = false;
-      // console.log("刷新");
-      this.$nextTick(function() {
-        this.isRouterAlive = true;
-      });
-    },
 
-    //==============  取消订单   ===========
-    cancel() {
-      this.isdisplay = !this.isdisplay;
+    //===============================================================================     取消订单
+    cancel(items, index) {
+      this.pickCancel = -1;
+      this.isDisplay = !this.isDisplay;
       wx.hideTabBar({
         animation: false //隐藏tabbar
-      });
-      console.log("open = " + this.isdisplay);
+      }); //如果确认取消
+      console.log("this.items" + items);
+      this.pickOrderId = items.order_id;
+      this.pickOrderIndex = index;
+      console.log("this.pickOrderId" + this.pickOrderId);
     },
-    close() {
-      this.isdisplay = !this.isdisplay;
-      //console.log("close = " + this.isdisplay);
+    clickCancel(msg) {
+      let _this = this;
+      //如果确认取消
+      if (msg && this.pickOrderId) {
+        if (this.pickCancel == -1) {
+          console.log("请选择原因");
+        } else {
+          console.log("this.pickCancel" + this.cancelReason[this.pickCancel]);
+          this.detail = this.cancelReason[this.pickCancel];
+          let order_id = this.pickOrderId;
+          console.log("this.detail" + this.detail);
+          wx.request({
+            url: _this.GLOBAL.serverSrc + "/order/orderCancel",
+            method: "POST",
+            data: {
+              detail: _this.detail,
+              order_id: order_id
+            },
+            success(res) {
+              console.log(res);
+              wx.hideTabBar({
+                animation: false //隐藏tabbar
+              });
+              //这里再加一行沉默
+              if (res.data.code == 200) {
+                _this.bookList[_this.pickOrderIndex].order_state_id = 5;
+                _this.isDisplay = !_this.isDisplay;
+              }
+            }
+          });
+        }
+      } else if (!msg && this.pickOrderId) {
+        wx.hideTabBar({
+          animation: false //隐藏tabbar
+        });
+      }
     },
-    //==============  取消订单   ===========
 
-    //==============  修改地址   ===========
-    revise() {
-      wx.navigateTo({
-        url: "/pages/counter/main"
-      });
-    },
-
-    //==============  确认收货  ===========
-    confirm() {},
-
-    //==============  查看物流   ===========
-    check() {},
-
-    //==============  去评价   ===========
+    //===============================================================================  去评价
     clickToComment(items) {
       console.log(items);
       console.log(items.item);
-      let order_item = { order_item_id: 0, bookname: "", content: "", img: "" };
+      let order_item = {
+        order_item_id: 0,
+        bookname: "",
+        content: "",
+        img: ""
+      };
       let commentList = [];
       if (items.item.length) {
         for (let i = 0; i < items.item.length; i++) {
           order_item.order_item_id = items.item[i].order_item_id;
           order_item.bookname = items.item[i].book_name;
           commentList.push(order_item);
-          order_item={ order_item_id: 0, bookname: "", content: "", img: "" };
+          order_item = {
+            order_item_id: 0,
+            bookname: "",
+            content: "",
+            img: ""
+          };
         }
       }
       this.GLOBAL.globalConfirmOrder.commentList = [];
@@ -251,12 +295,44 @@ export default {
         url: "/pages/delivercomment1/main"
       });
     },
-    //==============  去评价   ===========
 
     //==============  付款   ===========
     pay() {},
-    //==============  付款   ===========
-    delete() {}
+    //===============================================================================  删除订单
+    del(orderId, orderIndex) {
+      let _this = this;
+      wx.request({
+        url: _this.GLOBAL.serverSrc + "/order/orderDelete",
+        method: "POST",
+        data: {
+          order_id: orderId
+        },
+        success(res) {
+          console.log(res);
+          if (res.data.code == 200) {
+            console.log("删除成功");
+            _this.bookList.splice(orderIndex, 1);
+            _this.reload();
+          }
+        }
+      });
+    },
+    //==============  修改地址   ===========
+    reviseAdd(orderId, addressId) {
+      wx.navigateTo({
+        url: "/pages/changeaddress1/main?ori=" + orderId + "&adr=" + addressId
+      });
+    }
+  },
+
+  //==============  确认收货  ===========
+  confirm() {},
+
+  //==============  查看物流   ===========
+  checkWuliu() {
+    wx.navigateTo({
+      url: "/pages/checkwuliu1/main"
+    });
   }
 };
 </script>
@@ -503,8 +579,8 @@ button,
   top: 0;
   left: 0;
   background: rgb(184, 182, 182);
-  z-index: 9000;
-  opacity: 0.8;
+  z-index: 9;
+  opacity: 0.6;
 }
 
 .modal {
@@ -515,9 +591,10 @@ button,
   width: 100%;
   height: 55%;
   overflow: auto;
-  background: rgb(255, 255, 255);
+  background: white;
   bottom: 0;
   opacity: 1;
+  z-index: 99;
 }
 /* 弹窗内容 */
 
@@ -549,12 +626,28 @@ button,
   float: left;
   width: 100%;
   font-size: 28rpx;
-  margin-top: 50rpx;
+  margin-top: 50rpx; /* background-color: white; */
+  display: -webkit-flex;
+  display: flex;
+
   /* background: aquamarine; */
 }
 
 .text {
   float: left;
+  flex: 7;
+}
+.address_right {
+  /* background-color: red; */
+  flex: 1;
+  max-width: 60rpx;
+  vertical-align: middle;
+  text-align: center;
+  line-height: 60rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center; /*垂直居中*/
+  justify-content: center; /*水平居中*/
 }
 /* check-box {
         background: #000;

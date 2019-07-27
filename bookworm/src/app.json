@@ -1,9 +1,11 @@
 {
     "pages": [
-        "pages/lead/main",
-        "pages/myorder3/main",
-        "pages/delivercomment1/main",
         "pages/index1/main",
+        "pages/myorder3/main",
+        "pages/checkwuliu1/main",
+        "pages/changeaddress1/main",
+        "pages/lead/main",
+        "pages/delivercomment1/main",
         "pages/bookdetail1/main",
         "pages/comment2/main",
         "pages/editaddress2/main",

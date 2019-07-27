@@ -29,7 +29,7 @@
           </view>
           <view class="collect_right">
             <view class="collect_content__left">
-              <image class="collect_img" :src="item.book_img" />
+              <image class="collect_img" :src="item.book_cover" />
             </view>
             <view class="collect_content__right" @click="linkTo(item.book_id)">
               <view class="collect_content__name">《{{item.book_name}}》</view>

@@ -33,7 +33,6 @@
       <a class="tabA" :class="{ 'active': !linkType }" @click="Link">评价</a>
     </view>
 
-    <!-- <view></view> -->
     <!-- <book-detail :formAddress="bookData." :saleMonth="bookData." ></book-detail> -->
     <!-- 详情 -->
     <book-detail v-if="linkType"></book-detail>
@@ -150,6 +149,7 @@ export default {
         data: { user_id: _this.GLOBAL.userId, book_id: _this.bookId },
         success(res) {
           _this.bookData = res.data.data;
+          //图片分割
           let Imgarry = res.data.data.book_img.split(";");
           _this.imgUrls = Imgarry;
           _this.ifCollect = res.data.data.ifCollect;

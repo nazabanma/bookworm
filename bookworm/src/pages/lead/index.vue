@@ -284,12 +284,13 @@ export default {
                     objz.avatarUrl = res.userInfo.avatarUrl;
                     objz.nickName = res.userInfo.nickName;
                     _this.user.nick_name = res.userInfo.nickName;
-                    _this.user.avatar_url = res.userInfo.avatarUrl;
+                    _this.user.head_img = res.userInfo.avatarUrl;
                     _this.user.gender = res.userInfo.gender;
                     _this.user.province = res.userInfo.province;
                     _this.user.city = res.userInfo.city;
                     _this.user.country = res.userInfo.country;
                     _this.user.login_time = _this.getTime();
+                    _this.avatar_url=res.userInfo.avatarUrl;
                     console.log(_this.user);
                     wx.setStorageSync("userInfo", objz); //存储userInfo
 
