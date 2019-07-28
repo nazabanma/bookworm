@@ -44,7 +44,7 @@
         <view class="orderList" v-for="(item,index) in orderList" :key="index">
           <view class="orderItem">
             <view class="item_left">
-              <image class="item__img" :src="item.book_img" />
+              <image class="item__img" :src="item.book_cover" />
             </view>
             <view class="item_right">
               <view class="orderShow">

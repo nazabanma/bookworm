@@ -41,20 +41,28 @@ let globalConfirmOrder = new Vue({
   }
 });
 
+ function imgCutApart(imgArr) {
+  let Imgarry = imgArr.split(";");
+  //console.log(Imgarry);
+  return Imgarry[0];
+};
+
 export default {
   serverSrc, //服务器地址
   userId, //用户账号
   globalData,
-  globalConfirmOrder //用于购物车到确认订单的订单数组
+  globalConfirmOrder, //用于购物车到确认订单的订单数组
+  imgCutApart
 };
 
 Vue.prototype.globalData = globalData;
 
 Vue.prototype.globalConfirmOrder = globalConfirmOrder;
 
-
+Vue.prototype.imgCutApart=imgCutApart;
 // 调取id ：this.GLOBAL.userId
 // 调取用户名 ： this.GLOBAL.globalData.userName;
 
 //订单 this.GLOBAL.globalConfirmOrder.orderList;
+//分割图片： this.GLOBAL.imgCutApart;
 </script>

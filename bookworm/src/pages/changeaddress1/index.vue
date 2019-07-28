@@ -3,18 +3,17 @@
     <!-- 顶部导航栏 -->
     <navigation-bar
       :title="'修改地址'"
-      :backVisible="true"
-      :linkKind="false"
-      :fontSize="18"
-      :imgsrc="naviImgsrc"
-      :linkBack="'/pages/order_submit1/main'"
       :titleColor="'#521d23'"
+      :fontSize="18"
+      :backVisible="true"
+      :imgsrc="naviImgsrc"
+      :linkBack="'/pages/myorder3/main'"
+      :linkKind="true"
     ></navigation-bar>
-    <!-- :linkBack="'/pages/index1/main'" -->
     <!-- =======================================  地址列表 ======================================= -->
     <view v-if="emptyFlag==0" class="addressPanel">
       <view class="addressList" v-for="(item,index) in addressList" :key="index">
-        <view class="addressItem">
+        <view class="addressItem" @click="pickThis(item.address_id)">
           <view class="address_left">
             <view class="address__info">
               <view class="address__name">{{item.receiver_name}}</view>
@@ -27,9 +26,9 @@
               <view class="address__concrete">{{item.concrete_address}}</view>
             </view>
           </view>
-          <view class="address_right" @click="pickThis(item.address_id)">
+          <view class="address_right">
             <view class="check_area">
-              <view class="circle" :class="{' active':pickAddress==item.address_id}"></view>
+              <view class="circle" :class="{' active':address_getId==item.address_id}"></view>
             </view>
           </view>
         </view>
@@ -73,9 +72,10 @@ export default {
       emptyImg: this.GLOBAL.serverSrc + "/static/images/msg_empty_address.png",
       addSrc: "/static/images/add.png",
       emptyFlag: -1, //判断是否有数据
-
       addressList: [], //存放地址列表
-      pickAddress: -1 //存放选中列表
+      pickAddress: -1, //存放选中列表
+      address_getId: "", //存放收到的原地址id
+      order_getId: "" //存放收到的order_id
     };
   },
 
@@ -110,30 +110,37 @@ export default {
     },
     //=========================================================    单选
     pickThis(id) {
-      this.pickAddress = -1;
-      this.pickAddress = id;
+      this.address_getId = -1;
+      this.address_getId = id;
       //console.log(this.pickAddress);
     },
+
     //=========================================================    地址不做更改，返回确认订单页
     backToOrder() {
       let _this = this;
       wx.navigateTo({
-        url: "/pages/order_submit1/main"
+        url: "/pages/myorder3/main"
       });
     },
 
-    //=========================================================    地址更改，返回确认订单页
+    //=========================================================    地址更改，返回订单页
     subChange() {
       let _this = this;
-      if (this.pickAddress != -1) {
-        // _this.$router.push({
-        //   path: "./order_submit1",
-        //   query: {
-        //     pickAddress: _this.pickAddress
-        //   }
-        // });
-        wx.navigateTo({
-          url: "/pages/order_submit1/main?adr=" + _this.pickAddress
+      if (this.address_getId && this.order_getId) {
+        let _this = this;
+        wx.request({
+          url: _this.GLOBAL.serverSrc + "/order/orderUpdate",
+          method: "POST",
+          data: {
+            order_id: _this.order_getId,
+            address_id: _this.address_getId
+          },
+          success(res) {
+            console.log(res);
+            wx.navigateTo({
+              url: "/pages/myorder3/main"
+            });
+          }
         });
       }
     },
@@ -149,6 +156,11 @@ export default {
 
   created() {
     // let app = getApp()
+  },
+  onLoad: function(options) {
+    console.log(options);
+    this.address_getId = options.adr;
+    this.order_getId = options.ori;
   }
 };
 </script>

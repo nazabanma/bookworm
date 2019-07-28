@@ -27,7 +27,7 @@
     <!--全部-->
 
     <view v-if="show">
-      <commy-bar :run="pick_item" :bookList="bookList" :res="''" :display="display">
+      <commy-bar :run="pick_item" :bookList="bookList" :isDisplay="isdisplay">
         <!-- <commy-bar :bookList="bookListb" :display="display">                     -->
       </commy-bar>
     </view>
@@ -36,59 +36,23 @@
         <img :src="imgArr[0]" />
         <view class="txt">客官，您还没有订单呢~</view>
       </view>
-    </view>
 
-    <!--待付款-->
-
-    <view v-if="show">
-      <commy-bar :run="pick_item" :bookList="bookList" :res="0" :display="display">
-        <!-- <commy-bar :bookList="bookList" :display="display">                     -->
-      </commy-bar>
-    </view>
-    <view v-if="!show" style="text-align: center;">
-      <view v-if="pick_item == 0">
+      <view v-else-if="pick_item == 0">
         <img :src="imgArr[1]" />
         <view class="txt">谈钱伤感情，该付还是要付的~</view>
       </view>
-    </view>
 
-    <!--待发货-->
-
-    <view v-if="show">
-      <commy-bar :run="pick_item" :bookList="bookList" :res="1" :display="display">
-        <!-- <commy-bar :bookList="bookList" :display="display">                     -->
-      </commy-bar>
-    </view>
-    <view v-if="!show" style="text-align: center;">
-      <view v-if="pick_item == 1">
+      <view v-else-if="pick_item == 1">
         <img :src="imgArr[2]" />
         <view class="txt">客官，您还没有订单呢~</view>
       </view>
-    </view>
 
-    <!--待收货-->
-
-    <view v-if="show">
-      <commy-bar :run="pick_item" :bookList="bookList" :res="1" :display="display">
-        <!-- <commy-bar :bookList="bookList" :display="display">                     -->
-      </commy-bar>
-    </view>
-    <view v-if="!show" style="text-align: center;">
-      <view v-if="pick_item == 2">
+      <view v-else-if="pick_item == 2">
         <img :src="imgArr[3]" />
         <view class="txt">客官，您还没有订单呢~</view>
       </view>
-    </view>
 
-    <!--待评价-->
-
-    <view v-if="show">
-      <commy-bar :run="pick_item" :bookList="bookList" :res="1" :display="display">
-        <!-- <commy-bar :bookList="bookList" :display="display">                     -->
-      </commy-bar>
-    </view>
-    <view v-if="!show" style="text-align: center;">
-      <view v-if="pick_item == 3">
+      <view v-else>
         <img :src="imgArr[4]" />
         <view class="txt">客官，您还没有订单呢~</view>
       </view>
@@ -139,11 +103,11 @@ export default {
         }
       ],
       //   pick_item: "all",
-      pick_item: 3,
+      pick_item: "all",
       bookList: [],
       res: "",
       run: "",
-      isdiaplay: false,
+      isdisplay: false,
       show: false,
       imgArr: [
         this.GLOBAL.serverSrc + "/static/images/msg_empty_orders.png",
@@ -155,6 +119,10 @@ export default {
     };
   },
 
+  onShow() {
+    this.getList();
+  },
+
   watch: {
     // res: {
     //     handler: function() {}
@@ -162,26 +130,7 @@ export default {
     pick_item: {
       // immediate:true,
       handler(newName, oldName) {
-        let _this = this;
-        wx.request({
-          url: _this.GLOBAL.serverSrc + "/order/order",
-          method: "POST",
-          data: {
-            user_id: _this.GLOBAL.userId,
-            // state_id: _this.pick_item
-            state_id: _this.pick_item
-          },
-          success(res) {
-            //console.log("NOW：", res.data.data);
-            _this.bookList = res.data.data;
-            // console.log(_this.bookList);
-            if (res.data.data.length == 0) {
-              _this.show = false;
-            } else {
-              _this.show = true;
-            }
-          }
-        });
+        this.getList();
       }
       // 代表在wacth里声明了firstName这个方法之后立即先去执行handler方法
     }
@@ -219,7 +168,7 @@ export default {
         success(res) {
           // console.log(res);
           // console.log(_this.pick_item)
-          if (res.data.data.length == 0) {
+          if (res.data.data == null) {
             _this.show = false;
           } else {
             _this.show = true;
