@@ -117,11 +117,14 @@ export default {
   onShow() {
     this.getList();
   },
+<<<<<<< HEAD
   // onLoad: function(options) {
   //   if (!options.i) {
   //     this.pick_item = options.i-1;
   //   }
   // },
+=======
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
 
   watch: {
     // res: {
@@ -168,7 +171,11 @@ export default {
         success(res) {
           // console.log(res);
           // console.log(_this.pick_item)
+<<<<<<< HEAD
           if (res.data.code == "404") {
+=======
+          if (res.data.data == null) {
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
             _this.show = false;
           } else {
             _this.show = true;

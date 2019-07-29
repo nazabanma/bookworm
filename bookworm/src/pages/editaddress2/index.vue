@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
   <div class="container">
     <!-- 顶部导航栏 -->
     <navigation-bar
@@ -53,6 +54,55 @@
       <view class="opration" @click="send">保存</view>
     </view>
   </div>
+=======
+    <div class="container">
+        <!-- 顶部导航栏 -->
+        <navigation-bar :title="'编辑收货地址'" :backVisible="true" :fontSize="15" :imgsrc="naviImgsrc"
+            :linkBack="'/pages/myaddress2/main'" :linkKind="false" :titleColor="'#36282B'">
+        </navigation-bar>
+        <view class="userinfo">
+            <view class="edited">
+                <input name="input" placeholder="彭冰婷" confirm-type="done" />
+                <!-- <view class="edited_1">彭冰婷</view> -->
+            </view>
+            <view class="edited">
+                <input maxlength="11" placeholder="18723783492" confirm-type="done" />
+                <!-- <view edited_1>18723783492</view> -->
+            </view>
+            <view class="picker1">
+                <picker mode="region" @change="bindRegionChange" :value="region" :custom-item="customItem">
+                    <view class="picker">
+                        {{region[0]}}
+                        {{region[1]}}
+                        {{region[2]}}
+                    </view>
+                </picker>
+            </view>
+            <view class="editing">
+                <input name="input" placeholder="请输入详细地址" confirm-type="done" />
+            </view>
+        </view>
+
+        <view class="setting">
+            <view class="edited1">
+                <view class="set">设为默认地址</view>
+                <view class="icon">
+                    <switch @change="seted" color="#D2AC6E" />
+                    <!-- <switch @change="unseted" v-if=""/> -->
+                </view>
+            </view>
+            <view class="edited2">
+                <view class="del">删除收货地址</view>
+            </view>
+
+        </view>
+        <view class="comfirm">
+            <view class="opration">保存</view>
+        </view>
+
+
+    </div>
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
 </template>
 
 <script>
@@ -60,6 +110,7 @@ import { globalBus } from "@/components/globalBus";
 
 import navigationBar from "@/components/acomponents/navigation";
 
+<<<<<<< HEAD
 export default {
   data() {
     return {
@@ -95,6 +146,19 @@ export default {
         method: "POST",
         data: {
           address_id: _this.address.address_id
+=======
+    export default {
+        data() {
+            return {
+                naviImgsrc: "/static/images/left.png",
+                region: ['福建省', '厦门市', '集美区'],
+                customItem: '全部',
+                address_id: ''
+            };
+        },
+        components: {
+            navigationBar
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
         },
         success(res) {
           console.log(res.data);
@@ -150,6 +214,7 @@ export default {
       }
     },
 
+<<<<<<< HEAD
     bindRegionChange: function(e) {
       let address = e.mp.detail.value;
 
@@ -166,6 +231,28 @@ export default {
       if (address[2] == "暂不选择") {
         address[2] = "";
       }
+=======
+        },
+        onLoad: function(options) {
+            // console.log(options);
+            // console.log(options.adr);
+            this.address_id = options.id;
+            // console.log(this.address_getId);
+
+        },
+        seted: function(e) {
+            console.log('switch1 发生 change 事件，携带值为', e.detail.value)
+        },
+
+        unseted: function(e) {
+            console.log('switch2 发生 change 事件，携带值为', e.detail.value)
+        },
+
+        bindRegionChange: function(e) {
+            console.log('picker发送选择改变，携带值为', e.detail.value)
+
+        },
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
 
       this.address.province = address[0];
       this.address.city = address[1];
@@ -211,6 +298,7 @@ export default {
 </script>
 
 <style scoped>
+<<<<<<< HEAD
 .container {
   display: block;
   top: 0px;
@@ -378,4 +466,144 @@ switch {
   text-align: center;
   line-height: 100rpx;
 }
+=======
+    .container {
+        display: block;
+        top: 0px;
+        margin: 0;
+        position: relative;
+        width: 100%;
+        padding: 0;
+        background-color: #F5F5F5;
+        min-height: -moz-calc(100vh);
+        /*chrome safari*/
+        min-height: -webkit-calc(100vh);
+        /*Standard */
+        min-height: calc(100vh);
+    }
+    
+    .container img {
+        margin-top: 180rpx;
+        width: 400rpx;
+        height: 600rpx;
+    }
+    /* ========================  头部 */
+    /* ========================  上 */
+    
+    .userinfo {
+        width: 100%;
+        height: 450rpx;
+        float: left;
+    }
+    
+    .edited {
+        width: 100%;
+        height: 100rpx;
+        /* margin-left: 36rpx; */
+        font-size: 30rpx;
+        color: #36282B;
+        background: white;
+        border-top: 1rpx solid rgb(184, 181, 182);
+        line-height: 100rpx;
+        float: left;
+        vertical-align: middle;
+        /* border-bottom: 1rpx solid #36282B; */
+    }
+    
+    .edited input {
+        margin-left: 36rpx;
+        color: #36282B;
+        /* line-height: 80rpx; */
+    }
+    
+    .picker1 {
+        width: 100%;
+        height: 100rpx;
+        /* margin-left: 36rpx; */
+        font-size: 30rpx;
+        color: #36282B;
+        background: white;
+        border-top: 1rpx solid rgb(184, 181, 182);
+        border-bottom: 1rpx solid rgb(184, 181, 182);
+        line-height: 100rpx;
+        float: left;
+    }
+    
+    .editing {
+        width: 100%;
+        height: 150rpx;
+        /* margin-left: 36rpx; */
+        font-size: 24rpx;
+        color: #BBACAB;
+        background: pink;
+    }
+    /* ========================  中 */
+    
+    .setting {
+        float: left;
+        margin-top: 20rpx;
+        width: 100%;
+        height: 202rpx;
+    }
+    
+    .edited1 {
+        width: 100%;
+        height: 100rpx;
+        /* margin-left: 36rpx; */
+        font-size: 30rpx;
+        color: #36282B;
+        background: white;
+        border-top: 1rpx solid rgb(184, 181, 182);
+        line-height: 100rpx;
+        float: left;
+    }
+    
+    .edited2 {
+        width: 100%;
+        height: 100rpx;
+        /* margin-left: 36rpx; */
+        font-size: 30rpx;
+        color: #36282B;
+        background: white;
+        border-top: 1rpx solid rgb(184, 181, 182);
+        border-bottom: 1rpx solid rgb(184, 181, 182);
+        line-height: 100rpx;
+        float: left;
+    }
+    
+    .set {
+        float: left;
+        margin-left: 36rpx;
+    }
+    
+    .del {
+        margin-left: 36rpx;
+    }
+    
+    .icon {
+        width: 80rpx;
+        height: 40rpx;
+        float: left;
+        margin-left: 560rpx;
+    }
+    /* switch {
+        width: 80rpx;
+        height: 40rpx;
+        color: #D2AC6E;
+    } */
+    /* ========================  下 */
+    
+    .comfirm {
+        position: fixed;
+        bottom: 0rpx;
+        width: 100%;
+        height: 100rpx;
+        /* margin-left: 36rpx; */
+        font-size: 30rpx;
+        color: white;
+        background: #D2AC6E;
+        text-align: center;
+        line-height: 100rpx;
+    }
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
 </style>

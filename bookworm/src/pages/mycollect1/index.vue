@@ -25,9 +25,19 @@
                 :class="{' active':checkMsg[index]}"
                 :value="index"
                 v-model="checkMsg[index]"
+<<<<<<< HEAD
                 ></view>-->
                 <view class="circle" :class="{' active':checkMsg[index]}"></view>
               </view>
+=======
+              ></view>-->
+              <view class="circle" :class="{' active':checkMsg[index]}"></view>
+            </view>
+          </view>
+          <view class="collect_right">
+            <view class="collect_content__left">
+              <image class="collect_img" :src="item.book_cover" />
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
             </view>
             <view class="collect_right">
               <view class="collect_content__left">

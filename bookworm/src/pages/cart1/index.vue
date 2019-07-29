@@ -22,6 +22,7 @@
       </view>
     </view>
     <!------------------------------------------------------ 我的收藏列表 -->
+<<<<<<< HEAD
     <router-view v-if="isRouterAlive">
       <view class="cartPanel">
         <view class="cartList" v-for="(item,index) in cartList" :key="index">
@@ -31,6 +32,20 @@
               <view class="cart_area">
                 <view class="circle" :class="{' active':checkMsg[index]}"></view>
               </view>
+=======
+    <view class="cartPanel">
+      <view class="cartList" v-for="(item,index) in cartList" :key="index">
+        <!-- 某个收藏 -->
+        <view class="cartItem">
+          <view class="cart_left" @click="pickThis(index)">
+            <view class="cart_area">
+              <view class="circle" :class="{' active':checkMsg[index]}"></view>
+            </view>
+          </view>
+          <view class="cart_right">
+            <view class="cart_content__left" @click="linkTo(item.book_id)">
+              <image class="cart_img" :src="item.book_cover" />
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
             </view>
             <view class="cart_right">
               <view class="cart_content__left" @click="linkTo(item.book_id)">

@@ -92,6 +92,11 @@
         <view class="tem" @click="clickCancel(0)">暂不取消</view>
         <view class="ensure" @click="clickCancel(1)">确定取消</view>
       </view>
+      <view class="footer">
+        <view></view>
+        <view class="tem" @click="clickCancel(0)">暂不取消</view>
+        <view class="ensure" @click="clickCancel(1)">确定取消</view>
+      </view>
     </view>
   </div>
 </template>

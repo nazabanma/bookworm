@@ -199,7 +199,10 @@ export default {
   height: 272rpx;
   min-width: 272rpx;
   max-width: 272rpx;
+<<<<<<< HEAD
   min-height: 272rpx;
+=======
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
   max-height: 272rpx;
   margin: 10% auto;
 }

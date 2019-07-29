@@ -3,8 +3,12 @@
     <view class="show" v-if="showFlag">
       <img :src="imgSrc" class="aniImg" />
       <view class="titleImg">
+<<<<<<< HEAD
         <!-- <p ></p> -->
         <button class="getUserBtn" v-if="showFlag" open-type="getUserInfo" @click="getUser">淘書斋</button>
+=======
+        <p v-if="showFlag" open-type="getUserInfo" @click="getUser">淘書斋</p>
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
         <img :src="clickSrc" class="tip" />
       </view>
       <view class="msg" v-if="showFlag">
@@ -139,7 +143,10 @@ export default {
     //     }
     //   }, 1500);
     // }
+<<<<<<< HEAD
     //this.getOpenId();
+=======
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
   },
   beforeDestroy() {
     if (this.timer || this.jumpToIndex) {
@@ -167,19 +174,34 @@ export default {
       let _this = this;
       console.log("this.swiperFlag" + this.swiperFlag);
       if (this.swiperFlag) {
+<<<<<<< HEAD
         const TIME_COUNT_2 = 3;
+=======
+        const TIME_COUNT_2 = 5;
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
         this.downCount2 = TIME_COUNT_2;
         this.jumpToIndex = setInterval(() => {
           if (_this.downCount2 > 0 && _this.downCount2 <= TIME_COUNT_2) {
             _this.downCount2--;
+<<<<<<< HEAD
             //console.log("this.downCount2" + _this.downCount2);
             //console.log(_this.downCount2);
+=======
+            console.log("this.downCount2" + _this.downCount2);
+            console.log(_this.downCount2);
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
           } else {
             wx.switchTab({
               url: "/pages/index1/main"
             });
+<<<<<<< HEAD
             //console.log("_this.downCount2结束");
             clearInterval(_this.jumpToIndex);
+=======
+            console.log("_this.downCount2结束");
+            clearInterval(_this.jumpToIndex);
+
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
             _this.jumpToIndex = null;
             _this.swiperFlag = false;
           }
@@ -198,7 +220,10 @@ export default {
           if (res.code) {
             console.log(res.code);
             wx.getUserInfo({
+<<<<<<< HEAD
               lang: "zh_CN",
+=======
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
               success: function(res) {
                 var objz = {};
                 objz.avatarUrl = res.userInfo.avatarUrl;
@@ -233,11 +258,19 @@ export default {
           } else {
             console.log("获取用户登录态失败！" + res.errMsg);
           }
+<<<<<<< HEAD
           console.log("失败！");
+=======
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
         }
       });
     },
     getUser: function() {
+<<<<<<< HEAD
+=======
+      this.showFlag = false;
+      this.totalFlag = true;
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
       let appid = "wx9d81b41b418f694f"; //appid需自己提供，此处的appid我随机编写
       let secret = "d395032e675ad629c4876ff0f38247ef"; //secret需自己提供，此处的secret我随机编写
       let _this = this;
@@ -250,8 +283,12 @@ export default {
             console.log(res.code);
             wx.getUserInfo({
               success: function(res) {
+<<<<<<< HEAD
                 console.log("用户信息");
                 console.log(res.data);
+=======
+                console.log(res);
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
                 var objz = {};
                 objz.avatarUrl = res.userInfo.avatarUrl;
                 objz.nickName = res.userInfo.nickName;
@@ -292,7 +329,11 @@ export default {
                     _this.user.city = res.userInfo.city;
                     _this.user.country = res.userInfo.country;
                     _this.user.login_time = _this.getTime();
+<<<<<<< HEAD
                     _this.avatar_url = res.userInfo.avatarUrl;
+=======
+                    _this.avatar_url=res.userInfo.avatarUrl;
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
                     console.log(_this.user);
                     wx.setStorageSync("userInfo", objz); //存储userInfo
 
@@ -324,8 +365,12 @@ export default {
           } else {
             console.log("已存在该用户:" + res.data.data.user_id);
             _this.GLOBAL.userId = res.data.data.user_id;
+<<<<<<< HEAD
             _this.showFlag = false;
             _this.totalFlag = true;
+=======
+
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
             console.log("全局user_id:" + _this.GLOBAL.userId);
           }
         }
@@ -341,12 +386,17 @@ export default {
           if (res.data.code == 200) {
             _this.GLOBAL.userId = res.data.user_id;
             console.log("全局user_id:" + _this.GLOBAL.userId);
+<<<<<<< HEAD
             _this.showFlag = false;
             _this.totalFlag = true;
           } else {
             console.log("添加失败");
             // _this.showFlag = false;
             // _this.totalFlag = true;
+=======
+          } else {
+            console.log("添加失败");
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
           }
         }
       });
@@ -401,6 +451,7 @@ export default {
   /* background: #521d23; */
 }
 .titleImg {
+<<<<<<< HEAD
   /* width: 100%;
   display: inline-block;
   /* width: 300rpx;
@@ -415,11 +466,15 @@ export default {
   width: 100%;
   height: 60px;
   min-height: 60px;
+=======
+  width: 100%;
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
   display: inline-block;
   /* width: 300rpx;
   height: 300rpx; */
   margin: 0 auto;
   font-size: 50px;
+<<<<<<< HEAD
   line-height: 60px;
   text-align: center;
   color: #521d23;
@@ -428,6 +483,11 @@ export default {
 }
 button:after {
   display: none;
+=======
+  line-height: 60rpx;
+  text-align: center;
+  color: #521d23;
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
 }
 .tip {
   display: block;

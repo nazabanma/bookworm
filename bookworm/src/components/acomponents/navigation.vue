@@ -92,6 +92,7 @@ export default {
   methods: {
     backClick() {
       if (this.linkKind) {
+<<<<<<< HEAD
         if (this.tabKind) {
           wx.switchTab({
             url: this.linkBack
@@ -101,6 +102,14 @@ export default {
             url: this.linkBack
           });
         }
+=======
+        wx.navigateTo({
+          url: this.linkBack
+        });
+        // wx.navigateBack({
+        //   delta: 1
+        // });
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
       } else {
         let pages = getCurrentPages(); // 获取页面栈
         let currPage = pages[pages.length - 1]; // 当前页面

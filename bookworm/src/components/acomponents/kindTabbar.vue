@@ -27,7 +27,16 @@ export default {
   data() {
     return {
       btnSrc: "/static/images/down.png",
+<<<<<<< HEAD
       pick_item: 0
+=======
+      showItem: true,
+      pick_item: 0,
+      showList: [],
+      btnSrc2: "/static/images/up.png",
+      BtnList: [],
+      show: true
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
       // kindList: [],
     };
   },

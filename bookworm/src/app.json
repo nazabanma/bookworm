@@ -1,6 +1,8 @@
 {
     "pages": [
+        "pages/index1/main",
         "pages/myorder3/main",
+<<<<<<< HEAD
         "pages/cart1/main",
         "pages/delivercomment1/main",
         "pages/myaddress2/main",
@@ -8,6 +10,12 @@
         "pages/mycollect1/main",
         "pages/index1/main",
         "pages/checkwuliu1/main",
+=======
+        "pages/checkwuliu1/main",
+        "pages/changeaddress1/main",
+        "pages/lead/main",
+        "pages/delivercomment1/main",
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
         "pages/bookdetail1/main",
         "pages/lead/main",
         "pages/changeaddress1/main",

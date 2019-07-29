@@ -7,8 +7,14 @@
       :fontSize="18"
       :imgsrc="naviImgsrc"
       :titleColor="'#521d23'"
+<<<<<<< HEAD
     ></navigation-bar>
     <!-- :linkKind="true" -->
+=======
+      :linkBack="'/pages/myorder3/main'"
+      :linkKind="true"
+    ></navigation-bar>
+>>>>>>> 1eda815ab7bedfb55b4e0b845964db1eb0834c2e
     <view>
       <img :src="ImgSrc" class="img" mode="widthFix" />
     </view>
