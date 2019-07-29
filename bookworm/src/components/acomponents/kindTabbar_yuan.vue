@@ -1,21 +1,35 @@
 <template>
   <div>
     <!-- ==================================================     组件：首页分类点击切换     ======================================================= -->
-    <view class="container">
-      <swiper
+    <view v-if="show" class="container">
+      <view
         class="kindItems"
-        :indicator-dots="false"
-        :autoplay="false"
-        :display-multiple-items="6"
+        v-for="(item, index) in showList"
+        :key="index"
+        @click="linkType(item)"
       >
-        <swiper-item class="kindSwiper" v-for="(item,index) in kindList" :key="index">
-          <a
-            class="kindItem"
-            @click="linkType(item.id)"
-            :class="{ 'active': (pick_item==item.id) }"
-          >{{item.name}}</a>
-        </swiper-item>
-      </swiper>
+        <a class="kindItem" :class="{ 'active': (pick_item==item.id) }">{{item.name}}</a>
+      </view>
+      <view class="btn" @click="moreKind">
+        <img class="btnImg" :src="btnSrc" />
+      </view>
+    </view>
+
+    <view v-if="!show" class="popPanel">
+      <view class="btnLable">
+        <view class="btn2" @click="moreKind">
+          <img class="btnImg2" :src="btnSrc2" />
+        </view>
+      </view>
+      <view class="pop">
+        <view class="kindBtns" v-for="(item, index) in BtnList" :key="index">
+          <view class="btnTr">
+            <block v-for="(i,k) in item" :key="k">
+              <a class="btnTd" @click="linkType(i)">{{i.name}}</a>
+            </block>
+          </view>
+        </view>
+      </view>
     </view>
   </div>
 </template>
@@ -27,7 +41,12 @@ export default {
   data() {
     return {
       btnSrc: "/static/images/down.png",
-      pick_item: 0
+      showItem: true,
+      pick_item: 0,
+      showList: [],
+      btnSrc2: "/static/images/up.png",
+      BtnList: [],
+      show: true
       // kindList: [],
     };
   },
@@ -35,24 +54,51 @@ export default {
   watch: {
     kindList: {
       handler: function(newVal, oldVal) {
+        let length = this.kindList.length;
+        for (let i = 0; i < 6; i++) {
+          // this.showList.splice(i, 0);
+          let item = this.kindList[i];
+          this.showList.push(item);
+        }
+        //console.log("类别显示数组[0]的typename："+this.showList[0].typename);
+        // 数组分割
+        for (let i = 0; i < length; i += 4) {
+          this.BtnList.push(this.kindList.slice(i, i + 4));
+        }
+        //console.log("按钮数组："+this.BtnList);
         wx.hideLoading();
       }
     }
   },
-  onShow() {
-    console.log("this.kindList" + this.kindList[0].name);
+  mounted() {
     if (this.kindList.length == 0) {
       wx.showLoading({
         title: "加载中"
       });
+    } else {
+      let length = this.kindList.length;
+      for (let i = 0; i < 6; i++) {
+        // this.showList.splice(i, 0);
+        let item = this.kindList[i];
+        this.showList.push(item);
+      }
+      //console.log("类别显示数组[0]的typename："+this.showList[0].typename);
+      // 数组分割
+      for (let i = 0; i < length; i += 4) {
+        this.BtnList.push(this.kindList.slice(i, i + 4));
+      }
     }
     //console.log("按钮数组："+this.BtnList);
   },
   methods: {
-    linkType(itemId) {
-      
-      this.pick_item = itemId;
-      this.$emit("pickItem", itemId);
+    linkType(item) {
+      this.pick_item = item.id;
+      //console.log(item.book_type_id);
+      this.$emit("pickItem", item.id);
+    },
+    moreKind() {
+      this.show = !this.show;
+      globalBus.$emit("swiperFlag", this.show);
     }
   }
 };
@@ -68,37 +114,28 @@ export default {
   /* display: table-row;对padding不敏感，这里只能用table进行限制 */
   width: 100%;
   height: 0.6rem;
-  padding: 0.1rem 0 0;
+  padding: 0 0 0 0.3rem;
   /* margin-top:0.1rem; */
   vertical-align: middle;
   overflow: hidden;
-  /* background-color: red; */
   /* background-color: blue; */
 }
 /* 类型列表 */
 .kindItems {
-  height: 0.6rem;
   display: table-cell;
   /* display: -webkit-flex; */
   word-break: break-all;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   justify-content: space-between;
   align-items: flex-start;
   align-content: flex-start;
   /* background-color: antiquewhite; */
   vertical-align: middle;
-  /* background-color: red; */
 }
-/* .kindSwiper {
-  display: table-cell;
-  transform: unset;
-  position: relative;
-  background-color: red;
-} */
 /* 单个类型： a */
 .kindItem {
   flex-grow: 1;
-  flex-basis: 0.3rem;
+  flex-basis: 0.4rem;
   /* max-width: 1.2rem; */
   font-size: 15px;
   text-align: center;
@@ -108,7 +145,9 @@ export default {
 }
 /* 选中之后的样式 */
 /* .kindItem:after , */
-
+.kindItem:visited:after,
+.kindItem:hover:after,
+.kindItem:active:after,
 .kindItem.active:after {
   position: relative;
   display: block;

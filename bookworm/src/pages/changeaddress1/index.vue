@@ -7,9 +7,9 @@
       :fontSize="18"
       :backVisible="true"
       :imgsrc="naviImgsrc"
-      :linkBack="'/pages/myorder3/main'"
-      :linkKind="true"
     ></navigation-bar>
+    <!-- :linkBack="'/pages/myorder3/main'"
+    :linkKind="true"-->
     <!-- =======================================  地址列表 ======================================= -->
     <view v-if="emptyFlag==0" class="addressPanel">
       <view class="addressList" v-for="(item,index) in addressList" :key="index">

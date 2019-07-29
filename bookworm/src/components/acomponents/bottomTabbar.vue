@@ -2,19 +2,9 @@
   <div>
     <!-- ==================================================     组件：商品详情页面底部的按钮组合     ======================================================= -->
     <cover-view @blur="blurs" class="tabbar">
-      <cover-view class="collect">
-        <cover-image
-          v-if="collectType"
-          class="collect_image"
-          :src="'/static/images/collected.png'"
-          @click="collect()"
-        ></cover-image>
-        <cover-image
-          v-else
-          class="collect_image"
-          :src="'/static/images/collect.png'"
-          @click="collect()"
-        ></cover-image>
+      <cover-view class="collect" @click="collect()">
+        <cover-image v-if="collectType" class="collect_image" :src="'/static/images/collected.png'"></cover-image>
+        <cover-image v-else class="collect_image" :src="'/static/images/collect.png'"></cover-image>
         <cover-view class="collect_text">收藏</cover-view>
       </cover-view>
       <cover-view class="addToCart" @click="addToCart">
@@ -31,7 +21,7 @@
 
 <script>
 export default {
-  props: ["collectType", "bookId", "bookInfo", "bookImg"],
+  props: ["collectType", "bookId", "bookInfo"],
   data() {
     return {
       // imgsrc1: "/static/images/收藏——未选中@3x.png",
@@ -53,6 +43,7 @@ export default {
       window.scroll(0, 0);
     },
     collect() {
+      let _this = this;
       this.collectType = !this.collectType;
       console.log("collect");
       //=========================================================    获取书籍收藏信息
@@ -61,7 +52,18 @@ export default {
         method: "POST",
         data: { user_id: _this.GLOBAL.userId, book_id: this.bookId },
         success(res) {
-          console.log(_this.ifCollect);
+          console.log(_this.collectType);
+          if (_this.collectType) {
+            wx.showToast({
+              title: "收藏成功",
+              duration:800
+            });
+          } else {
+            wx.showToast({
+              title: "取消收藏",
+              duration:800
+            });
+          }
         }
       });
     },
@@ -73,12 +75,16 @@ export default {
         method: "POST",
         data: { user_id: _this.GLOBAL.userId, book_id: _this.bookId },
         success(res) {
-          console.log("addToCart");
+          // console.log("addToCart");
+          wx.showToast({
+            title: "加入成功",
+            duration:800
+          });
         }
       });
     },
     BuyNow() {
-      console.log("BuyNow");
+      //console.log("BuyNow");
       let _this = this;
       _this.dataList = [];
       let dataCreateList = [];
@@ -87,7 +93,7 @@ export default {
         book_id: this.bookId,
         book_name: this.bookInfo.book_name,
         book_author: this.bookInfo.book_detail,
-        book_img: this.bookImg,
+        book_cover: this.bookInfo.book_cover,
         count: 1,
         book_price: this.bookInfo.book_price
       };

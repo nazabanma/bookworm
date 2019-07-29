@@ -13,7 +13,7 @@
         </span>
         <span class="title">
           月销：
-          <span>{{book.saleMonth}}</span>
+          <span>{{saleMonth}}</span>
         </span>
       </view>
       <view class="showItem">
@@ -30,7 +30,7 @@
       </view>
     </view>
     <view class="detailImg">
-      <image mode="widthFix" :src="book.detailImg" />
+      <image class="detail_img" mode="widthFix" :src="detailSrc" />
     </view>
     <!-- <view></view>
     <view></view>-->
@@ -39,7 +39,7 @@
 
 <script>
 export default {
-  props: ["saleMonth", "formAddress"],
+  props: ["saleMonth", "detailSrc"],
   data() {
     return {
       naviImgsrc: "/static/images/左@3x.png",
@@ -51,9 +51,7 @@ export default {
       }
     };
   },
-  methods: {
-
-  },
+  methods: {},
 
   created() {
     // let app = getApp()
@@ -124,10 +122,11 @@ export default {
   position: relative;
   width: 100%;
   /* background-color: white; */
-  background-color: red;
+  /* background-color: red; */
 }
-.detailImg image {
+.detail_img {
   width: 100%;
   display: block;
+  height: 4300rpx;
 }
 </style>

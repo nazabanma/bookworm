@@ -6,10 +6,9 @@
       :backVisible="true"
       :fontSize="16"
       :imgsrc="'/static/images/left.png'"
-      :linkBack="'/pages/index1/main'"
-      :linkKind="false"
     ></navigation-bar>
-
+    <!-- :linkBack="'/pages/index1/main'"
+    :linkKind="false"-->
     <!-- 轮播页 -->
     <swiper-bar
       :imgUrls="imgUrls"
@@ -35,7 +34,7 @@
 
     <!-- <book-detail :formAddress="bookData." :saleMonth="bookData." ></book-detail> -->
     <!-- 详情 -->
-    <book-detail v-if="linkType"></book-detail>
+    <book-detail v-if="linkType" :saleMonth="bookData.sell_count" :detailSrc="detailSrc"></book-detail>
 
     <!-- 评论 -->
     <book-comment
@@ -55,7 +54,7 @@
     <!-- 底部按钮 -->
     <!-- 补空位 -->
     <view class="empty"></view>
-    <bottom-tabbar :collectType="ifCollect" :bookId="bookId" :bookInfo="bookData" :bookImg="imgUrls[0]"></bottom-tabbar>
+    <bottom-tabbar :collectType="ifCollect" :bookId="bookId" :bookInfo="bookData"></bottom-tabbar>
   </div>
 </template>
 
@@ -77,7 +76,7 @@ export default {
       imgUrls: [], //商品详情轮播图片
       bookData: [], //书籍基本信息
       ifCollect: "", //标识书籍是否收藏
-      linkType: false, //tab页类型，true为详情，false为评价
+      linkType: true, //tab页类型，true为详情，false为评价
       commentData: [], //存放获取到的评价信息
       commentInput: [], //存放没条评价的输入框值
       commentImgs: [], //存放评价图片
@@ -86,7 +85,8 @@ export default {
       commentShowList: [], //标识是否显示回复
       likeImg: ["/static/images/good.png", "/static/images/good2.png"],
       comImg: "/static/images/commons.png",
-      anonymousImg: this.GLOBAL.serverSrc + "/static/images/icon2.png"
+      anonymousImg: this.GLOBAL.serverSrc + "/static/images/icon2.png",
+      detailSrc: this.GLOBAL.serverSrc + "/static/images/book_detail2.jpg"
     };
   },
   components: {
@@ -113,14 +113,34 @@ export default {
     });
     this.getSwiperTop();
   },
+  onShow() {
+    // let pages = getCurrentPages();
+    // // let pages = getCurrentPages();
+    // // console.log("pages" + pages[0].route);
+    // console.log("pagesLength" + pages.length);
+    // let current = pages[pages.length - 1]; // 当前页面
+    // let lastPage = pages[pages.length - 2];
+    // console.log("currentPages" + current.route);
+    // console.log("lastPage" + lastPage.route);
+    // let url = current.route; //当前页面url
+    // let options = current.options; //如果要获取url中所带的参数可以查看options
+    // let prevpage = pages[pages.length - 2]; // 上一个页面
+    // let data = prevpage.data; // 获取上一页data里的数据
+    // if (prevPage) {
+    //   //存在上一页
+    //   prevPage.changeDataPageA("load"); // 调用上一页的函数
+    //   prevPage.setData({ address_id: id }); // 修改上一页的数据
+    //   wx.navigateBack(); // 返回上一页
+    // }
+  },
   methods: {
     //-----------------------------------------------------   评论
-    Link() {
-      let _this = this;
-      wx.navigateTo({
-        url: "/pages/bookcomment1/main"
-      });
-    },
+    // Link() {
+    //   let _this = this;
+    //   wx.navigateTo({
+    //     url: "/pages/bookcomment1/main"
+    //   });
+    // },
     //-----------------------------------------------------   获取当前屏幕的宽度，作为轮播图片的高度
     getSrceenWidth() {
       const _this = this;
@@ -156,7 +176,7 @@ export default {
           console.log(_this.ifCollect);
         }
       });
-      console.log("书籍id"+this.bookId);
+      console.log("书籍id" + this.bookId);
 
       //=========================================================    获取评论数据
       wx.request({
@@ -174,11 +194,13 @@ export default {
             _this.commentData = res.data.data;
             _this.commentShow;
             // console.log(res.data.data);
-            for (let i = 0; i < res.data.data.length; i++) {
-              let Imgarry = res.data.data[i].img.split(";");
-              _this.commentImgs.push(Imgarry);
-              Imgarry = "";
 
+            for (let i = 0; i < res.data.data.length; i++) {
+              if (res.data.data[i].img) {
+                let Imgarry = res.data.data[i].img.split(";");
+                _this.commentImgs.push(Imgarry);
+                Imgarry = "";
+              }
               _this.commentShowList.push(0);
               _this.commentInput.push("");
               // console.log(_this.commentShowList[i]);
@@ -189,7 +211,7 @@ export default {
                 _this.likeIconData[i] = _this.likeImg[0];
               }
             }
-              _this.emptyData = 0;
+            _this.emptyData = 0;
           }
           //====================  无评论
           else if (code_msg == "404") {
@@ -231,9 +253,6 @@ export default {
 }
 /* 选中之后的样式 */
 /* .tabA:after, */
-.tabA:visited:after,
-.tabA:hover:after,
-.tabA:active:after,
 .tabA.active:after {
   position: relative;
   display: block;

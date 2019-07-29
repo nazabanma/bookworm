@@ -6,12 +6,12 @@
       :backVisible="true"
       :fontSize="15"
       :imgsrc="naviImgsrc"
-      :linkBack="'/pages/index1/main'"
       :titleColor="'#521d23'"
     ></navigation-bar>
+    <!-- :linkBack="'/pages/index1/main'" -->
     <view class="content">
       <!---------------------------------------------- 顶部选择地址 --------------------------------------->
-      <view class="order_add">
+      <view class="order_add" @click="jumpToSele">
         <view class="order_add__left">
           <image class="addImg" mode="widthFix" :src="addSrc" />
         </view>
@@ -29,7 +29,7 @@
         </view>
         <view class="order_add__right">
           <view class="jump_area">
-            <image class="jumpImg" mode="widthFix" :src="jumpSrc" @click="jumpToSele" />
+            <image class="jumpImg" mode="widthFix" :src="jumpSrc" />
           </view>
         </view>
       </view>
@@ -119,7 +119,7 @@
           <view class="sum_Num">&yen;{{totalPrice}}</view>
         </view>
       </view>
-      <view class="addBtn" @click="subOrder">提交订单</view>
+      <button class="addBtn" @click="subOrder">提交订单</button>
     </view>
   </div>
 </template>
@@ -292,6 +292,10 @@ export default {
     },
     //=========================================================   提交数据
     subOrder() {
+      wx.showLoading({
+        title: "正在创建订单~",
+        mask: true
+      });
       let _this = this;
       let addressId = _this.address_Id;
       let remarks = this.remarkValue;
@@ -312,15 +316,50 @@ export default {
             order_list: jsonArr
           },
           success(res) {
-            if (res.data.statusCode == 200) {
-              console.log(res);
-              console.log(addressId);
-              console.log(remarks);
-              console.log(orderList);
-              //_this.reload();
-              console.log("subOrder");
+            wx.hideLoading();
+            if (res.data.code == 200) {
+              if (res.data.order_id) {
+                let tmp_orderId = res.data.order_id;
+                wx.showModal({
+                  title: "确认付款",
+                  showCancel: true,
+                  cancelText: "取消",
+                  cancelColor: "#787172",
+                  confirmText: "确认",
+                  confirmColor: "#bc2b37",
+                  success(res) {
+                    if (res.confirm) {
+                      // console.log(res);
+                      // console.log(addressId);
+                      // console.log(remarks);
+                      // console.log(orderList);
+                      //_this.reload();
+                      wx.request({
+                        url: _this.GLOBAL.serverSrc + "/order/orderStateUpdate",
+                        method: "POST",
+                        data: {
+                          order_id: tmp_orderId,
+                          order_state_id: 1
+                        },
+                        success(res) {
+                          wx.showToast({
+                            title: "付款成功",
+                            duration: 800
+                          });
+                        }
+                      });
+                    }
+                    wx.navigateTo({
+                      url: "/pages/myorder3/main"
+                    });
+                  }
+                });
+              }
             } else {
-              console.log("提交失败");
+              wx.showToast({
+                title: "提交失败",
+                duration: 800
+              });
             }
           }
         });
@@ -772,19 +811,19 @@ export default {
 .addBtn {
   flex: 1;
   display: inline-block;
-  width: 1.2rem;
-  min-width: 1.2rem;
-  height: 0.5rem;
-  max-height: 0.5rem;
-  font-size: 15px;
+  width: 140rpx;
+  min-width: 140rpx;
+  height: 70rpx;
+  max-height: 70rpx;
+  font-size: 30rpx;
   border: 1px solid #521d23;
   border-radius: 35rpx;
   background-color: #521d23;
   margin-top: 0.15rem;
   margin-right: 36rpx;
   color: white;
-  padding: 15rpx 40rpx 0;
-  vertical-align: middle;
-  line-height: 15px;
+  padding: 20rpx 30rpx;
+  /* vertical-align: middle; */
+  line-height: 30rpx;
 }
 </style>

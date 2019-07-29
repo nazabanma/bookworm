@@ -6,9 +6,9 @@
       :backVisible="true"
       :fontSize="16"
       :imgsrc="'/static/images/left.png'"
-      :linkBack="'/pages/myorder3/main'"
-      :linkKind="false"
     ></navigation-bar>
+    <!-- :linkBack="'/pages/myorder3/main'"
+    :linkKind="false"-->
     <view class="commentPanel">
       <view class="commentList" v-for="(i,k) in evaluate_list" :key="k">
         <p class="bookname">《{{i.bookname}}》</p>
@@ -83,7 +83,7 @@ export default {
       //     img: ""
       //   }
       // ]
-       evaluate_list: []
+      evaluate_list: []
     };
   },
   components: {
@@ -180,7 +180,7 @@ export default {
       //第三个参数表示第几个物品，0表示第一个物品的评价
       //第四个参数表示每个物品的图片，0表示第一张图片
       _this.uploadToServer(
-        "http://localhost/user/upLoadImg", //后端接收图片的接口
+        _this.GLOBAL.serverSrc + "/user/upLoadImg", //后端接收图片的接口
         _this.img_list, //存放图片路径的数组
         0, //表示第几张图片，0表示从第一张开始上传
         0

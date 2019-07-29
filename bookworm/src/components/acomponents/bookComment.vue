@@ -30,12 +30,12 @@
                 <view class="evaluationt_imgs" v-for="(i,k) in commentArr[index]" :key="k">
                   <!-- <image class="evaluationt_imgs" :src="i" /> -->
                   <image
-                  class="evaluationt_imgs"
-                  :src="i"
-                  @tap="previewImg"
-                  :data-list="commentArr[index]"
-                  :data-src="i"
-                />
+                    class="evaluationt_imgs"
+                    :src="i"
+                    @tap="previewImg"
+                    :data-list="commentArr[index]"
+                    :data-src="i"
+                  />
                 </view>
               </view>
               <!-------------------------------------- 点赞、回复 -------------------->
@@ -141,8 +141,8 @@ export default {
     // })
   },
   methods: {
-     //================================================   图片预览
-      previewImg(event) {
+    //================================================   图片预览
+    previewImg(event) {
       var src = event.currentTarget.dataset.src; //获取data-src
       var imgList = event.currentTarget.dataset.list; //获取data-list
       //图片预览
@@ -256,21 +256,35 @@ export default {
       //进行删除
       console.log(this.commentList[index].order_item_id);
       let _this = this;
-      wx.request({
-        url:
-          _this.GLOBAL.serverSrc +
-          "/evaluate/evaluateDeleteAll?order_item_id=" +
-          _this.commentList[index].order_item_id,
-        data: {
-          order_item_id: _this.commentList[index].order_item_id
-        },
-        method: "POST",
+      wx.showModal({
+        content: "是否删除",
+        showCancel: true,
+        cancelText: "取消",
+        cancelColor: "#787172",
+        confirmText: "删除",
+        confirmColor: "#bc2b37",
         success(res) {
-          console.log(res.data);
+          if (res.confirm) {
+            wx.request({
+              url:
+                _this.GLOBAL.serverSrc +
+                "/evaluate/evaluateDeleteAll?order_item_id=" +
+                _this.commentList[index].order_item_id,
+              data: {
+                order_item_id: _this.commentList[index].order_item_id
+              },
+              method: "POST",
+              success(res) {
+                console.log(res.data);
+              }
+            });
+            _this.commentList.splice(index, 1);
+            _this.reload();
+          } else if (res.cancel) {
+            // console.log("用户点击取消");
+          }
         }
       });
-      this.commentList.splice(index, 1);
-      this.reload();
     },
     //================ 进行删除操作,index:平价下标，i:回复下标
     deleteComment(index, i) {
@@ -286,10 +300,14 @@ export default {
         },
         method: "POST",
         success(res) {
-          console.log(res.data);
+          //console.log(res.data);
+          wx.showToast({
+            title: "删除成功",
+            duration: 800
+          });
+          _this.commentList[index].comment.splice(i, 1);
         }
       });
-      this.commentList[index].comment.splice(i, 1);
     },
     getTime() {
       let date = new Date();

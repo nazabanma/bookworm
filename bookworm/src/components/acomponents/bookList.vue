@@ -18,11 +18,11 @@
               <span>《{{item.book_name}}》</span>
             </view>
             <view class="bookAuthor">
-              <span>——{{item.book_author}}——</span>
+              <span>——&nbsp;{{item.book_author}}&nbsp;——</span>
             </view>
             <block>
-              <span class="bookPrice">￥{{item.book_price}}</span>
-              <span v-if="item.oriPrice" class="delPrice">￥{{item.book_oriPrice}}</span>
+              <span class="bookPrice">&yen;{{item.book_price}}</span>
+              <span v-if="item.oriPrice" class="delPrice">&yen;{{item.book_oriPrice}}</span>
             </block>
           </view>
         </view>
@@ -71,7 +71,7 @@ export default {
   methods: {
     //------------------------------------------------  跳转到商品详情页面,传值
     linkTo(bookID) {
-      wx.redirectTo({
+      wx.navigateTo({
         url: "/pages/bookdetail1/main"
       });
       globalBus.$emit("bookID", bookID);
@@ -199,6 +199,7 @@ export default {
   height: 272rpx;
   min-width: 272rpx;
   max-width: 272rpx;
+  min-height: 272rpx;
   max-height: 272rpx;
   margin: 10% auto;
 }

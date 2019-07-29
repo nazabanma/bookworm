@@ -50,7 +50,7 @@
             </view>
             <view v-else-if="items.order_state_id == 2">
               <button class="btn2" @click="confirm">确认收货</button>
-              <button class="btn1" @click="checkWuliu">查看物流</button>
+              <button class="btn1" @click="checkLogistics">查看物流</button>
             </view>
             <view v-else-if="items.order_state_id == 3">
               <button class="btn3" @click="clickToComment(items)">去评价</button>
@@ -85,9 +85,10 @@
             </view>
           </view>
         </view>
+        <!-- <view class="empty"></view> -->
       </view>
+
       <view class="footer">
-        <view></view>
         <view class="tem" @click="clickCancel(0)">暂不取消</view>
         <view class="ensure" @click="clickCancel(1)">确定取消</view>
       </view>
@@ -160,7 +161,7 @@ export default {
   methods: {
     //------------------------------------------------  跳转到商品详情页面,传值
     linkTo(bookID) {
-      wx.redirectTo({
+      wx.navigateTo({
         url: "/pages/bookdetail1/main"
       });
       globalBus.$emit("bookID", bookID);
@@ -322,17 +323,16 @@ export default {
       wx.navigateTo({
         url: "/pages/changeaddress1/main?ori=" + orderId + "&adr=" + addressId
       });
-    }
-  },
-
-  //==============  确认收货  ===========
-  confirm() {},
-
-  //==============  查看物流   ===========
-  checkWuliu() {
-    wx.navigateTo({
-      url: "/pages/checkwuliu1/main"
-    });
+    },
+    //=============================================================================== 查看物流
+    checkLogistics() {
+      console.log("正在跳转");
+      wx.navigateTo({
+        url: "/pages/checkwuliu1/main"
+      });
+    },
+    //==============  确认收货  ===========
+    confirm() {}
   }
 };
 </script>
@@ -582,19 +582,20 @@ button,
   z-index: 9;
   opacity: 0.6;
 }
-
+/*-------------------------   模态框 */
 .modal {
   /* display: none; */
   /* 默认隐藏 */
   position: fixed;
   z-index: 2;
   width: 100%;
-  height: 55%;
+  /* min-height: 55%; */
   overflow: auto;
   background: white;
   bottom: 0;
   opacity: 1;
   z-index: 99;
+  padding-bottom: 100rpx;
 }
 /* 弹窗内容 */
 
@@ -623,13 +624,19 @@ button,
 }
 
 .row {
-  float: left;
+  /* float: left; */
+  height: 100rpx;
   width: 100%;
   font-size: 28rpx;
-  margin-top: 50rpx; /* background-color: white; */
+  /* margin-top: 50rpx;  */
+  /* vertical-align: middle; */
+  /* background-color: red; */
+  vertical-align: middle;
   display: -webkit-flex;
   display: flex;
-
+  flex-direction: row;
+  align-items: center; /*垂直居中*/
+  justify-content: center; /*水平居中*/
   /* background: aquamarine; */
 }
 
@@ -693,7 +700,10 @@ button,
   /* transform: translate(-50%, -50%) scale(1);
   -webkit-transform: translate(-50%, -50%) scale(1); */
 }
-
+.empty {
+  display: block;
+  height: 100rpx;
+}
 .footer {
   position: fixed;
   width: 100%;

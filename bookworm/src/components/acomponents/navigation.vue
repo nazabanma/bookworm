@@ -11,6 +11,7 @@
       @blur="blurs"
       class="navbar"
       :style="{height: navBarHeight + 'px',backgroundColor:navBackgroundColor}"
+      @click="backClick()"
     >
       <!-- 状态栏 -->
       <cover-view class="nav-statusbar" :style="{height: statusBarHeight + 'px'}"></cover-view>
@@ -19,7 +20,7 @@
         <!-- home及后退键 -->
         <cover-view class="bar-options">
           <cover-view v-if="backVisible" class="opt opt-back" v-model="linkBack">
-            <cover-image class="back-image" :src="imgsrc" @click="backClick()" v-model="linkKind"></cover-image>
+            <cover-image class="back-image" :src="imgsrc" v-model="linkKind"></cover-image>
           </cover-view>
           <!-- 返回home图标，不做使用 -->
           <!-- <cover-view class="line" v-if="backVisible && homePath"></cover-view> -->
@@ -28,10 +29,16 @@
           </cover-view>-->
         </cover-view>
         <!-- 标题 -->
-        <cover-view
+        <cover-view class="titleBar">
+          <cover-view
+            class="bar-title"
+            :style="{color:titleColor,fontSize:fontSize+'px',lineHeight:titleBarHeight+'px',height: titleBarHeight + 'px'}"
+          >{{title}}</cover-view>
+          <!-- <cover-view
           class="bar-title"
-          :style="{color:titleColor,fontSize:fontSize+'px',lineHeight:titleBarHeight+'px'}"
-        >{{title}}</cover-view>
+          :style="{color:titleColor,fontSize:fontSize+'px',height: titleBarHeight + 'px'}"
+          >{{title}}</cover-view>-->
+        </cover-view>
       </cover-view>
     </cover-view>
   </div>
@@ -83,24 +90,42 @@ export default {
   },
   methods: {
     backClick() {
-      // let pages = getCurrentPages(); // 获取页面栈
-      // let currPage = pages[pages.length - 1]; // 当前页面
-      // let prevPage = pages[pages.length - 2];
-      // if (pages.length > 1) {
-      //   prevPage = pages[pages.length - 2];
-      // }
-      // console.log("数组" + pages + "当前" + currPage + "上一页" + prevPage);
-      if (this.linkKind) {
-        wx.navigateTo({
-          url: this.linkBack
-        });
-        // wx.navigateBack({
-        //   delta: 1
-        // });
-      } else {
-        wx.switchTab({
-          url: this.linkBack
-        });
+      let pages = getCurrentPages(); // 获取页面栈
+      let currPage = pages[pages.length - 1]; // 当前页面
+      let prevPage = ""; //上一页
+      let preUrl = ""; //上一页的url
+      let preKind = 0; //上一页的类型，1为普通页面，0为tab页
+      let tabUrl = [
+        "pages/index1/main",
+        "pages/cart1/main",
+        "pages/mine1/main"
+      ]; //存储tabbar页，记得删掉pages前面的"/"
+      if (pages.length > 1) {
+        prevPage = pages[pages.length - 2];
+        preUrl = prevPage.route;
+        //console.log(preUrl);
+
+        if (preUrl) {
+          for (let i = 0; i < tabUrl.length; i++) {
+            if (preUrl == tabUrl[i]) {
+              preKind = 1;
+            }
+          }
+        }
+        if (!preKind) {
+          // wx.navigateTo({
+          //   url: "/"+preUrl
+          // });
+          wx.navigateBack({
+            delta: 1
+          });
+        } else {
+          //console.log(preUrl);
+          wx.switchTab({
+            // 必须加/
+            url: "/" + preUrl
+          });
+        }
       }
     },
     blurs() {
@@ -171,15 +196,22 @@ export default {
   height: 30rpx;
   margin: 0 10rpx 0 20rpx;
 }
+/* .titleBar {
+  height: 100%;
+  display: block;
 
+  background-color: red;
+} */
 /*---------------  标题*/
 .bar-title {
-  height: 100%;
-  /* background-color: greenyellow; */
-  display: table-cell; /*按照单元格的样式显示元素*/
+  display: table-cell;
+  line-height: 46px;
+  /*按照单元格的样式显示元素*/
   vertical-align: bottom;
-  /* flex-direction: column;
-  justify-content: center; */
-  /* padding-left: 10rpx; */
+  /* vertical-align: middle; */
+  /* display: flex;
+  justify-content: flex-start;
+  flex-direction: row;
+  align-items: center; */
 }
 </style>

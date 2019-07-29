@@ -49,7 +49,7 @@
   </div>
 </template>
 
-console.log(_this.downCount2);
+
 
 <script>
 import navigationBar from "@/components/acomponents/navigation";
@@ -59,18 +59,6 @@ import swiperBar from "@/components/acomponents/swiperBar";
 import bookList from "@/components/acomponents/bookList";
 
 export default {
-  provide() {
-    return {
-      reload: this.reload
-    };
-  },
-  inject: ["reload"],
-  // mounted() {
-  //   let imgTest =
-  //     "http://admin.wyxs.talesrunner.org/uploads/20190725/271511005ffa4a5fc7bc9c8aa76723a5.png;http://admin.wyxs.talesrunner.org/uploads/20190725/271511005ffa4a5fc7bc9c8aa76723a5.png;https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1563335512108&di=a7e4143fb8fa84a2d1f7d5661a1d60a1&imgtype=0&src=http%3A%2F%2Fimg12.360buyimg.com%2Fn0%2Fjfs%2Ft7612%2F125%2F1235356247%2F78061%2Fbd2beaf0%2F599b0e4aNf40453b0.jpg";
-  //   console.log("this.GLOBAL.imgCutApart(imgTest)");
-  //   console.log(this.GLOBAL.imgCutApart(imgTest));
-  // },
   data() {
     return {
       logoSrc: "/static/images/logo.png",
@@ -145,15 +133,15 @@ export default {
             method: "POST",
             data: { name: name },
             success(res) {
-              console.log(res);
+              //console.log(res);
               if (_this.pageIndex == 1) {
                 _this.booksData = res.data.data;
-                console.log(_this.booksData);
+               // console.log(_this.booksData);
                 _this.pageIndex = 1;
                 wx.stopPullDownRefresh();
               } else {
                 _this.booksData = _this.booksData.concat(res.data.data);
-                console.log(_this.booksData);
+                //console.log(_this.booksData);
               }
               _this.pageCount = res.data.pageCount;
               // console.log("获取到的书籍成功，数据");

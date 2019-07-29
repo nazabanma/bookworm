@@ -6,45 +6,47 @@
       :backVisible="true"
       :fontSize="15"
       :imgsrc="'/static/images/left.png'"
-      :linkBack="'/pages/index1/main'"
-      :linkKind="false"
     ></navigation-bar>
-
+    <!-- :linkBack="'/pages/index1/main'"
+    :linkKind="false"-->
+    <!------------------------------------------------------ 吐司 -->
+    <toast-bar :isShow="toast.show" :txt="toast.txt"></toast-bar>
     <!------------------------------------------------------ 我的收藏列表 -->
-    <view v-if="emptyFlag==0" class="collectPanel">
-      <view class="collectList" v-for="(item,index) in collectList" :key="index">
-        <!-- 某个收藏 -->
-        <view class="collectItem">
-          <view class="collect_left" @click="pickThis(index)">
-            <view class="collect_area">
-              <!-- <view
+    <router-view v-if="isRouterAlive">
+      <view v-if="emptyFlag==0" class="collectPanel">
+        <view class="collectList" v-for="(item,index) in collectList" :key="index">
+          <!-- 某个收藏 -->
+          <view class="collectItem">
+            <view class="collect_left" @click="pickThis(index)">
+              <view class="collect_area">
+                <!-- <view
                 @click="pickThis(index)"
                 class="circle"
                 :class="{' active':checkMsg[index]}"
                 :value="index"
                 v-model="checkMsg[index]"
-              ></view>-->
-              <view class="circle" :class="{' active':checkMsg[index]}"></view>
+                ></view>-->
+                <view class="circle" :class="{' active':checkMsg[index]}"></view>
+              </view>
             </view>
-          </view>
-          <view class="collect_right">
-            <view class="collect_content__left">
-              <image class="collect_img" :src="item.book_cover" />
-            </view>
-            <view class="collect_content__right" @click="linkTo(item.book_id)">
-              <view class="collect_content__name">《{{item.book_name}}》</view>
-              <view class="collect_content__num">{{item.collect_num}}人收藏</view>
-              <view class="collect_content__price">￥{{item.book_price}}</view>
+            <view class="collect_right">
+              <view class="collect_content__left">
+                <image class="collect_img" :src="item.book_cover" />
+              </view>
+              <view class="collect_content__right" @click="linkTo(item.book_id)">
+                <view class="collect_content__name">《{{item.book_name}}》</view>
+                <view class="collect_content__num">{{item.collect_num}}人收藏</view>
+                <view class="collect_content__price">￥{{item.book_price}}</view>
+              </view>
             </view>
           </view>
         </view>
       </view>
-    </view>
-    <view v-if="emptyFlag==1" class="emptyPanel">
-      <image class="empty_img" mode="widthFix" :src="emptyImg" />
-      <view>客官，你还没有收藏任何宝贝呢~</view>
-    </view>
-
+      <view v-if="emptyFlag==1" class="emptyPanel">
+        <image class="empty_img" mode="widthFix" :src="emptyImg" />
+        <view>客官，你还没有收藏任何宝贝呢~</view>
+      </view>
+    </router-view>
     <view v-if="emptyFlag!=1" class="empty"></view>
     <!-- ==================================================     组件：商品详情页面底部的按钮组合     ======================================================= -->
     <view v-if="emptyFlag!=1" class="foot_tabbar">
@@ -70,7 +72,7 @@
 <script>
 import { globalBus } from "@/components/globalBus";
 import navigationBar from "@/components/acomponents/navigation";
-
+import toastBar from "@/components/acomponents/toastBar";
 export default {
   provide() {
     return {
@@ -80,7 +82,8 @@ export default {
   inject: ["reload"],
   data() {
     return {
-      isRouterAlive: "",
+      isRouterAlive: true, //刷新当前页
+      toast: { show: false, txt: "" },
       emptyFlag: -1,
       emptyImg:
         this.GLOBAL.serverSrc + "/static/images/msg_empty_collection.png",
@@ -94,21 +97,26 @@ export default {
   },
 
   components: {
-    navigationBar
+    navigationBar,
+    toastBar
   },
-
+  onShow() {
+    this.checkMsg = [];
+    this.checkedAll = false;
+    this.checkedCount = 0;
+  },
   methods: {
     //================================================   刷新当前页
     reload() {
-      // this.isRouterAlive = false;
-      // this.$nextTick(function() {
-      //   this.isRouterAlive = true;
-      // });
-      console.log("刷新");
-      if (getCurrentPages().length != 0) {
-        //刷新当前页面的数据
-        getCurrentPages()[getCurrentPages().length - 1].onShow();
-      }
+      this.isRouterAlive = false;
+      this.$nextTick(function() {
+        this.isRouterAlive = true;
+      });
+      // console.log("刷新");
+      // if (getCurrentPages().length != 0) {
+      //   //刷新当前页面的数据
+      //   getCurrentPages()[getCurrentPages().length - 1].onShow();
+      // }
     },
     //=========================================================    获取收藏数据
     getData() {
@@ -169,7 +177,7 @@ export default {
     },
     //=========================================================    点击跳转
     linkTo(bookID) {
-      wx.redirectTo({
+      wx.navigateTo({
         url: "/pages/bookdetail1/main"
       });
       globalBus.$emit("bookID", bookID);
@@ -177,10 +185,10 @@ export default {
     //=========================================================    获取选中的列表
     getList(msg) {
       let _this = this;
-      let tmpList = [];
+      _this.pickList = [];
       for (let i = 0; i < _this.checkMsg.length; i++) {
         if (_this.checkMsg[i] == 1) {
-          _this.pickList.push(_this.collectList[i].collect_id);
+          _this.pickList.push(_this.collectList[i].book_id);
           // console.log(_this.pickList);
           // tmpList = _this.pickList;
           if (msg) {
@@ -189,7 +197,8 @@ export default {
           }
         }
       }
-      if (!_this.pickList.length) {
+
+      if (!_this.pickList) {
         console.log("empty");
         return;
       }
@@ -212,12 +221,27 @@ export default {
             collects: jsonArr
           },
           success(res) {
-            console.log(res);
-            console.log(collectsList);
+            // console.log(res);
+            // console.log(collectsList);
+            _this.checkMsg = [];
+            _this.checkedAll = false;
+            _this.checkedCount = 0;
             _this.reload();
-            console.log("cancelCollectArr");
+            wx.showToast({
+              title: "取消成功",
+              duration: 800
+            });
           }
         });
+      } else {
+        this.toast.show = true;
+        this.toast.txt = "请选择宝贝";
+        if (this.toast.show) {
+          setTimeout(function() {
+            //toast消失
+            _this.toast.show = false;
+          }, 1500);
+        }
       }
     },
     cancelCollectAll() {
@@ -250,9 +274,11 @@ export default {
     addToCart() {
       let _this = this;
       let collectsList = this.getList(0);
+      console.log(collectsList);
       if (collectsList.length) {
         //数组中有数据再进行提交
         let jsonArr = JSON.stringify(collectsList);
+
         wx.request({
           url: _this.GLOBAL.serverSrc + "/collect/removeToCart",
           method: "POST",
@@ -263,10 +289,23 @@ export default {
           success(res) {
             _this.checkMsg = [];
             _this.checkedAll = false;
+            _this.checkedCount = 0;
             _this.reload();
-            console.log("addToCart");
+            wx.showToast({
+              title: "加入成功",
+              duration: 800
+            });
           }
         });
+      } else {
+        this.toast.show = true;
+        this.toast.txt = "请选择宝贝";
+        if (this.toast.show) {
+          setTimeout(function() {
+            //toast消失
+            _this.toast.show = false;
+          }, 1500);
+        }
       }
     }
   },
@@ -297,6 +336,12 @@ export default {
                                       默认与空处理
 ---------------------------------------------------------------------------------------*/
 .index1 {
+  /*Firefox*/
+  min-height: -moz-calc(94vh);
+  /*chrome safari*/
+  min-height: -webkit-calc(94vh);
+  /*Standard */
+  min-height: calc(94vh);
   background-color: #f5f5f5;
 }
 .empty {

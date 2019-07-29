@@ -1,15 +1,10 @@
 <template>
   <div class="container">
     <!-- 导航栏页 -->
-    <navigation-bar
-      :title="'我的订单'"
-      :backVisible="true"
-      :fontSize="15"
-      :imgsrc="naviImgsrc"
-      :linkBack="'/pages/mine1/main'"
-      :linkKind="false"
-    ></navigation-bar>
+    <navigation-bar :title="'我的订单'" :backVisible="true" :fontSize="15" :imgsrc="naviImgsrc"></navigation-bar>
 
+    <!-- :linkBack="'/pages/mine1/main'"
+    :linkKind="false"-->
     <!-- 活动导航栏 -->
     <!-- <kind-tabbar :kindList="kindList" @pickItem="getPick"></kind-tabbar> -->
     <!--导航条-->
@@ -122,6 +117,11 @@ export default {
   onShow() {
     this.getList();
   },
+  // onLoad: function(options) {
+  //   if (!options.i) {
+  //     this.pick_item = options.i-1;
+  //   }
+  // },
 
   watch: {
     // res: {
@@ -168,7 +168,7 @@ export default {
         success(res) {
           // console.log(res);
           // console.log(_this.pick_item)
-          if (res.data.data == null) {
+          if (res.data.code == "404") {
             _this.show = false;
           } else {
             _this.show = true;

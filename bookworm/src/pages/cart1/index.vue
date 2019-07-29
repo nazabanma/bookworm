@@ -6,9 +6,11 @@
       :backVisible="false"
       :fontSize="16"
       :imgsrc="'/static/images/left.png'"
-      :linkBack="''"
-      :linkKind="false"
     ></navigation-bar>
+    <!------------------------------------------------------ 吐司 -->
+    <toast-bar :isShow="toast.show" :txt="toast.txt"></toast-bar>
+    <!-- :linkBack="''"
+    :linkKind="false"-->
     <view class="head">
       <view class="logo">
         <image class="logo_img" :src="logoSrc" />
@@ -20,37 +22,39 @@
       </view>
     </view>
     <!------------------------------------------------------ 我的收藏列表 -->
-    <view class="cartPanel">
-      <view class="cartList" v-for="(item,index) in cartList" :key="index">
-        <!-- 某个收藏 -->
-        <view class="cartItem">
-          <view class="cart_left" @click="pickThis(index)">
-            <view class="cart_area">
-              <view class="circle" :class="{' active':checkMsg[index]}"></view>
-            </view>
-          </view>
-          <view class="cart_right">
-            <view class="cart_content__left" @click="linkTo(item.book_id)">
-              <image class="cart_img" :src="item.book_cover" />
-            </view>
-            <view class="cart_content__right">
-              <view class="cart_content__right_top" @click="linkTo(item.book_id)">
-                <view class="cart_content__name">《{{item.book_name}}》</view>
-                <view class="cart_content__num">{{item.book_author}}</view>
+    <router-view v-if="isRouterAlive">
+      <view class="cartPanel">
+        <view class="cartList" v-for="(item,index) in cartList" :key="index">
+          <!-- 某个收藏 -->
+          <view class="cartItem">
+            <view class="cart_left" @click="pickThis(index)">
+              <view class="cart_area">
+                <view class="circle" :class="{' active':checkMsg[index]}"></view>
               </view>
-              <view class="cart_content__footer">
-                <view class="cart_content__price">￥{{item.book_price}}</view>
-                <view class="cart_content__count">
-                  <view class="cart_count_dec" @click="decCount(index)">-</view>
-                  <view class="cart_count_num">{{item.count}}</view>
-                  <view class="cart_count_inc" @click="incCount(index)">+</view>
+            </view>
+            <view class="cart_right">
+              <view class="cart_content__left" @click="linkTo(item.book_id)">
+                <image class="cart_img" :src="item.book_cover" />
+              </view>
+              <view class="cart_content__right">
+                <view class="cart_content__right_top" @click="linkTo(item.book_id)">
+                  <view class="cart_content__name">《{{item.book_name}}》</view>
+                  <view class="cart_content__num">{{item.book_author}}</view>
+                </view>
+                <view class="cart_content__footer">
+                  <view class="cart_content__price">￥{{item.book_price}}</view>
+                  <view class="cart_content__count">
+                    <view class="cart_count_dec" @click="decCount(index)">-</view>
+                    <view class="cart_count_num">{{item.count}}</view>
+                    <view class="cart_count_inc" @click="incCount(index)">+</view>
+                  </view>
                 </view>
               </view>
             </view>
           </view>
         </view>
       </view>
-    </view>
+    </router-view>
     <view v-if="emptyFlag==1" class="emptyPanel">
       <image class="empty_img" mode="widthFix" :src="emptyImg" />
       <view>清空购物车，您就又能见奴家了~</view>
@@ -107,7 +111,7 @@
 <script>
 import { globalBus } from "@/components/globalBus";
 import navigationBar from "@/components/acomponents/navigation";
-
+import toastBar from "@/components/acomponents/toastBar";
 export default {
   provide() {
     return {
@@ -117,6 +121,8 @@ export default {
   inject: ["reload"],
   data() {
     return {
+      isRouterAlive: true, //刷新当前页
+      toast: { show: false, txt: "" },
       // isRouterAlive: "",
       manageFlag: 1,
       emptyFlag: -1,
@@ -138,7 +144,8 @@ export default {
   },
 
   components: {
-    navigationBar
+    navigationBar,
+    toastBar
   },
   mounted() {
     // let _this = this;
@@ -158,6 +165,10 @@ export default {
   //     return result;
   //   }
   // },
+  onShow() {
+    this.checkMsg = [];
+  },
+
   methods: {
     //================================================   刷新当前页
     reload() {
@@ -165,18 +176,19 @@ export default {
       this.$nextTick(function() {
         this.isRouterAlive = true;
       });
-      console.log("刷新");
+      //console.log("刷新");
       // if (getCurrentPages().length != 0) {
       //   //刷新当前页面的数据
       //   getCurrentPages()[getCurrentPages().length - 1].onShow();
       // }
     },
     changeFlag() {
-      this.manageFlag = !this.manageFlag;
       this.checkMsg = [];
       this.checkedAll = false;
+      this.checkedCount = 0;
       this.sumCart = 0;
       this.reload();
+      this.manageFlag = !this.manageFlag;
     },
     //=========================================================    获取购物车数据
     getData() {
@@ -260,6 +272,7 @@ export default {
     //=========================================================    点击
     pickThis(i) {
       let _this = this;
+
       if (!this.checkMsg[i]) {
         _this.checkMsg[i] = 1;
         _this.checkedCount++;
@@ -268,12 +281,12 @@ export default {
         _this.checkedCount--;
         _this.sumList[i] = 0;
       }
-      //判断是否全选
-      if (_this.checkedCount == this.cartList.length) {
-        _this.checkedAll = true;
-      } else {
-        _this.checkedAll = false;
-      }
+      // //判断是否全选
+      // if (_this.checkedCount == this.cartList.length) {
+      //   _this.checkedAll = true;
+      // } else {
+      //   _this.checkedAll = false;
+      // }
       this.checkMsg.push();
       this.cartSum();
       console.log(this.checkMsg);
@@ -300,7 +313,7 @@ export default {
     },
     //=========================================================    点击跳转
     linkTo(bookID) {
-      wx.redirectTo({
+      wx.navigateTo({
         url: "/pages/bookdetail1/main"
       });
       globalBus.$emit("bookID", bookID);
@@ -309,21 +322,41 @@ export default {
     //msg为判断是否全选，主要用于提交时，数据假删除以及数据提交url的区分
     getList(msg) {
       let _this = this;
-      let tmpList = [];
+      _this.pickList = [];
       for (let i = 0; i < _this.checkMsg.length; i++) {
         if (_this.checkMsg[i] == 1) {
-          _this.pickList.push(_this.cartList[i].shop_cart_id);
+          _this.pickList.push(_this.cartList[i].book_id);
 
           // console.log(_this.pickList);
           // tmpList = _this.pickList;
-          if (msg) {
+          if (msg && _this.pickList) {
             _this.cartList.splice(i, 1);
             _this.checkMsg = [];
+            wx.showToast({
+              title: "删除成功",
+              duration: 800
+            });
+          } else {
+            this.toast.show = true;
+            this.toast.txt = "请选择宝贝";
+            if (this.toast.show) {
+              setTimeout(function() {
+                //toast消失
+                _this.toast.show = false;
+              }, 1500);
+            }
           }
         }
       }
       if (!_this.pickList.length) {
-        console.log("empty");
+        this.toast.show = true;
+        this.toast.txt = "请选择宝贝";
+        if (this.toast.show) {
+          setTimeout(function() {
+            //toast消失
+            _this.toast.show = false;
+          }, 1500);
+        }
         return;
       }
       //console.log(_this.pickList);
@@ -335,7 +368,7 @@ export default {
       let _this = this;
       let cartsList = this.getList(1);
       let jsonArr = JSON.stringify(cartsList);
-      if (cartsList.length) {
+      if (cartsList) {
         //数组中有数据再进行提交
         wx.request({
           url: _this.GLOBAL.serverSrc + "/cart/cartDelete",
@@ -344,12 +377,19 @@ export default {
             carts: jsonArr
           },
           success(res) {
-            console.log(res);
-            console.log(cartsList);
             _this.reload();
-            console.log("cancelcartArr");
+            //console.log("cancelcartArr");
           }
         });
+      } else {
+        this.toast.show = true;
+        this.toast.txt = "请选择宝贝";
+        if (this.toast.show) {
+          setTimeout(function() {
+            //toast消失
+            _this.toast.show = false;
+          }, 1500);
+        }
       }
     },
     //=========================================================    全选
@@ -363,11 +403,20 @@ export default {
           user_id: _this.GLOBAL.userId
         },
         success(res) {
-          _this.cartList = [];
-          _this.checkMsg = [];
-          _this.checkedAll = false;
-          _this.reload();
-          console.log("cancelcartAll");
+          _this.toast.show = true;
+          _this.toast.txt = "删除成功";
+          if (_this.toast.show) {
+            setTimeout(function() {
+              //toast消失
+              _this.toast.show = false;
+            }, 1500);
+            _this.cartList = [];
+            _this.checkMsg = [];
+            _this.checkedAll = false;
+            _this.reload();
+          }
+
+          // console.log("cancelcartAll");
         }
       });
     },
@@ -395,7 +444,15 @@ export default {
             carts: jsonArr
           },
           success(res) {
-            console.log("addToCollect");
+            _this.toast.show = true;
+            _this.toast.txt = "收藏成功";
+            if (_this.toast.show) {
+              setTimeout(function() {
+                //toast消失
+                _this.toast.show = false;
+              }, 1500);
+            }
+            _this.checkMsg = [];
           }
         });
       }
@@ -413,25 +470,24 @@ export default {
             book_id: "",
             book_name: "",
             book_author: "",
-            book_img: "",
+            book_cover: "",
             count: 0,
-            book_price: 0.0
+            book_price: 0
           };
           let dataCreate = {
             book_id: "",
             count: 0,
-            price: 0.0
+            price: 0
           };
           // 用于确认订单时传数据
           data.book_id = _this.cartList[i].book_id;
           data.book_name = _this.cartList[i].book_name;
           data.book_author = _this.cartList[i].book_author;
-          data.book_img = _this.cartList[i].book_img;
+          data.book_cover = _this.cartList[i].book_cover;
           data.count = _this.cartList[i].count;
           data.book_price = _this.cartList[i].book_price;
           _this.dataList.push(data);
           //this.GLOBAL.globalConfirmOrder.orderList.push(data);
-
           // 用于创建订单时传数据
           dataCreate.book_id = _this.cartList[i].book_id;
           dataCreate.count = _this.cartList[i].count;
@@ -439,18 +495,35 @@ export default {
           dataCreateList.push(dataCreate);
         }
       }
-      console.log(_this.dataList);
+      if (!_this.dataList.length || !dataCreateList.length) {
+        // wx.showToast({
+        //   title: "请选择宝贝",
+        //   icon: "",
+        //   duration: 1500
+        // });
+        this.toast.show = true;
+        this.toast.txt = "请选择宝贝";
+        if (this.toast.show) {
+          setTimeout(function() {
+            //toast消失
+            _this.toast.show = false;
+          }, 1500);
+        }
+      } else {
+        console.log(_this.dataList);
+        this.GLOBAL.globalConfirmOrder.orderList = [];
+        this.GLOBAL.globalConfirmOrder.orderList = _this.dataList;
+        //全局变量数据
+        this.GLOBAL.globalConfirmOrder.createOrderList = [];
+        this.GLOBAL.globalConfirmOrder.createOrderList = dataCreateList;
+        wx.navigateTo({
+          url: "/pages/order_submit1/main"
+        });
+      }
+      console.log("_this.dataList" + _this.dataList);
       //全局变量订单
-      this.GLOBAL.globalConfirmOrder.orderList = [];
-      this.GLOBAL.globalConfirmOrder.orderList = _this.dataList;
-      //全局变量数据
-      this.GLOBAL.globalConfirmOrder.createOrderList = [];
-      this.GLOBAL.globalConfirmOrder.createOrderList = dataCreateList;
 
-      console.log(this.GLOBAL.globalConfirmOrder.orderList);
-      wx.navigateTo({
-        url: "/pages/order_submit1/main"
-      });
+      //console.log(this.GLOBAL.globalConfirmOrder.orderList);
     }
   },
   watch: {
@@ -459,6 +532,19 @@ export default {
     },
     checkMsg: {
       handler: function(newVal, oldVal) {}
+    },
+    //checkedAll: { handler: function(newVal, oldVal) {} },
+    checkedCount: {
+      handler: function(newVal, oldVal) {
+        //判断是否全选
+        // console.log("this.cartList.length" + this.cartList.length);
+        // console.log("this.cartList.length" + newVal);
+        if (newVal == this.cartList.length) {
+          this.checkedAll = true;
+        } else {
+          this.checkedAll = false;
+        }
+      }
     }
   },
 

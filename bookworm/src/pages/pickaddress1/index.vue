@@ -4,17 +4,17 @@
     <navigation-bar
       :title="'修改地址'"
       :backVisible="true"
-      :linkKind="false"
       :fontSize="18"
       :imgsrc="naviImgsrc"
-      :linkBack="'/pages/order_submit1/main'"
       :titleColor="'#521d23'"
     ></navigation-bar>
-    <!-- :linkBack="'/pages/index1/main'" -->
+    <!-- :linkBack="'/pages/order_submit1/main'"
+    :linkKind="false"-->
+
     <!-- =======================================  地址列表 ======================================= -->
     <view v-if="emptyFlag==0" class="addressPanel">
       <view class="addressList" v-for="(item,index) in addressList" :key="index">
-        <view class="addressItem">
+        <view class="addressItem" @click="pickThis(item.address_id)">
           <view class="address_left">
             <view class="address__info">
               <view class="address__name">{{item.receiver_name}}</view>
@@ -27,7 +27,7 @@
               <view class="address__concrete">{{item.concrete_address}}</view>
             </view>
           </view>
-          <view class="address_right" @click="pickThis(item.address_id)">
+          <view class="address_right">
             <view class="check_area">
               <view class="circle" :class="{' active':pickAddress==item.address_id}"></view>
             </view>
