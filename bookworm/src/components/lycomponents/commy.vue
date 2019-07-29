@@ -41,7 +41,7 @@
           <!-- <view class="run" v-if="run != 3"> -->
           <view class="run">
             <view v-if="items.order_state_id == 0">
-              <button class="btn4" @click="pay">付款</button>
+              <button class="btn4" @click="pay(items.order_id,index)">付款</button>
               <button class="btn1" @click="cancel(items,index)">取消订单</button>
             </view>
             <view v-else-if="items.order_state_id == 1">
@@ -49,7 +49,7 @@
               <button class="btn1" @click="reviseAdd(items.order_id,items.address_id)">修改地址</button>
             </view>
             <view v-else-if="items.order_state_id == 2">
-              <button class="btn2" @click="confirm">确认收货</button>
+              <button class="btn2" @click="confirm(items.order_id,index)">确认收货</button>
               <button class="btn1" @click="checkLogistics">查看物流</button>
             </view>
             <view v-else-if="items.order_state_id == 3">
@@ -129,6 +129,12 @@ export default {
   },
 
   created() {
+    // let _this = this;
+    this.getTotalPrice();
+    this.getCount();
+  },
+
+  onShow() {
     // let _this = this;
     this.getTotalPrice();
     this.getCount();
@@ -232,7 +238,12 @@ export default {
       //如果确认取消
       if (msg && this.pickOrderId) {
         if (this.pickCancel == -1) {
-          console.log("请选择原因");
+          wx.showToast({
+            title: "请选择取消原因", //提示文字
+            mask: true, //是否显示透明蒙层，防止触摸穿透，默认：false
+            duration: 2000, //提示的延迟时间
+            icon: "none"
+          });
         } else {
           console.log("this.pickCancel" + this.cancelReason[this.pickCancel]);
           this.detail = this.cancelReason[this.pickCancel];
@@ -254,6 +265,12 @@ export default {
               if (res.data.code == 200) {
                 _this.bookList[_this.pickOrderIndex].order_state_id = 5;
                 _this.isDisplay = !_this.isDisplay;
+                wx.showToast({
+                  title: "取消成功", //提示文字
+                  mask: true, //是否显示透明蒙层，防止触摸穿透，默认：false
+                  duration: 2000, //提示的延迟时间
+                  icon: "none"
+                });
               }
             }
           });
@@ -262,6 +279,7 @@ export default {
         wx.hideTabBar({
           animation: false //隐藏tabbar
         });
+        _this.isDisplay = !_this.isDisplay;
       }
     },
 
@@ -297,8 +315,42 @@ export default {
       });
     },
 
-    //==============  付款   ===========
-    pay() {},
+    //===============================================================================  付款
+    pay(order_id, index) {
+      let _this = this;
+      wx.showModal({
+        title: "是否付款？",
+        cancelColor: "#a9803e",
+        cancelText: "否",
+        confirmColor: "#36282B",
+        confirmText: "是",
+        success(res) {
+          if (res.confirm) {
+            wx.request({
+              url: _this.GLOBAL.serverSrc + "/order/orderStateUpdate",
+              method: "POST",
+              data: {
+                order_id: order_id,
+                order_state_id: 1
+              },
+              success(res) {
+                _this.bookList[index].order_state_id = 1;
+                wx.showToast({
+                  title: "付款成功",
+                  mask: true, //是否显示透明蒙层，防止触摸穿透，默认：false
+                  duration: 1500, //提示的延迟时间
+                  icon: "none"
+                });
+                _this.reload();
+              }
+            });
+          } else if (res.cancel) {
+            // console.log("用户点击取消");
+          }
+        }
+      });
+    },
+
     //===============================================================================  删除订单
     del(orderId, orderIndex) {
       let _this = this;
@@ -312,13 +364,31 @@ export default {
           console.log(res);
           if (res.data.code == 200) {
             console.log("删除成功");
+            wx.showModal({
+              title: "确定删除宝贝？",
+              cancelColor: "#a9803e",
+              confirmColor: "#36282B",
+              success(res) {
+                if (res.confirm) {
+                  console.log("用户点击确定");
+                  wx.showToast({
+                    title: "删除成功", //提示文字
+                    mask: true, //是否显示透明蒙层，防止触摸穿透，默认：false
+                    duration: 2000, //提示的延迟时间
+                    icon: "none"
+                  });
+                } else if (res.cancel) {
+                  console.log("用户点击取消");
+                }
+              }
+            });
             _this.bookList.splice(orderIndex, 1);
             _this.reload();
           }
         }
       });
     },
-    //==============  修改地址   ===========
+    //===============================================================================  修改地址
     reviseAdd(orderId, addressId) {
       wx.navigateTo({
         url: "/pages/changeaddress1/main?ori=" + orderId + "&adr=" + addressId
@@ -331,8 +401,41 @@ export default {
         url: "/pages/checkwuliu1/main"
       });
     },
-    //==============  确认收货  ===========
-    confirm() {}
+    //===============================================================================   确认收货
+    confirm(order_id, index) {
+      let _this = this;
+      wx.showModal({
+        title: "宝贝是否收到？",
+        cancelColor: "#a9803e",
+        cancelText: "否",
+        confirmColor: "#36282B",
+        confirmText: "是",
+        success(res) {
+          if (res.confirm) {
+            wx.request({
+              url: _this.GLOBAL.serverSrc + "/order/orderStateUpdate",
+              method: "POST",
+              data: {
+                order_id: order_id,
+                order_state_id: 3
+              },
+              success(res) {
+                _this.bookList[index].order_state_id = 3;
+                wx.showToast({
+                  title: "确认成功",
+                  mask: true, //是否显示透明蒙层，防止触摸穿透，默认：false
+                  duration: 1500, //提示的延迟时间
+                  icon: "none"
+                });
+                _this.reload();
+              }
+            });
+          } else if (res.cancel) {
+            // console.log("用户点击取消");
+          }
+        }
+      });
+    }
   }
 };
 </script>

@@ -181,6 +181,10 @@ export default {
         }
       });
     }
+  },
+  onLoad: function(options) {
+    this.pick_item = options.id;
+    let _this = this;
   }
 };
 </script>

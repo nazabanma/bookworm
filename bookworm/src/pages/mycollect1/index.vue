@@ -49,7 +49,7 @@
     </router-view>
     <view v-if="emptyFlag!=1" class="empty"></view>
     <!-- ==================================================     组件：商品详情页面底部的按钮组合     ======================================================= -->
-    <view v-if="emptyFlag!=1" class="foot_tabbar">
+    <view v-if="emptyFlag==0" class="foot_tabbar">
       <view class="collect">
         <view class="collect_area">
           <view
@@ -100,7 +100,14 @@ export default {
     navigationBar,
     toastBar
   },
+  mounted() {
+    this.getData();
+    this.checkMsg = [];
+    this.checkedAll = false;
+    this.checkedCount = 0;
+  },
   onShow() {
+    this.getData();
     this.checkMsg = [];
     this.checkedAll = false;
     this.checkedCount = 0;
@@ -157,22 +164,25 @@ export default {
       this.checkMsg.push();
       // console.log(this.checkMsg);
     },
+
     //=========================================================    全选
     checkAll() {
       this.checkMsg = [];
       let _this = this;
       if (this.checkedAll) {
-        //选中
+        //选中,原本全选，现在取消全选
         this.collectList.forEach(function(item, index) {
           _this.checkMsg[index] = 0;
-          _this.checkMsg.push(index);
+          _this.checkedCount = 0;
         });
       } else {
         this.collectList.forEach(function(item, index) {
           _this.checkMsg[index] = 1;
-          _this.checkMsg.push(index);
+          _this.checkedCount = _this.collectList.length;
+          // _this.checkMsg.push(index);
         });
       }
+
       _this.checkedAll = !_this.checkedAll;
     },
     //=========================================================    点击跳转
@@ -188,7 +198,7 @@ export default {
       _this.pickList = [];
       for (let i = 0; i < _this.checkMsg.length; i++) {
         if (_this.checkMsg[i] == 1) {
-          _this.pickList.push(_this.collectList[i].book_id);
+          _this.pickList.push(_this.collectList[i].collect_id);
           // console.log(_this.pickList);
           // tmpList = _this.pickList;
           if (msg) {
@@ -206,33 +216,59 @@ export default {
       //console.log(_this.pickList);
       return _this.pickList;
     },
-
+    // 添加到购物车用获取列表
+    removeGetList() {
+      let _this = this;
+      _this.pickList = [];
+      for (let i = 0; i < _this.checkMsg.length; i++) {
+        if (_this.checkMsg[i] == 1) {
+          _this.pickList.push(_this.collectList[i].book_id);
+        }
+        // console.log(_this.pickList);
+        // tmpList = _this.pickList;
+      }
+      if (!_this.pickList) {
+        this.toast.show = true;
+        this.toast.txt = "请选择宝贝";
+        if (this.toast.show) {
+          setTimeout(function() {
+            //toast消失
+            _this.toast.show = false;
+          }, 1500);
+        }
+        return;
+      }
+      //console.log(_this.pickList);
+      return _this.pickList;
+    },
     cancelCollectArr() {
       // 选中部分
       let _this = this;
       let collectsList = this.getList(1);
       let jsonArr = JSON.stringify(collectsList);
-      if (collectsList.length) {
-        //数组中有数据再进行提交
-        wx.request({
-          url: _this.GLOBAL.serverSrc + "/collect/collectDelete",
-          method: "POST",
-          data: {
-            collects: jsonArr
-          },
-          success(res) {
-            // console.log(res);
-            // console.log(collectsList);
-            _this.checkMsg = [];
-            _this.checkedAll = false;
-            _this.checkedCount = 0;
-            _this.reload();
-            wx.showToast({
-              title: "取消成功",
-              duration: 800
-            });
-          }
-        });
+      if (collectsList) {
+        if (collectsList.length) {
+          //数组中有数据再进行提交
+          wx.request({
+            url: _this.GLOBAL.serverSrc + "/collect/collectDelete",
+            method: "POST",
+            data: {
+              collects: jsonArr
+            },
+            success(res) {
+              // console.log(res);
+              // console.log(collectsList);
+              _this.checkMsg = [];
+              _this.checkedAll = false;
+              _this.checkedCount = 0;
+              _this.reload();
+              wx.showToast({
+                title: "取消成功",
+                duration: 800
+              });
+            }
+          });
+        }
       } else {
         this.toast.show = true;
         this.toast.txt = "请选择宝贝";
@@ -257,8 +293,12 @@ export default {
           _this.collectList = [];
           _this.checkMsg = [];
           _this.checkedAll = false;
+          _this.emptyFlag = 1;
           _this.reload();
-          console.log("cancelCollectAll");
+          wx.showToast({
+            title: "取消成功",
+            duration: 800
+          });
         }
       });
     },
@@ -273,7 +313,7 @@ export default {
     },
     addToCart() {
       let _this = this;
-      let collectsList = this.getList(0);
+      let collectsList = this.removeGetList();
       console.log(collectsList);
       if (collectsList.length) {
         //数组中有数据再进行提交
@@ -326,6 +366,9 @@ export default {
 
   created() {
     this.getData();
+    this.checkMsg = [];
+    this.checkedAll = false;
+    this.checkedCount = 0;
     // let app = getApp()
   }
 };

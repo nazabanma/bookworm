@@ -124,7 +124,7 @@ export default {
       isRouterAlive: true, //刷新当前页
       toast: { show: false, txt: "" },
       // isRouterAlive: "",
-      manageFlag: 1,
+      manageFlag: 1, //1为默认按钮，0为删除等按钮
       emptyFlag: -1,
       logoSrc: "/static/images/store.png",
       logotitleSrc: "/static/images/logoTitle.png",
@@ -167,6 +167,7 @@ export default {
   // },
   onShow() {
     this.checkMsg = [];
+    this.getData();
   },
 
   methods: {
@@ -272,7 +273,6 @@ export default {
     //=========================================================    点击
     pickThis(i) {
       let _this = this;
-
       if (!this.checkMsg[i]) {
         _this.checkMsg[i] = 1;
         _this.checkedCount++;
@@ -287,7 +287,7 @@ export default {
       // } else {
       //   _this.checkedAll = false;
       // }
-      this.checkMsg.push();
+      //this.checkMsg.push();
       this.cartSum();
       console.log(this.checkMsg);
       //  console.log(this.checkMsg);
@@ -297,15 +297,16 @@ export default {
       this.checkMsg = [];
       let _this = this;
       if (this.checkedAll) {
-        //选中
+        //选中,原本全选，现在取消全选
         this.cartList.forEach(function(item, index) {
           _this.checkMsg[index] = 0;
-          _this.checkMsg.push(index);
+          _this.checkedCount = 0;
         });
       } else {
         this.cartList.forEach(function(item, index) {
           _this.checkMsg[index] = 1;
-          _this.checkMsg.push(index);
+          _this.checkedCount = _this.cartList.length;
+          // _this.checkMsg.push(index);
         });
       }
       _this.cartSum();
@@ -320,12 +321,13 @@ export default {
     },
     //=========================================================    获取选中的列表,返回选中的id
     //msg为判断是否全选，主要用于提交时，数据假删除以及数据提交url的区分
+    //删除用获取列表，结算用获取列表
     getList(msg) {
       let _this = this;
       _this.pickList = [];
       for (let i = 0; i < _this.checkMsg.length; i++) {
         if (_this.checkMsg[i] == 1) {
-          _this.pickList.push(_this.cartList[i].book_id);
+          _this.pickList.push(_this.cartList[i].shop_cart_id);
 
           // console.log(_this.pickList);
           // tmpList = _this.pickList;
@@ -362,11 +364,38 @@ export default {
       //console.log(_this.pickList);
       return _this.pickList;
     },
+    // 添加到收藏夹用获取列表
+    removeGetList() {
+      let _this = this;
+      _this.pickList = [];
+      for (let i = 0; i < _this.checkMsg.length; i++) {
+        if (_this.checkMsg[i] == 1) {
+          _this.pickList.push(_this.cartList[i].book_id);
+        }
+        // console.log(_this.pickList);
+        // tmpList = _this.pickList;
+      }
+      if (!_this.pickList) {
+        this.toast.show = true;
+        this.toast.txt = "请选择宝贝";
+        if (this.toast.show) {
+          setTimeout(function() {
+            //toast消失
+            _this.toast.show = false;
+          }, 1500);
+        }
+        return;
+      }
+      //console.log(_this.pickList);
+      return _this.pickList;
+    },
     //=========================================================    多选
+    // operateType:0表示正常操作，1表示移动操作
     cancelcartArr() {
       // 选中部分
       let _this = this;
-      let cartsList = this.getList(1);
+      let cartsList = [];
+      cartsList = this.getList(1);
       let jsonArr = JSON.stringify(cartsList);
       if (cartsList) {
         //数组中有数据再进行提交
@@ -413,6 +442,7 @@ export default {
             _this.cartList = [];
             _this.checkMsg = [];
             _this.checkedAll = false;
+            _this.emptyFlag = -1;
             _this.reload();
           }
 
@@ -428,11 +458,13 @@ export default {
       } else {
         _this.cancelcartArr();
       }
+      _this.emptyFlag = -1;
     },
     //=========================================================   添加到收藏
     addToCollect() {
       let _this = this;
-      let cartsList = this.getList(0);
+      let cartsList = this.removeGetList();
+      //console.log(cartsList);
       if (cartsList.length) {
         //数组中有数据再进行提交
         let jsonArr = JSON.stringify(cartsList);
@@ -453,6 +485,8 @@ export default {
               }, 1500);
             }
             _this.checkMsg = [];
+            _this.checkedAll = false;
+            _this.checkedCount = 0;
           }
         });
       }
@@ -510,7 +544,11 @@ export default {
           }, 1500);
         }
       } else {
-        console.log(_this.dataList);
+        // console.log(_this.dataList);
+        this.checkedAll = false;
+        this.checkMsg = [];
+        this.sumCart = 0;
+        this.checkedCount = 0;
         this.GLOBAL.globalConfirmOrder.orderList = [];
         this.GLOBAL.globalConfirmOrder.orderList = _this.dataList;
         //全局变量数据

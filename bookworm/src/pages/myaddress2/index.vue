@@ -5,8 +5,11 @@
       :title="'我的收货地址'"
       :backVisible="true"
       :fontSize="15"
+      :titleColor="'#36282B'"
       :imgsrc="naviImgsrc"
-      :titleColor="'#521d23'"
+      :linkBack="'/pages/mine1/main'"
+      :linkKind="true"
+      :tabKind="true"
     >
       <!-- :linkBack="'/pages/mine1/main'" :linkKind="false" -->
     </navigation-bar>

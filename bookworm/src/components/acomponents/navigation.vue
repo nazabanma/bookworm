@@ -54,7 +54,8 @@ export default {
     "titleColor",
     "fontSize",
     "linkBack",
-    "linkKind"
+    "linkKind",
+    "tabKind"
   ],
   data() {
     return {
@@ -90,41 +91,53 @@ export default {
   },
   methods: {
     backClick() {
-      let pages = getCurrentPages(); // 获取页面栈
-      let currPage = pages[pages.length - 1]; // 当前页面
-      let prevPage = ""; //上一页
-      let preUrl = ""; //上一页的url
-      let preKind = 0; //上一页的类型，1为普通页面，0为tab页
-      let tabUrl = [
-        "pages/index1/main",
-        "pages/cart1/main",
-        "pages/mine1/main"
-      ]; //存储tabbar页，记得删掉pages前面的"/"
-      if (pages.length > 1) {
-        prevPage = pages[pages.length - 2];
-        preUrl = prevPage.route;
-        //console.log(preUrl);
-
-        if (preUrl) {
-          for (let i = 0; i < tabUrl.length; i++) {
-            if (preUrl == tabUrl[i]) {
-              preKind = 1;
-            }
-          }
-        }
-        if (!preKind) {
-          // wx.navigateTo({
-          //   url: "/"+preUrl
-          // });
-          wx.navigateBack({
-            delta: 1
+      if (this.linkKind) {
+        if (this.tabKind) {
+          wx.switchTab({
+            url: this.linkBack
           });
         } else {
-          //console.log(preUrl);
-          wx.switchTab({
-            // 必须加/
-            url: "/" + preUrl
+          wx.navigateTo({
+            url: this.linkBack
           });
+        }
+      } else {
+        let pages = getCurrentPages(); // 获取页面栈
+        let currPage = pages[pages.length - 1]; // 当前页面
+        let prevPage = ""; //上一页
+        let preUrl = ""; //上一页的url
+        let preKind = 0; //上一页的类型，1为普通页面，0为tab页
+        let tabUrl = [
+          "pages/index1/main",
+          "pages/cart1/main",
+          "pages/mine1/main"
+        ]; //存储tabbar页，记得删掉pages前面的"/"
+        if (pages.length > 1) {
+          prevPage = pages[pages.length - 2];
+          preUrl = prevPage.route;
+          //console.log(preUrl);
+
+          if (preUrl) {
+            for (let i = 0; i < tabUrl.length; i++) {
+              if (preUrl == tabUrl[i]) {
+                preKind = 1;
+              }
+            }
+          }
+          if (!preKind) {
+            // wx.navigateTo({
+            //   url: "/"+preUrl
+            // });
+            wx.navigateBack({
+              delta: 1
+            });
+          } else {
+            //console.log(preUrl);
+            wx.switchTab({
+              // 必须加/
+              url: "/" + preUrl
+            });
+          }
         }
       }
     },

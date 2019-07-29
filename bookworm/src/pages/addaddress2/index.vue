@@ -5,10 +5,11 @@
       :title="'添加收货地址'"
       :backVisible="true"
       :fontSize="15"
+      :titleColor="'#36282B'"
       :imgsrc="naviImgsrc"
       :linkBack="'/pages/myaddress2/main'"
-      :linkKind="false"
-      :titleColor="'#36282B'"
+      :linkKind="true"
+      :tabKind="false"
     ></navigation-bar>
     <view class="userinfo">
       <view class="edited">
@@ -100,47 +101,51 @@ export default {
   //   },
 
   methods: {
-    // del() {
-    //   let _this = this;
-    //   _this.disabled = true;
-    //   // console.log(this.address);
-    //   wx.request({
-    //     url: _this.GLOBAL.serverSrc + "/address/deleteAddress",
-    //     method: "POST",
-    //     data: {
-    //       address_id: _this.address.address_id
-    //     },
-    //     success(res) {
-    //       console.log(res.data);
-    //     }
-    //   });
-    //   wx.showToast({
-    //     title: "删除成功！", //提示文字
-    //     icon: "none" //图标，支持"success"、"loading"
-    //   });
-    //   wx.navigateTo({
-    //     url: "/pages/myaddress2/main"
-    //   });
-    // },
-
     add() {
       let _this = this;
-      console.log(this.address);
-      wx.request({
-        url: _this.GLOBAL.serverSrc + "/address/addAddress",
-        method: "POST",
-        data: _this.address,
-        success(res) {
-          console.log(res.data);
-        }
-      });
-      wx.showToast({
-        title: "添加成功！", //提示文字
-        icon: "none" //图标，支持"success"、"loading"
-      });
-      wx.navigateTo({
-        url: "/pages/myaddress2/main"
-      });
+      if (!_this.address.receiver_name) {
+        wx.showToast({
+          title: "收货人不能为空！", //提示文字
+          icon: "none" //图标，支持"success"、"loading"
+        });
+      } else if (!_this.address.receiver_phone) {
+        wx.showToast({
+          title: "联系电话不能为空！", //提示文字
+          icon: "none" //图标，支持"success"、"loading"
+        });
+      } else {
+        wx.request({
+          url: _this.GLOBAL.serverSrc + "/address/addAddress",
+          method: "POST",
+          data: _this.address,
+          success(res) {
+            console.log(res.data);
+            wx.showToast({
+              title: "添加成功！", //提示文字
+              icon: "none" //图标，支持"success"、"loading"
+            });
+            wx.navigateTo({
+              url: "/pages/myaddress2/main"
+            });
+            // _this.address = [
+            //   {
+            //     receiver_name: "",
+            //     receiver_phone: "",
+            //     concrete_address: "",
+            //     province: "",
+            //     city: "",
+            //     area: "",
+            //     if_default: "",
+            //     user_id: _this.GLOBAL.userId
+            //   }
+            // ];
+            _this.address.receiver_name = "";
+            _this.address.receiver_phone = "";
+            _this.address.concrete_address = "";
+            _this.address.if_default = "";
+          }
+        });
+      }
     },
 
     seted: function(e) {

@@ -27,29 +27,21 @@
 
     <!------------------------------------------------------------------------ 全部订单 -->
     <view class="orders">
-      <view class="title" @click="navTo(0)">全部订单</view>
+      <view class="title" @click="linkkind('all')">全部订单</view>
       <!-- 订单列表 -->
       <view class="order_Items">
-        <view class="order_Item" @click="navTo(1)">
+        <view
+          class="order_Item"
+          v-for="(item, index) in typeList"
+          :key="index"
+          @click="linkkind(item.id)"
+        >
           <view>
-            <image :src="'/static/images/buy_wait.png'" class="order_img" />
-          </view>待付款
+            <image :src="item.typeimg" class="order_img" />
+          </view>
+          {{item.type}}
         </view>
-        <view class="order_Item" @click="navTo(2)">
-          <view>
-            <image :src="'/static/images/post_wait.png'" class="order_img" />
-          </view>待发货
-        </view>
-        <view class="order_Item" @click="navTo(3)">
-          <view>
-            <image :src="'/static/images/get_wait.png'" class="order_img" />
-          </view>待收货
-        </view>
-        <view class="order_Item" @click="navTo(4)">
-          <view>
-            <image :src="'/static/images/common_wait.png'" class="order_img" />
-          </view>待评价
-        </view>
+
         <view class="order_Item">
           <view @click="navTo">
             <image :src="'/static/images/sale_after.png'" class="order_img" />
@@ -100,7 +92,29 @@ export default {
         login_time: "",
         open_id: "",
         head_img: ""
-      }
+      },
+      typeList: [
+        {
+          typeimg: "/static/images/buy_wait.png",
+          type: "待付款",
+          id: "0"
+        },
+        {
+          typeimg: "/static/images/post_wait.png",
+          type: "待发货",
+          id: "1"
+        },
+        {
+          typeimg: "/static/images/get_wait.png",
+          type: "待收货",
+          id: "2"
+        },
+        {
+          typeimg: "/static/images/common_wait.png",
+          type: "待评价",
+          id: "3"
+        }
+      ]
       // picker: '',
     };
   },
@@ -120,18 +134,18 @@ export default {
     });
   },
   methods: {
-    //-----------------------------------------------------   获取navigation的高度，作为轮播图片的margin-top
-    navTo(i) {
-      if (i > 0) {
-        wx.navigateTo({
-          url: "/pages/myorder3/main?i=" + i
-        });
-      } else {
-      }
+    navTo() {
       wx.navigateTo({
         url: "/pages/myorder3/main"
       });
     },
+
+    linkkind(id) {
+      wx.navigateTo({
+        url: "/pages/myorder3/main?id=" + id
+      });
+    },
+
     addressTo() {
       wx.navigateTo({
         url: "/pages/myaddress2/main"
@@ -150,7 +164,27 @@ export default {
   },
 
   created() {
+    let _this = this;
+    wx.request({
+      url: _this.GLOBAL.serverSrc + "/user/userInfo/" + _this.GLOBAL.userId,
+      method: "GET",
+      success(res) {
+        // console.log(res.data.data);
+        _this.myInfo = res.data.data;
+      }
+    });
     // let app = getApp()
+  },
+  onShow() {
+    let _this = this;
+    wx.request({
+      url: _this.GLOBAL.serverSrc + "/user/userInfo/" + _this.GLOBAL.userId,
+      method: "GET",
+      success(res) {
+        // console.log(res.data.data);
+        _this.myInfo = res.data.data;
+      }
+    });
   }
 };
 </script>

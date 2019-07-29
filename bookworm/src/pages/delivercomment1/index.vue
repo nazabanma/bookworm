@@ -174,6 +174,12 @@ export default {
 
     //点击上传事件
     submit() {
+      wx.showToast({
+        title: "正在发布", //提示文字
+        icon: "none", //图标，支持"success"、"loading"
+        duration: 2000,
+        mask: true
+      });
       let _this = this;
       //第一个参数上传图片接口
       //第二个参数临时图片数组
@@ -275,6 +281,9 @@ export default {
               icon: "none"
             });
             _this.img_list = []; //上传完后清空
+            wx.redirectTo({
+              url: "/pages/myorder3/main"
+            });
           } else {
             wx.showToast({
               title: "上传失败!", //标题
